@@ -1,0 +1,467 @@
+// "use client"
+// import { useRef, useEffect, useState } from 'react';
+// import { ThumbsUp, MessageSquare, BarChart2 } from 'lucide-react';
+// import { Post } from '../../services/postService';
+
+
+// interface PostContentProps {
+//   post: Post;
+//   formatRelativeTime: (timestamp: string) => string;
+//   handleLikePost: () => Promise<void>;
+//   isPostLikedByUser: boolean | undefined;
+//   handleVote: (optionIndex: number) => Promise<void>;
+//   pollVoting: boolean;
+//   hasVotedOnPoll: boolean | undefined;
+//   likes: string[];
+// }
+
+// export default function PostContent({
+//   post,
+//   formatRelativeTime,
+//   handleLikePost,
+//   isPostLikedByUser,
+//   handleVote,
+//   pollVoting,
+//   hasVotedOnPoll,
+//   likes
+// }: PostContentProps) {
+//   const [showFullContent, setShowFullContent] = useState(false);
+//   const contentRef = useRef<HTMLParagraphElement>(null);
+//   const [contentOverflows, setContentOverflows] = useState(false);
+  
+//   useEffect(() => {
+//     if (contentRef.current) {
+//       const lineHeight = parseInt(window.getComputedStyle(contentRef.current).lineHeight);
+//       const height = contentRef.current.scrollHeight;
+//       const lines = height / lineHeight;
+//       setContentOverflows(lines > 4);
+//     }
+//   }, [post.content]);
+
+//   const toggleContentDisplay = () => {
+//     setShowFullContent(!showFullContent);
+//   };
+
+//   // Calculate total votes for the poll
+//   const calculateTotalVotes = () => {
+//     if (!post.poll?.options) return 0;
+//     return post.poll.options.reduce((sum, option) => sum + (option.votes?.length || 0), 0);
+//   };
+
+//   // Calculate percentage for each poll option
+//   const calculatePercentage = (optionIndex: number) => {
+//     if (!post.poll?.options) return 0;
+//     const optionVotes = post.poll.options[optionIndex].votes?.length || 0;
+//     const totalVotes = calculateTotalVotes();
+//     return totalVotes > 0 ? Math.round((optionVotes / totalVotes) * 100) : 0;
+//   };
+
+//   const renderYoutubeEmbed = (link: string) => {
+//     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+//     const match = link.match(youtubeRegex);
+    
+//     if (match && match[1]) {
+//       const videoId = match[1];
+//       return (
+//         <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mb-4">
+//           <iframe
+//             src={`https://www.youtube.com/embed/${videoId}`}
+//             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//             allowFullScreen
+//             className="w-full h-full"
+//           ></iframe>
+//         </div>
+//       );
+//     }
+    
+//     return null;
+//   };
+
+//   // Render Poll UI
+//   const renderPoll = () => {
+//     if (!post.poll?.options || post.poll.options.length === 0) return null;
+    
+//     const totalVotes = calculateTotalVotes();
+    
+//     return (
+//       <div className="mt-4 mb-6 bg-gray-50 rounded-lg p-4 border">
+//         <div className="flex items-center mb-3">
+//           <BarChart2 size={18} className="mr-2 text-blue-600" />
+//           <h3 className="font-medium">Poll</h3>
+//           <span className="ml-auto text-sm text-gray-500">{totalVotes} votes</span>
+//         </div>
+        
+//         <div className="space-y-3">
+//           {post.poll.options.map((option, index) => {
+//             const percentage = calculatePercentage(index);
+//             const isVoted = hasVotedOnPoll && option.votes?.includes(post.author._id || '');
+            
+//             return (
+//               <div key={index} className="relative">
+//                 {hasVotedOnPoll ? (
+//                   // Show results view if user has voted
+//                   <div className="relative bg-gray-100 rounded-md overflow-hidden">
+//                     <div 
+//                       className={`absolute top-0 left-0 h-full ${isVoted ? 'bg-blue-100' : 'bg-gray-200'}`}
+//                       style={{ width: `${percentage}%` }}
+//                     ></div>
+//                     <div className="relative px-4 py-3 flex justify-between items-center">
+//                       <div className="flex items-center">
+//                         <span className="font-medium">{option.text}</span>
+//                         {isVoted && (
+//                           <span className="ml-2 text-blue-600 text-sm">• Your vote</span>
+//                         )}
+//                       </div>
+//                       <span className="font-medium">{percentage}%</span>
+//                     </div>
+//                   </div>
+//                 ) : (
+//                   // Show voting options if user hasn't voted
+//                   <button
+//                     className="w-full px-4 py-3 bg-white hover:bg-gray-50 border rounded-md flex justify-between items-center disabled:opacity-70"
+//                     onClick={() => handleVote(index)}
+//                     disabled={pollVoting}
+//                   >
+//                     <span>{option.text}</span>
+//                     {pollVoting && <span className="loader ml-2"></span>}
+//                   </button>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <div className="p-4 border-b">
+//       <div className="flex items-center mb-3">
+//         <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden">
+//           <img
+//             src={post.author.avatar}
+//             alt={post.author.name}
+//             className="h-full w-full object-cover"
+//           />
+//         </div>
+//         <div className="ml-3 flex-1">
+//           <div className="flex items-center">
+//             <span className="font-medium">{post.author.name}</span>
+//             {post.author.badges && post.author.badges.length > 0 && (
+//               <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+//                 {post.author.badges.length}
+//               </span>
+//             )}
+//           </div>
+//           <div className="text-sm text-gray-500 flex items-center">
+//             <span>{formatRelativeTime(post.createdAt)}</span>
+//             {post.tags && post.tags.length > 0 && (
+//               <>
+//                 <span className="mx-1">•</span>
+//                 <span className="text-blue-600">#{post.tags[0]}</span>
+//               </>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+      
+//       <div className="mb-4 relative">
+//         <p 
+//           ref={contentRef}
+//           className={`${!showFullContent && contentOverflows ? 'line-clamp-4' : ''}`}
+//         >
+//           {post.content}
+//         </p>
+//         {contentOverflows && (
+//           <button 
+//             onClick={toggleContentDisplay}
+//             className="text-blue-600 text-sm font-medium mt-1"
+//           >
+//             {showFullContent ? 'See less' : 'See more'}
+//           </button>
+//         )}
+//       </div>
+      
+//       {post.image && (
+//         <div className="mb-4 rounded-lg overflow-hidden">
+//           <img
+//             src={post.image}
+//             alt="Post image"
+//             className="w-full object-cover"
+//           />
+//         </div>
+//       )}
+      
+//       {post.youtubeLink && renderYoutubeEmbed(post.youtubeLink)}
+      
+//       {/* Render Poll if post has one */}
+//       {post.poll && renderPoll()}
+
+//       <div className="flex items-center text-gray-500 text-sm mt-2 pt-2 border-t">
+//         <button 
+//           onClick={handleLikePost}
+//           className={`flex items-center mr-6 ${isPostLikedByUser ? 'text-blue-600' : ''}`}
+//         >
+//           <ThumbsUp size={18} className={`mr-1 ${isPostLikedByUser ? 'fill-current' : ''}`} />
+//           <span>{likes.length}</span>
+//         </button>
+//         <div className="flex items-center">
+//           <MessageSquare size={18} className="mr-1" />
+//           <span>{post.totalComments}</span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client"
+import { useRef, useEffect, useState } from 'react';
+import { ThumbsUp, MessageSquare, BarChart2 } from 'lucide-react';
+import { Post } from '../../services/postService';
+import { useAuth } from '../../context/AuthContext';
+import { usePostState } from '../../types/PostStateContext';
+
+
+interface PostContentProps {
+  post: Post;
+  formatRelativeTime: (timestamp: string) => string;
+  handleLikePost: () => Promise<void>;
+  isPostLikedByUser: boolean | undefined;
+  handleVote: (optionIndex: number) => Promise<void>;
+  pollVoting: boolean;
+  hasVotedOnPoll: boolean | undefined;
+  likes: string[];
+}
+
+
+export default function PostContent({
+  post,
+  formatRelativeTime,
+  handleLikePost,
+  isPostLikedByUser,
+  handleVote,
+  pollVoting,
+  hasVotedOnPoll,
+  likes
+}: PostContentProps) {
+  const { user } = useAuth();
+  const { likedPosts, likeCounts } = usePostState(); // Use the context
+  const [showFullContent, setShowFullContent] = useState(false);
+  const contentRef = useRef<HTMLParagraphElement>(null);
+  const [contentOverflows, setContentOverflows] = useState(false);
+
+
+    // Get values from context or fallback to props
+    const isLiked = likedPosts[post._id] ?? isPostLikedByUser;
+    const currentLikeCount = likeCounts[post._id] ?? likes.length;
+  
+    useEffect(() => {
+      if (contentRef.current) {
+        const lineHeight = parseInt(window.getComputedStyle(contentRef.current).lineHeight);
+        const height = contentRef.current.scrollHeight;
+        const lines = height / lineHeight;
+        setContentOverflows(lines > 4);
+      }
+    }, [post.content]);
+
+  const toggleContentDisplay = () => {
+    setShowFullContent(!showFullContent);
+  };
+
+  // Calculate total votes for the poll
+  const calculateTotalVotes = () => {
+    if (!post.poll?.options) return 0;
+    return post.poll.options.reduce((sum, option) => sum + (option.votes?.length || 0), 0);
+  };
+
+  // Calculate percentage for each poll option
+  const calculatePercentage = (optionIndex: number) => {
+    if (!post.poll?.options) return 0;
+    const optionVotes = post.poll.options[optionIndex].votes?.length || 0;
+    const totalVotes = calculateTotalVotes();
+    return totalVotes > 0 ? Math.round((optionVotes / totalVotes) * 100) : 0;
+  };
+
+  const renderYoutubeEmbed = (link: string) => {
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = link.match(youtubeRegex);
+    
+    if (match && match[1]) {
+      const videoId = match[1];
+      return (
+        <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mb-4">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  // Render Poll UI
+  const renderPoll = () => {
+    if (!post.poll?.options || post.poll.options.length === 0) return null;
+    
+    const totalVotes = calculateTotalVotes();
+    
+    return (
+      <div className="mt-4 mb-6 bg-gray-50 rounded-lg p-4 border">
+        <div className="flex items-center mb-3">
+          <BarChart2 size={18} className="mr-2 text-blue-600" />
+          <h3 className="font-medium">Poll</h3>
+          <span className="ml-auto text-sm text-gray-500">{totalVotes} votes</span>
+        </div>
+        
+        <div className="space-y-3">
+          {post.poll.options.map((option, index) => {
+            const percentage = calculatePercentage(index);
+            const isVoted = hasVotedOnPoll && option.votes?.includes(post.author._id || '');
+            
+            return (
+              <div key={index} className="relative">
+                {hasVotedOnPoll ? (
+                  // Show results view if user has voted
+                  <div className="relative bg-gray-100 rounded-md overflow-hidden">
+                    <div 
+                      className={`absolute top-0 left-0 h-full ${isVoted ? 'bg-blue-100' : 'bg-gray-200'}`}
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                    <div className="relative px-4 py-3 flex justify-between items-center">
+                      <div className="flex items-center">
+                        <span className="font-medium">{option.text}</span>
+                        {isVoted && (
+                          <span className="ml-2 text-blue-600 text-sm">• Your vote</span>
+                        )}
+                      </div>
+                      <span className="font-medium">{percentage}%</span>
+                    </div>
+                  </div>
+                ) : (
+                  // Show voting options if user hasn't voted
+                  <button
+                    className="w-full px-4 py-3 bg-white hover:bg-gray-50 border rounded-md flex justify-between items-center disabled:opacity-70"
+                    onClick={() => handleVote(index)}
+                    disabled={pollVoting}
+                  >
+                    <span>{option.text}</span>
+                    {pollVoting && <span className="loader ml-2"></span>}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="p-4 border-b">
+      <div className="flex items-center mb-3">
+        <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden">
+          <img
+            src={post.author.avatar}
+            alt={post.author.name}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="ml-3 flex-1">
+          <div className="flex items-center">
+            <span className="font-medium">{post.author.name}</span>
+            {post.author.badges && post.author.badges.length > 0 && (
+              <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+                {post.author.badges.length}
+              </span>
+            )}
+          </div>
+          <div className="text-sm text-gray-500 flex items-center">
+            <span>{formatRelativeTime(post.createdAt)}</span>
+            {post.tags && post.tags.length > 0 && (
+              <>
+                <span className="mx-1">•</span>
+                <span className="text-blue-600">#{post.tags[0]}</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+      
+      <div className="mb-4 relative">
+        <p 
+          ref={contentRef}
+          className={`${!showFullContent && contentOverflows ? 'line-clamp-4' : ''}`}
+        >
+          {post.content}
+        </p>
+        {contentOverflows && (
+          <button 
+            onClick={toggleContentDisplay}
+            className="text-blue-600 text-sm font-medium mt-1"
+          >
+            {showFullContent ? 'See less' : 'See more'}
+          </button>
+        )}
+      </div>
+      
+      {post.image && (
+        <div className="mb-4 rounded-lg overflow-hidden">
+          <img
+            src={post.image}
+            alt="Post image"
+            className="w-full object-cover"
+          />
+        </div>
+      )}
+      
+      {post.youtubeLink && renderYoutubeEmbed(post.youtubeLink)}
+      
+      {/* Render Poll if post has one */}
+      {post.poll && renderPoll()}
+
+      <div className="flex items-center text-gray-500 text-sm mt-2 pt-2 border-t">
+      <button 
+          onClick={handleLikePost}
+          className={`flex items-center mr-6 ${isLiked ? 'text-blue-600' : ''}`}
+        >
+          <ThumbsUp size={18} className={`mr-1 ${isLiked ? 'fill-current' : ''}`} />
+          <span>{currentLikeCount}</span>
+        </button>
+        <div className="flex items-center">
+          <MessageSquare size={18} className="mr-1" />
+          <span>{post.totalComments}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
