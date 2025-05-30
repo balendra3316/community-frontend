@@ -1,4 +1,4 @@
-import { memo, useState, lazy, Suspense } from 'react';
+import { memo, useState, lazy, Suspense, useEffect } from 'react';
 import { 
   Button, 
   IconButton, 
@@ -9,7 +9,7 @@ import {
   DialogContent, 
   DialogTitle,
   CircularProgress,
-  Menu
+  Popover
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
@@ -23,16 +23,17 @@ interface YouTubeVideoInfo {
 }
 
 interface PostExtensionsProps {
+  type: 'youtube' | 'emoji' | null;
+  emojiAnchor?: HTMLElement | null;
   onClose: () => void;
   onYoutubeAdd: (video: YouTubeVideoInfo) => void;
   onEmojiSelect: (emoji: string) => void;
 }
 
-const PostExtensions = memo(({ onClose, onYoutubeAdd, onEmojiSelect }: PostExtensionsProps) => {
-  const [showYouTubeModal, setShowYouTubeModal] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmojiSelect }: PostExtensionsProps) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [anchorElEmoji, setAnchorElEmoji] = useState<null | HTMLElement>(null);
+
+  // Remove the useEffect and anchorElEmoji state since we're using the passed anchor
 
   // Extract YouTube video ID from URL
   const extractYouTubeVideoId = (url: string) => {
@@ -52,128 +53,115 @@ const PostExtensions = memo(({ onClose, onYoutubeAdd, onEmojiSelect }: PostExten
           title: "YouTube Video",
           url: youtubeUrl
         });
-        setShowYouTubeModal(false);
         setYoutubeUrl('');
-        onClose();
       }
     }
   };
 
-  // Handle emoji selection
+  // Handle emoji selection - don't close modal automatically
   const handleEmojiSelect = (emojiData: any) => {
     onEmojiSelect(emojiData.emoji);
-    setAnchorElEmoji(null);
-    setShowEmojiPicker(false);
-    onClose();
+    // Keep the emoji picker open for multiple selections
   };
 
-  // Emoji picker handlers
-  const handleEmojiClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElEmoji(event.currentTarget);
-    setShowEmojiPicker(true);
-  };
-
+  // Handle emoji popover close
   const handleEmojiClose = () => {
-    setAnchorElEmoji(null);
-    setShowEmojiPicker(false);
+    onClose();
   };
 
   return (
     <>
       {/* YouTube URL Modal */}
-      <Dialog 
-        open={showYouTubeModal} 
-        onClose={() => {
-          setShowYouTubeModal(false);
-          onClose();
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          <div className="flex justify-between items-center">
-            <Typography variant="h6">Add YouTube Video</Typography>
-            <IconButton 
-              size="small" 
-              onClick={() => {
-                setShowYouTubeModal(false);
-                onClose();
-              }}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </div>
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="YouTube URL"
-            placeholder="Paste YouTube URL here"
-            value={youtubeUrl}
-            onChange={(e) => setYoutubeUrl(e.target.value)}
-            margin="dense"
-            autoFocus
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => {
-              setShowYouTubeModal(false);
-              onClose();
-            }} 
-            color="inherit"
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleYouTubeSubmit}
-            color="primary"
-            disabled={!youtubeUrl}
-          >
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Emoji Picker Menu */}
-      <Menu
-        anchorEl={anchorElEmoji}
-        open={Boolean(anchorElEmoji) && showEmojiPicker}
-        onClose={() => {
-          handleEmojiClose();
-          onClose();
-        }}
-        PaperProps={{
-          style: {
-            maxHeight: '400px',
-            overflow: 'hidden'
-          }
-        }}
-      >
-        <div className="p-2">
-          <Suspense fallback={
-            <div className="flex justify-center items-center p-4">
-              <CircularProgress size={24} />
+      {type === 'youtube' && (
+        <Dialog 
+          open={true}
+          onClose={onClose}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>
+            <div className="flex justify-between items-center">
+              <Typography variant="h6">Add YouTube Video</Typography>
+              <IconButton size="small" onClick={onClose}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
             </div>
-          }>
-            <EmojiPicker 
-              onEmojiClick={handleEmojiSelect}
-              width={300}
-              height={300}
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              label="YouTube URL"
+              placeholder="Paste YouTube URL here"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              margin="dense"
+              autoFocus
             />
-          </Suspense>
-        </div>
-      </Menu>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onClose} color="inherit">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleYouTubeSubmit}
+              color="primary"
+              disabled={!youtubeUrl}
+            >
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
-      {/* Trigger buttons - these would be called from parent */}
-      <div className="hidden">
-        <Button onClick={() => setShowYouTubeModal(true)}>
-          Open YouTube Modal
-        </Button>
-        <Button onClick={handleEmojiClick}>
-          Open Emoji Picker
-        </Button>
-      </div>
+      {/* Emoji Picker Popover */}
+      {type === 'emoji' && (
+        <Popover
+          open={Boolean(emojiAnchor)}
+          anchorEl={emojiAnchor}
+          onClose={handleEmojiClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          style={{ zIndex: 1400 }}
+          PaperProps={{
+            style: {
+              maxHeight: '400px',
+              maxWidth: '350px',
+              overflow: 'hidden',
+              zIndex: 1400
+            }
+          }}
+        >
+          <div className="relative">
+            {/* Close button for emoji picker */}
+            <div className="flex justify-between items-center p-2 border-b">
+              <Typography variant="subtitle2">Choose Emoji</Typography>
+              <IconButton size="small" onClick={handleEmojiClose}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </div>
+            
+            <div className="p-2">
+              <Suspense fallback={
+                <div className="flex justify-center items-center p-8">
+                  <CircularProgress size={24} />
+                </div>
+              }>
+                <EmojiPicker 
+                  onEmojiClick={handleEmojiSelect}
+                  width={300}
+                  height={300}
+                />
+              </Suspense>
+            </div>
+          </div>
+        </Popover>
+      )}
     </>
   );
 });

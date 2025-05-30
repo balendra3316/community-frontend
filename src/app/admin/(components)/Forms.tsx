@@ -1,6 +1,6 @@
-import React ,{ useState }from 'react';
+import React, { useState } from "react";
 
-import { Image, Resource } from '../_components/courseManagementService';
+import { Image, Resource } from "../_components/courseManagementService";
 
 // interface FormProps {
 //   type?: 'course' | 'section' | 'lesson';
@@ -10,11 +10,10 @@ import { Image, Resource } from '../_components/courseManagementService';
 //   onCancel: () => void;
 // }
 
-
 //import { useState } from 'react';
 
 interface FormProps {
-  type?: 'course' | 'section' | 'lesson';
+  type?: "course" | "section" | "lesson";
   data: any;
   setData: (data: any) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -22,20 +21,28 @@ interface FormProps {
   isLoading?: boolean;
 }
 
-export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = false }: FormProps) => {
+export const CourseForm = ({
+  data,
+  setData,
+  onSubmit,
+  onCancel,
+  isLoading = false,
+}: FormProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(data.coverImage || null);
-  
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(
+    data.coverImage || null
+  );
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Store the file in the data state
       setData({ ...data, coverImageFile: file });
-      
+
       // Create a preview URL
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
-      
+
       // Clean up the preview URL when component unmounts
       return () => URL.revokeObjectURL(objectUrl);
     }
@@ -44,42 +51,55 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
   return (
     <div className="bg-gray-100 p-4 rounded mb-4">
       <h3 className="text-lg font-medium mb-2">
-        {data._id ? 'Edit Course' : 'Create New Course'}
+        {data._id ? "Edit Course" : "Create New Course"}
       </h3>
       <form onSubmit={onSubmit}>
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Title
+          </label>
           <input
             type="text"
             value={data.title}
-            onChange={(e) => setData({...data, title: e.target.value})}
+            onChange={(e) => setData({ ...data, title: e.target.value })}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
             required
           />
         </div>
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <textarea
             value={data.description}
-            onChange={(e) => setData({...data, description: e.target.value})}
+            onChange={(e) => setData({ ...data, description: e.target.value })}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
             rows={3}
           />
         </div>
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Order</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Order
+          </label>
           <input
             type="number"
             value={data.order || 0}
-            onChange={(e) => setData({...data, order: parseInt(e.target.value)})}
+            onChange={(e) =>
+              setData({ ...data, order: parseInt(e.target.value) })
+            }
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
             min="0"
           />
-          <p className="text-sm text-gray-500 mt-1">The order in which this course will appear in the list (lower numbers appear first)</p>
+          <p className="text-sm text-gray-500 mt-1">
+            The order in which this course will appear in the list (lower
+            numbers appear first)
+          </p>
         </div>
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Cover Image</label>
-          
+          <label className="block text-sm font-medium text-gray-700">
+            Cover Image
+          </label>
+
           {/* Image Preview */}
           {previewUrl && (
             <div className="mt-2 mb-2">
@@ -90,7 +110,7 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
               />
             </div>
           )}
-          
+
           {/* File Input */}
           <input
             ref={fileInputRef}
@@ -99,7 +119,7 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
             onChange={handleFileChange}
             className="mt-1 block w-full text-sm"
           />
-          
+
           {/* Legacy URL Input (Optional) */}
           <div className="mt-2">
             <label className="block text-sm font-medium text-gray-700">
@@ -107,9 +127,9 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
             </label>
             <input
               type="text"
-              value={data.coverImage || ''}
+              value={data.coverImage || ""}
               onChange={(e) => {
-                setData({...data, coverImage: e.target.value});
+                setData({ ...data, coverImage: e.target.value });
                 if (e.target.value) {
                   setPreviewUrl(e.target.value);
                 }
@@ -135,14 +155,32 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
-                {data._id ? 'Updating...' : 'Creating...'}
+                {data._id ? "Updating..." : "Creating..."}
               </>
+            ) : data._id ? (
+              "Update"
             ) : (
-              data._id ? 'Update' : 'Create'
+              "Create"
             )}
           </button>
         </div>
@@ -151,23 +189,24 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
   );
 };
 
-
-
-
-
-
-
-
-export const SectionForm = ({ data, setData, onSubmit, onCancel, isLoading }: FormProps & { isLoading?: boolean }) => (
+export const SectionForm = ({
+  data,
+  setData,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: FormProps & { isLoading?: boolean }) => (
   <div className="bg-gray-100 p-4 rounded mb-4">
-    <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Section</h4>
+    <h4 className="text-md font-medium mb-2">
+      {data._id ? "Edit" : "Create New"} Section
+    </h4>
     <form onSubmit={onSubmit}>
       <div className="mb-3">
         <label className="block text-sm font-medium text-gray-700">Title</label>
         <input
           type="text"
           value={data.title}
-          onChange={(e) => setData({...data, title: e.target.value})}
+          onChange={(e) => setData({ ...data, title: e.target.value })}
           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
           required
         />
@@ -177,7 +216,9 @@ export const SectionForm = ({ data, setData, onSubmit, onCancel, isLoading }: Fo
         <input
           type="number"
           value={data.order}
-          onChange={(e) => setData({...data, order: parseInt(e.target.value, 10)})}
+          onChange={(e) =>
+            setData({ ...data, order: parseInt(e.target.value, 10) })
+          }
           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
           min="0"
           required
@@ -197,660 +238,92 @@ export const SectionForm = ({ data, setData, onSubmit, onCancel, isLoading }: Fo
           className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
           disabled={isLoading}
         >
-          {isLoading ? 'Saving...' : (data._id ? 'Update' : 'Create')}
+          {isLoading ? "Saving..." : data._id ? "Update" : "Create"}
         </button>
       </div>
     </form>
   </div>
 );
 
-
-
-
-
-
-
-
-
-
-
-// export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => (
-    
-//   <div className="bg-gray-100 p-4 rounded mb-3">
-//     <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Lesson</h4>
-//     <form onSubmit={onSubmit}>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Title</label>
-//         <input
-//           type="text"
-//           value={data.title}
-//           onChange={(e) => setData({...data, title: e.target.value})}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//           required
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Content</label>
-//         <textarea
-//           value={data.content}
-//           onChange={(e) => setData({...data, content: e.target.value})}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//           rows={3}
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Video URL</label>
-//         <input
-//           type="text"
-//           value={data.videoUrl}
-//           onChange={(e) => setData({...data, videoUrl: e.target.value})}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Image URL</label>
-//         <input
-//           type="text"
-//           value={data.images[0]?.url || ''}
-//           onChange={(e) => setData({...data, images: [{url: e.target.value, caption: '', altText: ''}]})}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Resource Title</label>
-//         <input
-//           type="text"
-//           value={data.resources[0]?.title || ''}
-//           onChange={(e) => {
-//             const resources = [...(data.resources || [])];
-//             if (resources.length === 0) {
-//               resources.push({title: e.target.value, fileUrl: '', fileType: 'pdf'});
-//             } else {
-//               resources[0] = {...resources[0], title: e.target.value};
-//             }
-//             setData({...data, resources});
-//           }}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Resource URL</label>
-//         <input
-//           type="text"
-//           value={data.resources[0]?.fileUrl || ''}
-//           onChange={(e) => {
-//             const resources = [...(data.resources || [])];
-//             if (resources.length === 0) {
-//               resources.push({title: 'Resource', fileUrl: e.target.value, fileType: 'pdf'});
-//             } else {
-//               resources[0] = {...resources[0], fileUrl: e.target.value};
-//             }
-//             setData({...data, resources});
-//           }}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//         />
-//       </div>
-//       <div className="mb-3">
-//         <label className="block text-sm font-medium text-gray-700">Order</label>
-//         <input
-//           type="number"
-//           value={data.order}
-//           onChange={(e) => setData({...data, order: parseInt(e.target.value) || 0})}
-//           className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//         />
-//       </div>
-//       <div className="flex justify-end space-x-2">
-//         <button
-//           type="button"
-//           onClick={onCancel}
-//           className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded text-xs"
-//         >
-//           Cancel
-//         </button>
-//         <button
-//           type="submit"
-//           className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-xs"
-//         >
-//           {data._id ? 'Update' : 'Create'}
-//         </button>
-//       </div>
-//     </form>
-//   </div>
-// );
-
-
-
-
-
-// //src/app/admin/components/Forms.tsx
-// export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => {
-//     // Ensure images and resources arrays exist
-//     const safeData = {
-//       ...data,
-//       images: data.images || [],
-//       resources: data.resources || []
-//     };
-  
-//     return (
-//       <div className="bg-gray-100 p-4 rounded mb-3">
-//         <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Lesson</h4>
-//         <form onSubmit={onSubmit}>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Title</label>
-//             <input
-//               type="text"
-//               value={data.title}
-//               onChange={(e) => setData({...data, title: e.target.value})}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//               required
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Content</label>
-//             <textarea
-//               value={data.content}
-//               onChange={(e) => setData({...data, content: e.target.value})}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//               rows={3}
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Video URL</label>
-//             <input
-//               type="text"
-//               value={data.videoUrl}
-//               onChange={(e) => setData({...data, videoUrl: e.target.value})}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Image URL</label>
-//             <input
-//               type="text"
-//               value={safeData.images[0]?.url || ''}
-//               onChange={(e) => setData({
-//                 ...data,
-//                 images: [{url: e.target.value, caption: '', altText: ''}]
-//               })}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Resource Title</label>
-//             <input
-//               type="text"
-//               value={safeData.resources[0]?.title || ''}
-//               onChange={(e) => {
-//                 const resources = [...safeData.resources];
-//                 if (resources.length === 0) {
-//                   resources.push({title: e.target.value, fileUrl: '', fileType: 'pdf'});
-//                 } else {
-//                   resources[0] = {...resources[0], title: e.target.value};
-//                 }
-//                 setData({...data, resources});
-//               }}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Resource URL</label>
-//             <input
-//               type="text"
-//               value={safeData.resources[0]?.fileUrl || ''}
-//               onChange={(e) => {
-//                 const resources = [...safeData.resources];
-//                 if (resources.length === 0) {
-//                   resources.push({title: 'Resource', fileUrl: e.target.value, fileType: 'pdf'});
-//                 } else {
-//                   resources[0] = {...resources[0], fileUrl: e.target.value};
-//                 }
-//                 setData({...data, resources});
-//               }}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <label className="block text-sm font-medium text-gray-700">Order</label>
-//             <input
-//               type="number"
-//               value={data.order}
-//               onChange={(e) => setData({...data, order: parseInt(e.target.value) || 0})}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             />
-//           </div>
-//           <div className="flex justify-end space-x-2">
-//             <button
-//               type="button"
-//               onClick={onCancel}
-//               className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded text-xs"
-//             >
-//               Cancel
-//             </button>
-//             <button
-//               type="submit"
-//               className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-xs"
-//             >
-//               {data._id ? 'Update' : 'Create'}
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     );
-//   };
-
-
-
-
-
-
-
-
-
-
-
-// export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => {
-//   const [isLoading, setIsLoading] = useState(false);
-  
-//   // Ensure images and resources arrays exist
-//   const safeData = {
-//     ...data,
-//     images: data.images || [],
-//     resources: data.resources || []
-//   };
-
-//   const handleImageChange = (index: number, field: keyof Image, value: string) => {
-//     const updatedImages = [...safeData.images];
-//     if (!updatedImages[index]) {
-//       updatedImages[index] = { url: '', caption: '', altText: '' };
-//     }
-//     updatedImages[index] = { ...updatedImages[index], [field]: value };
-//     setData({ ...data, images: updatedImages });
-//   };
-
-//   const handleImageFileChange = (index: number, file: File) => {
-//     const updatedImages = [...safeData.images];
-//     if (!updatedImages[index]) {
-//       updatedImages[index] = { url: '', caption: '', altText: file.name };
-//     }
-    
-//     // Create URL preview for the file
-//     const fileUrl = URL.createObjectURL(file);
-//     updatedImages[index] = { 
-//       ...updatedImages[index], 
-//       url: fileUrl, 
-//       file,
-//       altText: updatedImages[index].altText || file.name 
-//     };
-    
-//     setData({ ...data, images: updatedImages });
-//   };
-
-//   const handleResourceChange = (index: number, field: keyof Resource, value: string) => {
-//     const updatedResources = [...safeData.resources];
-//     if (!updatedResources[index]) {
-//       updatedResources[index] = { title: '', fileUrl: '', fileType: 'pdf' };
-//     }
-//     updatedResources[index] = { ...updatedResources[index], [field]: value };
-//     setData({ ...data, resources: updatedResources });
-//   };
-
-//   const handleResourceFileChange = (index: number, file: File) => {
-//     const updatedResources = [...safeData.resources];
-//     if (!updatedResources[index]) {
-//       updatedResources[index] = { title: file.name, fileUrl: '', fileType: 'pdf' };
-//     }
-    
-//     // Determine file type
-//     let fileType = 'document';
-//     if (file.type.includes('pdf')) {
-//       fileType = 'pdf';
-//     } else if (file.type.includes('doc') || file.type.includes('word')) {
-//       fileType = 'doc';
-//     }
-    
-//     updatedResources[index] = { 
-//       ...updatedResources[index], 
-//       title: updatedResources[index].title || file.name,
-//       file,
-//       fileType 
-//     };
-    
-//     setData({ ...data, resources: updatedResources });
-//   };
-
-//   const addImage = () => {
-//     const updatedImages = [...safeData.images, { url: '', caption: '', altText: '' }];
-//     setData({ ...data, images: updatedImages });
-//   };
-
-//   const removeImage = (index: number) => {
-//     const updatedImages = safeData.images.filter((_, i) => i !== index);
-//     setData({ ...data, images: updatedImages });
-//   };
-
-//   const addResource = () => {
-//     const updatedResources = [...safeData.resources, { title: '', fileUrl: '', fileType: 'pdf' }];
-//     setData({ ...data, resources: updatedResources });
-//   };
-
-//   const removeResource = (index: number) => {
-//     const updatedResources = safeData.resources.filter((_, i) => i !== index);
-//     setData({ ...data, resources: updatedResources });
-//   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setIsLoading(true);
-//     try {
-//       await onSubmit(e);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-gray-100 p-4 rounded mb-3">
-//       <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Lesson</h4>
-//       <form onSubmit={handleSubmit}>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">Title</label>
-//           <input
-//             type="text"
-//             value={data.title}
-//             onChange={(e) => setData({...data, title: e.target.value})}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             required
-//           />
-//         </div>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">Content</label>
-//           <textarea
-//             value={data.content}
-//             onChange={(e) => setData({...data, content: e.target.value})}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             rows={3}
-//           />
-//         </div>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">Video URL</label>
-//           <input
-//             type="text"
-//             value={data.videoUrl || ''}
-//             onChange={(e) => setData({...data, videoUrl: e.target.value})}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//           />
-//         </div>
-        
-//         {/* Images Section */}
-//         <div className="mb-4">
-//           <div className="flex justify-between items-center mb-2">
-//             <label className="block text-sm font-medium text-gray-700">Images</label>
-//             <button 
-//               type="button" 
-//               onClick={addImage}
-//               className="text-blue-500 text-xs hover:text-blue-700"
-//             >
-//               + Add Image
-//             </button>
-//           </div>
-          
-//           {safeData.images.map((image: Image, index: number) => (
-//             <div key={`image-${index}`} className="mb-3 p-3 bg-white rounded shadow-sm">
-//               <div className="flex justify-between items-center mb-2">
-//                 <span className="text-sm font-medium">Image {index + 1}</span>
-//                 <button 
-//                   type="button" 
-//                   onClick={() => removeImage(index)}
-//                   className="text-red-500 text-xs hover:text-red-700"
-//                 >
-//                   Remove
-//                 </button>
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Upload Image</label>
-//                 <input
-//                   type="file"
-//                   accept="image/*"
-//                   onChange={(e) => e.target.files && handleImageFileChange(index, e.target.files[0])}
-//                   className="mt-1 block w-full text-sm p-1"
-//                 />
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Or Image URL</label>
-//                 <input
-//                   type="text"
-//                   value={image.url || ''}
-//                   onChange={(e) => handleImageChange(index, 'url', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                   placeholder="https://example.com/image.jpg"
-//                 />
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Caption</label>
-//                 <input
-//                   type="text"
-//                   value={image.caption || ''}
-//                   onChange={(e) => handleImageChange(index, 'caption', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                 />
-//               </div>
-              
-//               <div className="mb-1">
-//                 <label className="block text-xs text-gray-700">Alt Text</label>
-//                 <input
-//                   type="text"
-//                   value={image.altText || ''}
-//                   onChange={(e) => handleImageChange(index, 'altText', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                 />
-//               </div>
-//             </div>
-//           ))}
-          
-//           {safeData.images.length === 0 && (
-//             <p className="text-sm text-gray-500 italic">No images added</p>
-//           )}
-//         </div>
-        
-//         {/* Resources Section */}
-//         <div className="mb-4">
-//           <div className="flex justify-between items-center mb-2">
-//             <label className="block text-sm font-medium text-gray-700">Resources</label>
-//             <button 
-//               type="button" 
-//               onClick={addResource}
-//               className="text-blue-500 text-xs hover:text-blue-700"
-//             >
-//               + Add Resource
-//             </button>
-//           </div>
-          
-//           {safeData.resources.map((resource: Resource, index: number) => (
-//             <div key={`resource-${index}`} className="mb-3 p-3 bg-white rounded shadow-sm">
-//               <div className="flex justify-between items-center mb-2">
-//                 <span className="text-sm font-medium">Resource {index + 1}</span>
-//                 <button 
-//                   type="button" 
-//                   onClick={() => removeResource(index)}
-//                   className="text-red-500 text-xs hover:text-red-700"
-//                 >
-//                   Remove
-//                 </button>
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Title</label>
-//                 <input
-//                   type="text"
-//                   value={resource.title || ''}
-//                   onChange={(e) => handleResourceChange(index, 'title', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                   placeholder="Resource Title"
-//                 />
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Upload File</label>
-//                 <input
-//                   type="file"
-//                   accept=".pdf,.doc,.docx,.ppt,.pptx"
-//                   onChange={(e) => e.target.files && handleResourceFileChange(index, e.target.files[0])}
-//                   className="mt-1 block w-full text-sm p-1"
-//                 />
-//               </div>
-              
-//               <div className="mb-2">
-//                 <label className="block text-xs text-gray-700">Or Resource URL</label>
-//                 <input
-//                   type="text"
-//                   value={resource.fileUrl || ''}
-//                   onChange={(e) => handleResourceChange(index, 'fileUrl', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                   placeholder="https://example.com/resource.pdf"
-//                 />
-//               </div>
-              
-//               <div className="mb-1">
-//                 <label className="block text-xs text-gray-700">File Type</label>
-//                 <select
-//                   value={resource.fileType || 'pdf'}
-//                   onChange={(e) => handleResourceChange(index, 'fileType', e.target.value)}
-//                   className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-sm"
-//                 >
-//                   <option value="pdf">PDF</option>
-//                   <option value="doc">DOC/DOCX</option>
-//                   <option value="ppt">PPT/PPTX</option>
-//                   <option value="document">Other Document</option>
-//                 </select>
-//               </div>
-//             </div>
-//           ))}
-          
-//           {safeData.resources.length === 0 && (
-//             <p className="text-sm text-gray-500 italic">No resources added</p>
-//           )}
-//         </div>
-        
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">Order</label>
-//           <input
-//             type="number"
-//             value={data.order}
-//             onChange={(e) => setData({...data, order: parseInt(e.target.value) || 0})}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//           />
-//         </div>
-        
-//         <div className="flex justify-end space-x-2">
-//           <button
-//             type="button"
-//             onClick={onCancel}
-//             className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded text-xs"
-//             disabled={isLoading}
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             type="submit"
-//             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-xs flex items-center"
-//             disabled={isLoading}
-//           >
-//             {isLoading ? (
-//               <>
-//                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-//                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//                 </svg>
-//                 Processing...
-//               </>
-//             ) : (
-//               data._id ? 'Update' : 'Create'
-//             )}
-//           </button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-
-
-
-
-
-
-
-export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => {
+export const LessonForm = ({
+  data,
+  setData,
+  onSubmit,
+  onCancel,
+}: FormProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Ensure arrays exist
   const safeData = {
     ...data,
     images: data.images || [],
-    resources: data.resources || []
+    resources: data.resources || [],
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const newImages = [...safeData.images];
-      
+
       // Update or add the image with file for later upload
       if (newImages[index]) {
         newImages[index] = {
           ...newImages[index],
           file,
-          url: '', // Clear the URL since we're using a file
-          caption: newImages[index].caption || '',
-          altText: newImages[index].altText || file.name
+          url: "", // Clear the URL since we're using a file
+          caption: newImages[index].caption || "",
+          altText: newImages[index].altText || file.name,
         };
       } else {
         newImages[index] = {
-          url: '',
-          caption: '',
+          url: "",
+          caption: "",
           altText: file.name,
-          file
+          file,
         };
       }
-      
+
       setData({ ...data, images: newImages });
     }
   };
 
-  const handleResourceUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleResourceUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const newResources = [...safeData.resources];
-      
+
       // Determine file type
-      let fileType = 'document';
-      if (file.type.includes('pdf')) {
-        fileType = 'pdf';
-      } else if (file.type.includes('doc') || file.type.includes('word')) {
-        fileType = 'doc';
+      let fileType = "document";
+      if (file.type.includes("pdf")) {
+        fileType = "pdf";
+      } else if (file.type.includes("doc") || file.type.includes("word")) {
+        fileType = "doc";
       }
-      
+
       // Update or add the resource with file for later upload
       if (newResources[index]) {
         newResources[index] = {
           ...newResources[index],
           file,
-          fileUrl: '', // Clear the URL since we're using a file
+          fileUrl: "", // Clear the URL since we're using a file
           title: newResources[index].title || file.name,
-          fileType
+          fileType,
         };
       } else {
         newResources[index] = {
           title: file.name,
-          fileUrl: '',
+          fileUrl: "",
           fileType,
-          file
+          file,
         };
       }
-      
+
       setData({ ...data, resources: newResources });
     }
   };
@@ -858,14 +331,17 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
   const addNewImageField = () => {
     setData({
       ...data,
-      images: [...safeData.images, { url: '', caption: '', altText: '' }]
+      images: [...safeData.images, { url: "", caption: "", altText: "" }],
     });
   };
 
   const addNewResourceField = () => {
     setData({
       ...data,
-      resources: [...safeData.resources, { title: '', fileUrl: '', fileType: 'pdf' }]
+      resources: [
+        ...safeData.resources,
+        { title: "", fileUrl: "", fileType: "pdf" },
+      ],
     });
   };
 
@@ -890,45 +366,57 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
 
   return (
     <div className="bg-gray-100 p-4 rounded mb-3">
-      <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Lesson</h4>
+      <h4 className="text-md font-medium mb-2">
+        {data._id ? "Edit" : "Create New"} Lesson
+      </h4>
       <form onSubmit={handleSubmitForm}>
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Title
+          </label>
           <input
             type="text"
             value={data.title}
-            onChange={(e) => setData({...data, title: e.target.value})}
+            onChange={(e) => setData({ ...data, title: e.target.value })}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
             required
           />
         </div>
-        
+
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Order</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Order
+          </label>
           <input
             type="number"
             value={data.order}
-            onChange={(e) => setData({...data, order: parseInt(e.target.value) || 0})}
+            onChange={(e) =>
+              setData({ ...data, order: parseInt(e.target.value) || 0 })
+            }
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
           />
         </div>
-        
+
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Content</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Content
+          </label>
           <textarea
             value={data.content}
-            onChange={(e) => setData({...data, content: e.target.value})}
+            onChange={(e) => setData({ ...data, content: e.target.value })}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
             rows={3}
           />
         </div>
-        
+
         <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700">Video URL</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Video URL
+          </label>
           <input
             type="text"
-            value={data.videoUrl || ''}
-            onChange={(e) => setData({...data, videoUrl: e.target.value})}
+            value={data.videoUrl || ""}
+            onChange={(e) => setData({ ...data, videoUrl: e.target.value })}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
           />
         </div>
@@ -940,15 +428,19 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
           <input
             type="checkbox"
             checked={data.isPublished || false}
-            onChange={(e) => setData({...data, isPublished: e.target.checked})}
+            onChange={(e) =>
+              setData({ ...data, isPublished: e.target.checked })
+            }
             className="mt-1 rounded border-gray-300 shadow-sm p-2"
           />
         </div>
-        
+
         {/* Images Section */}
         <div className="mb-5 border-t border-gray-200 pt-4">
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">Images</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Images
+            </label>
             <button
               type="button"
               onClick={addNewImageField}
@@ -957,9 +449,12 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
               Add Image
             </button>
           </div>
-          
+
           {safeData.images.map((image: Image, index: number) => (
-            <div key={`image-${index}`} className="mb-3 p-3 bg-white rounded shadow-sm">
+            <div
+              key={`image-${index}`}
+              className="mb-3 p-3 bg-white rounded shadow-sm"
+            >
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium">Image {index + 1}</span>
                 <button
@@ -970,10 +465,12 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                   Remove
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs text-gray-600">Upload Image</label>
+                  <label className="block text-xs text-gray-600">
+                    Upload Image
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
@@ -986,19 +483,24 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                     </div>
                   )}
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs text-gray-600">Or Image URL</label>
+                  <label className="block text-xs text-gray-600">
+                    Or Image URL
+                  </label>
                   <input
                     type="text"
-                    value={image.url || ''}
+                    value={image.url || ""}
                     onChange={(e) => {
                       const newImages = [...safeData.images];
                       // Clear the file if URL is provided
                       if (e.target.value) {
                         delete newImages[index].file;
                       }
-                      newImages[index] = { ...newImages[index], url: e.target.value };
+                      newImages[index] = {
+                        ...newImages[index],
+                        url: e.target.value,
+                      };
                       setData({ ...data, images: newImages });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
@@ -1006,35 +508,46 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                   />
                   {image.url && !image.file && (
                     <div className="mt-2 text-xs text-gray-500">
-                      Using URL: {image.url.length > 40 ? `${image.url.substring(0, 40)}...` : image.url}
+                      Using URL:{" "}
+                      {image.url.length > 40
+                        ? `${image.url.substring(0, 40)}...`
+                        : image.url}
                     </div>
                   )}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                 <div>
                   <label className="block text-xs text-gray-600">Caption</label>
                   <input
                     type="text"
-                    value={image.caption || ''}
+                    value={image.caption || ""}
                     onChange={(e) => {
                       const newImages = [...safeData.images];
-                      newImages[index] = { ...newImages[index], caption: e.target.value };
+                      newImages[index] = {
+                        ...newImages[index],
+                        caption: e.target.value,
+                      };
                       setData({ ...data, images: newImages });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs text-gray-600">Alt Text</label>
+                  <label className="block text-xs text-gray-600">
+                    Alt Text
+                  </label>
                   <input
                     type="text"
-                    value={image.altText || ''}
+                    value={image.altText || ""}
                     onChange={(e) => {
                       const newImages = [...safeData.images];
-                      newImages[index] = { ...newImages[index], altText: e.target.value };
+                      newImages[index] = {
+                        ...newImages[index],
+                        altText: e.target.value,
+                      };
                       setData({ ...data, images: newImages });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
@@ -1043,16 +556,18 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
               </div>
             </div>
           ))}
-          
+
           {safeData.images.length === 0 && (
             <p className="text-gray-500 text-xs italic">No images added yet.</p>
           )}
         </div>
-        
+
         {/* Resources Section */}
         <div className="mb-5 border-t border-gray-200 pt-4">
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">Resources</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Resources
+            </label>
             <button
               type="button"
               onClick={addNewResourceField}
@@ -1061,11 +576,16 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
               Add Resource
             </button>
           </div>
-          
+
           {safeData.resources.map((resource: Resource, index: number) => (
-            <div key={`resource-${index}`} className="mb-3 p-3 bg-white rounded shadow-sm">
+            <div
+              key={`resource-${index}`}
+              className="mb-3 p-3 bg-white rounded shadow-sm"
+            >
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Resource {index + 1}</span>
+                <span className="text-sm font-medium">
+                  Resource {index + 1}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleRemoveResource(index)}
@@ -1074,30 +594,38 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                   Remove
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs text-gray-600">Title</label>
                   <input
                     type="text"
-                    value={resource.title || ''}
+                    value={resource.title || ""}
                     onChange={(e) => {
                       const newResources = [...safeData.resources];
-                      newResources[index] = { ...newResources[index], title: e.target.value };
+                      newResources[index] = {
+                        ...newResources[index],
+                        title: e.target.value,
+                      };
                       setData({ ...data, resources: newResources });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
                     placeholder="Resource title"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs text-gray-600">File Type</label>
+                  <label className="block text-xs text-gray-600">
+                    File Type
+                  </label>
                   <select
-                    value={resource.fileType || 'document'}
+                    value={resource.fileType || "document"}
                     onChange={(e) => {
                       const newResources = [...safeData.resources];
-                      newResources[index] = { ...newResources[index], fileType: e.target.value };
+                      newResources[index] = {
+                        ...newResources[index],
+                        fileType: e.target.value,
+                      };
                       setData({ ...data, resources: newResources });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
@@ -1108,10 +636,12 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                   </select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                 <div>
-                  <label className="block text-xs text-gray-600">Upload File</label>
+                  <label className="block text-xs text-gray-600">
+                    Upload File
+                  </label>
                   <input
                     type="file"
                     accept=".pdf,.doc,.docx,.txt"
@@ -1124,19 +654,24 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                     </div>
                   )}
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs text-gray-600">Or Resource URL</label>
+                  <label className="block text-xs text-gray-600">
+                    Or Resource URL
+                  </label>
                   <input
                     type="text"
-                    value={resource.fileUrl || ''}
+                    value={resource.fileUrl || ""}
                     onChange={(e) => {
                       const newResources = [...safeData.resources];
                       // Clear the file if URL is provided
                       if (e.target.value) {
                         delete newResources[index].file;
                       }
-                      newResources[index] = { ...newResources[index], fileUrl: e.target.value };
+                      newResources[index] = {
+                        ...newResources[index],
+                        fileUrl: e.target.value,
+                      };
                       setData({ ...data, resources: newResources });
                     }}
                     className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
@@ -1144,19 +679,24 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
                   />
                   {resource.fileUrl && !resource.file && (
                     <div className="mt-2 text-xs text-gray-500">
-                      Using URL: {resource.fileUrl.length > 40 ? `${resource.fileUrl.substring(0, 40)}...` : resource.fileUrl}
+                      Using URL:{" "}
+                      {resource.fileUrl.length > 40
+                        ? `${resource.fileUrl.substring(0, 40)}...`
+                        : resource.fileUrl}
                     </div>
                   )}
                 </div>
               </div>
             </div>
           ))}
-          
+
           {safeData.resources.length === 0 && (
-            <p className="text-gray-500 text-xs italic">No resources added yet.</p>
+            <p className="text-gray-500 text-xs italic">
+              No resources added yet.
+            </p>
           )}
         </div>
-        
+
         <div className="flex justify-end space-x-2">
           <button
             type="button"
@@ -1168,19 +708,37 @@ export const LessonForm = ({ data, setData, onSubmit, onCancel }: FormProps) => 
           </button>
           <button
             type="submit"
-            className={`bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-xs flex items-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-xs flex items-center ${
+              isLoading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
             disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
-                {data._id ? 'Updating...' : 'Creating...'}
+                {data._id ? "Updating..." : "Creating..."}
               </>
             ) : (
-              <>{data._id ? 'Update' : 'Create'}</>
+              <>{data._id ? "Update" : "Create"}</>
             )}
           </button>
         </div>

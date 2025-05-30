@@ -1,604 +1,26 @@
-
-
-
-// //src/ components/NotificatiomDropdown
-// "use client";
-
-// import { useState, useEffect } from 'react';
-// import { Bell, Check } from 'lucide-react';
-// import dayjs from 'dayjs';
-// import relativeTime from 'dayjs/plugin/relativeTime';
-// import notificationService, { Notification } from '../services/notification.service';
-// import PostDetailView from '../components/PostDetailView'; // Import PostDetailView
-
-// dayjs.extend(relativeTime);
-
-// interface NotificationDropdownProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-// }
-
-// const NotificationDropdown = ({ isOpen, onClose }: NotificationDropdownProps) => {
-//   const [notifications, setNotifications] = useState<Notification[]>([]);
-//   const [unreadCount, setUnreadCount] = useState<number>(0);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [selectedPost, setSelectedPost] = useState<any>(null);
-//   const [showPostDetail, setShowPostDetail] = useState<boolean>(false);
-
-//   useEffect(() => {
-//     if (isOpen) {
-//       fetchNotifications();
-//       fetchUnreadCount();
-//     }
-//   }, [isOpen]);
-
-//   // Close post detail when dropdown is closed
-//   useEffect(() => {
-//     if (!isOpen) {
-//       setShowPostDetail(false);
-//     }
-//   }, [isOpen]);
-
-//   const fetchNotifications = async () => {
-//     try {
-//       setLoading(true);
-//       const data = await notificationService.getNotifications();
-//       setNotifications(data);
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const fetchUnreadCount = async () => {
-//     try {
-//       const count = await notificationService.getUnreadCount();
-//       setUnreadCount(count);
-//     } catch (error) {
-//       console.error("Error fetching unread count:", error);
-//     }
-//   };
-
-//   const handleMarkAsRead = async (id: string) => {
-//     try {
-//       await notificationService.markAsRead(id);
-//       setNotifications(prevNotifications => 
-//         prevNotifications.map(notif => 
-//           notif._id === id ? { ...notif, read: true } : notif
-//         )
-//       );
-//       fetchUnreadCount();
-//     } catch (error) {
-//       console.error("Error marking notification as read:", error);
-//     }
-//   };
-
-//   const handleMarkAllAsRead = async () => {
-//     try {
-//       await notificationService.markAllAsRead();
-//       setNotifications(prevNotifications => 
-//         prevNotifications.map(notif => ({ ...notif, read: true }))
-//       );
-//       setUnreadCount(0);
-//     } catch (error) {
-//       console.error("Error marking all notifications as read:", error);
-//     }
-//   };
-
-//   const getNotificationText = (notification: Notification): string => {
-//     switch (notification.type) {
-//       case 'like':
-//         return `${notification.sender.name} liked your post "${notification.post.title}"`;
-//       case 'comment':
-//         return `${notification.sender.name} commented on your post "${notification.post.title}"`;
-//       case 'reply':
-//         return `${notification.sender.name} replied to your comment on "${notification.post.title}"`;
-//       default:
-//         return `New notification from ${notification.sender.name}`;
-//     }
-//   };
-
-//   const getTimestamp = (date: string): string => {
-//     try {
-//       return dayjs(date).fromNow();
-//     } catch (error) {
-//       return 'Unknown time';
-//     }
-//   };
-
-//   const handleNotificationClick = (notification: Notification) => {
-//     // Mark as read
-//     handleMarkAsRead(notification._id);
-    
-//     // Set the selected post and show the post detail modal
-//     if (notification.post) {
-//       setSelectedPost(notification.post);
-//       setShowPostDetail(true);
-//     }
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <>
-//       <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-10 max-h-96 overflow-y-auto">
-//         <div className="border-b border-gray-200 py-2 px-4 flex justify-between items-center">
-//           <h3 className="font-semibold text-gray-800">Notifications</h3>
-//           <div className="flex items-center">
-//             <button 
-//               onClick={handleMarkAllAsRead}
-//               className="text-xs text-pink-800 hover:text-pink-800 font-medium flex items-center"
-//             >
-//               <Check size={12} className="mr-1" />
-//               Mark all as read
-//             </button>
-//           </div>
-//         </div>
-        
-//         {loading ? (
-//           <div className="flex justify-center items-center py-4">
-//             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
-//           </div>
-//         ) : notifications.length > 0 ? (
-//           <>
-//             {notifications.map(notification => (
-//               <div 
-//                 key={notification._id} 
-//                 className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer ${!notification.read ? 'bg-pink-50' : ''}`}
-//                 onClick={() => handleNotificationClick(notification)}
-//               >
-//                 <div className="flex items-start">
-//                   <div className="flex-shrink-0">
-//                     <img 
-//                       src={notification.sender.avatar || "/api/placeholder/32/32"} 
-//                       alt={notification.sender.name}
-//                       className="h-8 w-8 rounded-full"
-//                     />
-//                   </div>
-//                   <div className="ml-3 w-0 flex-1">
-//                     <p className={`text-sm ${!notification.read ? 'font-medium' : ''} text-gray-900`}>
-//                       {getNotificationText(notification)}
-//                     </p>
-//                     <p className="mt-1 text-xs text-gray-500">
-//                       {getTimestamp(notification.createdAt)}
-//                     </p>
-//                   </div>
-//                 </div>
-//               </div>
-//             ))}
-//           </>
-//         ) : (
-//           <div className="py-4 px-4 text-center text-gray-500">
-//             No notifications
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Render PostDetailView */}
-//       {selectedPost && (
-//         <PostDetailView
-//           post={selectedPost}
-//           isOpen={showPostDetail}
-//           onClose={() => setShowPostDetail(false)}
-//         />
-//       )}
-
-//       {/* Backdrop for closing dropdown when clicking outside */}
-//       <div 
-//         className="fixed inset-0 h-full w-full z-0" 
-//         onClick={onClose}
-//       ></div>
-//     </>
-//   );
-// };
-
-// export default NotificationDropdown;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-
-// import { useState, useEffect } from 'react';
-// import { Bell, Check } from 'lucide-react';
-// import dayjs from 'dayjs';
-// import relativeTime from 'dayjs/plugin/relativeTime';
-// import notificationService, { Notification } from '../services/notification.service';
-// import PostDetailView from '../components/PostDetailView';
-// import { useAuth } from '../context/AuthContext';
-// import { initializeSocket, getSocket } from '../services/socket.service';
-
-// dayjs.extend(relativeTime);
-
-// interface NotificationDropdownProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onCountUpdate?: (count: number) => void;
-// }
-
-// const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDropdownProps) => {
-//   const [notifications, setNotifications] = useState<Notification[]>([]);
-//   const [unreadCount, setUnreadCount] = useState<number>(0);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [selectedPost, setSelectedPost] = useState<any>(null);
-//   const [showPostDetail, setShowPostDetail] = useState<boolean>(false);
-//   const [isConnected, setIsConnected] = useState(false);
-//   const { user } = useAuth();
-
-//   // Initialize socket connection and event listeners
-//   useEffect(() => {
-//     if (!isOpen || !user?._id) return;
-
-//     // Get or initialize socket
-//     let socket: any;
-//     try {
-//       socket = initializeSocket(user._id);
-      
-//       const onConnect = () => setIsConnected(true);
-//       const onDisconnect = () => setIsConnected(false);
-      
-//       socket.on('connect', onConnect);
-//       socket.on('disconnect', onDisconnect);
-      
-//       // Listen for notification updates
-//       socket.on('notificationRead', (data: { notificationId: string }) => {
-//         setNotifications(prev => 
-//           prev.map(n => 
-//             n._id === data.notificationId ? { ...n, read: true } : n
-//           )
-//         );
-//       });
-      
-//       socket.on('allNotificationsRead', () => {
-//         setNotifications(prev => 
-//           prev.map(n => ({ ...n, read: true }))
-//         );
-//         setUnreadCount(0);
-//         // Update parent component
-//         if (onCountUpdate) onCountUpdate(0);
-//       });
-      
-//       socket.on('unreadCountUpdate', ({ count }: { count: number }) => {
-//         setUnreadCount(count);
-//         // Update parent component
-//         if (onCountUpdate) onCountUpdate(count);
-//       });
-
-//       // Initial data fetch only when dropdown opens
-//       const fetchData = async () => {
-//         try {
-//           setLoading(true);
-//           const [notifs, count] = await Promise.all([
-//             notificationService.getNotifications(),
-//             notificationService.getUnreadCount()
-//           ]);
-//           setNotifications(notifs);
-//           setUnreadCount(count);
-//           // Update parent component
-//           if (onCountUpdate) onCountUpdate(count);
-//         } catch (error) {
-//           console.error("Error fetching notifications:", error);
-//         } finally {
-//           setLoading(false);
-//         }
-//       };
-
-//       fetchData();
-
-//       return () => {
-//         socket.off('connect', onConnect);
-//         socket.off('disconnect', onDisconnect);
-//         socket.off('notificationRead');
-//         socket.off('allNotificationsRead');
-//         socket.off('unreadCountUpdate');
-//       };
-//     } catch (error) {
-//       // Fallback to regular API fetch if socket fails
-//       fetchNotifications();
-//       fetchUnreadCount();
-//     }
-//   }, [isOpen, user?._id, onCountUpdate]);
-
-//   // Handle individual notification click
-//   const handleNotificationClick = async (notification: Notification) => {
-//     if (notification.read) {
-//       // If already read, just handle setting selected post
-//       if (notification.post) {
-//         setSelectedPost(notification.post);
-//         setShowPostDetail(true);
-//       }
-//       return;
-//     }
-    
-//     // Store previous state for rollback if needed
-//     const previousNotifications = [...notifications];
-//     const previousUnreadCount = unreadCount;
-    
-//     try {
-//       // Optimistic UI update first
-//       setNotifications(prev => 
-//         prev.map(n => 
-//           n._id === notification._id ? { ...n, read: true } : n
-//         )
-//       );
-      
-//       // Calculate new unread count
-//       const newUnreadCount = Math.max(0, unreadCount - 1);
-      
-//       // Optimistically update unread count
-//       setUnreadCount(newUnreadCount);
-      
-//       // Update parent component immediately
-//       if (onCountUpdate) onCountUpdate(newUnreadCount);
-      
-//       // Set selected post immediately if notification is about a post
-//       if (notification.post) {
-//         setSelectedPost(notification.post);
-//         setShowPostDetail(true);
-//       }
-      
-//       // Make API call in the background
-//       notificationService.markAsRead(notification._id)
-//         .then(() => {
-//           // Try to emit socket event if socket is available
-//           try {
-//             const socket = getSocket();
-//             if (socket && user) {
-//               socket.emit('notificationRead', { 
-//                 notificationId: notification._id, 
-//                 userId: user._id 
-//               });
-//             }
-//           } catch (err) {
-//             // Silent fail if socket is not available
-//           }
-//         })
-//         .catch((error) => {
-//           // Revert if API call fails
-//           console.error('Error marking notification as read:', error);
-          
-//           setNotifications(previousNotifications);
-//           setUnreadCount(previousUnreadCount);
-          
-//           // Update parent component with reverted count
-//           if (onCountUpdate) onCountUpdate(previousUnreadCount);
-//         });
-//     } catch (error) {
-//       // Revert if any synchronous code fails
-//       console.error('Error processing notification click:', error);
-      
-//       setNotifications(previousNotifications);
-//       setUnreadCount(previousUnreadCount);
-      
-//       // Update parent component with reverted count
-//       if (onCountUpdate) onCountUpdate(previousUnreadCount);
-//     }
-//   };
-
-//   const handleMarkAllAsRead = async () => {
-//     if (unreadCount === 0) return; // No need to do anything if all read
-    
-//     // Store previous state for rollback if needed
-//     const previousNotifications = [...notifications];
-//     const previousUnreadCount = unreadCount;
-    
-//     try {
-//       // Optimistic UI update immediately
-//       setNotifications(prev => 
-//         prev.map(n => ({ ...n, read: true }))
-//       );
-//       setUnreadCount(0);
-      
-//       // Update parent component immediately
-//       if (onCountUpdate) onCountUpdate(0);
-      
-//       // Make API call in the background
-//       notificationService.markAllAsRead()
-//         .then(() => {
-//           // Try to emit socket event if socket is available
-//           try {
-//             const socket = getSocket();
-//             if (socket && user) {
-//               socket.emit('allNotificationsRead', { 
-//                 userId: user._id 
-//               });
-//             }
-//           } catch (err) {
-//             // Silent fail if socket is not available
-//           }
-//         })
-//         .catch((error) => {
-//           // Revert if API call fails
-//           console.error('Error marking all notifications as read:', error);
-          
-//           setNotifications(previousNotifications);
-//           setUnreadCount(previousUnreadCount);
-          
-//           // Update parent component with reverted count
-//           if (onCountUpdate) onCountUpdate(previousUnreadCount);
-//         });
-//     } catch (error) {
-//       // Revert if any synchronous code fails
-//       console.error('Error processing mark all as read:', error);
-      
-//       setNotifications(previousNotifications);
-//       setUnreadCount(previousUnreadCount);
-      
-//       // Update parent component with reverted count
-//       if (onCountUpdate) onCountUpdate(previousUnreadCount);
-//     }
-//   };
-
-//   const fetchNotifications = async () => {
-//     try {
-//       setLoading(true);
-//       const data = await notificationService.getNotifications();
-//       setNotifications(data);
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const fetchUnreadCount = async () => {
-//     try {
-//       const count = await notificationService.getUnreadCount();
-//       setUnreadCount(count);
-//       // Update parent component
-//       if (onCountUpdate) onCountUpdate(count);
-//     } catch (error) {
-//       console.error("Error fetching unread count:", error);
-//     }
-//   };
-
-//   const getNotificationText = (notification: Notification): string => {
-//     switch (notification.type) {
-//       case 'like':
-//         return `${notification.sender.name} liked your post "${notification.post.title}"`;
-//       case 'comment':
-//         return `${notification.sender.name} commented on your post "${notification.post.title}"`;
-//       case 'reply':
-//         return `${notification.sender.name} replied to your comment on "${notification.post.title}"`;
-//       default:
-//         return `New notification from ${notification.sender.name}`;
-//     }
-//   };
-
-//   const getTimestamp = (date: string): string => {
-//     try {
-//       return dayjs(date).fromNow();
-//     } catch (error) {
-//       return 'Unknown time';
-//     }
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <>
-//       <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-10 max-h-96 overflow-y-auto">
-//         <div className="border-b border-gray-200 py-2 px-4 flex justify-between items-center">
-//           <h3 className="font-semibold text-gray-800">Notifications</h3>
-//           <div className="flex items-center">
-//             <button 
-//               onClick={handleMarkAllAsRead}
-//               disabled={unreadCount === 0}
-//               className={`text-xs ${unreadCount > 0 ? 'text-pink-800 hover:text-pink-800' : 'text-gray-400'} font-medium flex items-center`}
-//             >
-//               <Check size={12} className="mr-1" />
-//               Mark all as read
-//             </button>
-//           </div>
-//         </div>
-        
-//         {loading ? (
-//           <div className="flex justify-center items-center py-4">
-//             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
-//           </div>
-//         ) : notifications.length > 0 ? (
-//           <>
-//             {notifications.map(notification => (
-//               <div 
-//                 key={notification._id} 
-//                 className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer ${!notification.read ? 'bg-pink-50' : ''}`}
-//                 onClick={() => handleNotificationClick(notification)}
-//               >
-//                 <div className="flex items-start">
-//                   <div className="flex-shrink-0">
-//                     <img 
-//                       src={notification.sender.avatar || "/api/placeholder/32/32"} 
-//                       alt={notification.sender.name}
-//                       className="h-8 w-8 rounded-full"
-//                     />
-//                   </div>
-//                   <div className="ml-3 w-0 flex-1">
-//                     <p className={`text-sm ${!notification.read ? 'font-medium' : ''} text-gray-900`}>
-//                       {getNotificationText(notification)}
-//                     </p>
-//                     <p className="mt-1 text-xs text-gray-500">
-//                       {getTimestamp(notification.createdAt)}
-//                     </p>
-//                   </div>
-//                 </div>
-//               </div>
-//             ))}
-//           </>
-//         ) : (
-//           <div className="py-4 px-4 text-center text-gray-500">
-//             No notifications
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Render PostDetailView */}
-//       {selectedPost && (
-//         <PostDetailView
-//           post={selectedPost}
-//           isOpen={showPostDetail}
-//           onClose={() => setShowPostDetail(false)}
-//         />
-//       )}
-
-//       {/* Backdrop for closing dropdown when clicking outside */}
-//       <div 
-//         className="fixed inset-0 h-full w-full z-0" 
-//         onClick={onClose}
-//       ></div>
-//     </>
-//   );
-// };
-
-// export default NotificationDropdown;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, memo, lazy, Suspense } from 'react';
-import { Bell, Check } from 'lucide-react';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import notificationService, { Notification } from '../services/notification.service';
-import { useAuth } from '../context/AuthContext';
-import { initializeSocket, getSocket } from '../services/socket.service';
-import { Avatar } from '@mui/material';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  memo,
+  lazy,
+  Suspense,
+} from "react";
+import { Bell, Check } from "lucide-react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import notificationService, {
+  Notification,
+} from "../services/notification.service";
+import { useAuth } from "../context/AuthContext";
+import { initializeSocket, getSocket } from "../services/socket.service";
+import { Avatar } from "@mui/material";
 
 // Lazy load PostDetailView as it's not immediately needed
-const PostDetailView = lazy(() => import('../components/PostDetailView'));
+const PostDetailView = lazy(() => import("../components/PostDetailView"));
 
 dayjs.extend(relativeTime);
 
@@ -609,70 +31,76 @@ interface NotificationDropdownProps {
 }
 
 // Memoized notification item component to prevent unnecessary re-renders
-const NotificationItem = memo(({ 
-  notification, 
-  onClick 
-}: { 
-  notification: Notification; 
-  onClick: (notification: Notification) => void;
-}) => {
-  const handleClick = useCallback(() => {
-    onClick(notification);
-  }, [notification, onClick]);
+const NotificationItem = memo(
+  ({
+    notification,
+    onClick,
+  }: {
+    notification: Notification;
+    onClick: (notification: Notification) => void;
+  }) => {
+    const handleClick = useCallback(() => {
+      onClick(notification);
+    }, [notification, onClick]);
 
-  const notificationText = useMemo(() => {
-    switch (notification.type) {
-      case 'like':
-        return `${notification.sender.name} liked your post "${notification.post.title}"`;
-      case 'comment':
-        return `${notification.sender.name} commented on your post "${notification.post.title}"`;
-      case 'reply':
-        return `${notification.sender.name} replied to your comment on "${notification.post.title}"`;
-      default:
-        return `New notification from ${notification.sender.name}`;
-    }
-  }, [notification]);
+    const notificationText = useMemo(() => {
+      switch (notification.type) {
+        case "like":
+          return `${notification.sender.name} liked your post "${notification.post.title}"`;
+        case "comment":
+          return `${notification.sender.name} commented on your post "${notification.post.title}"`;
+        case "reply":
+          return `${notification.sender.name} replied to your comment on "${notification.post.title}"`;
+        default:
+          return `New notification from ${notification.sender.name}`;
+      }
+    }, [notification]);
 
-  const timestamp = useMemo(() => {
-    try {
-      return dayjs(notification.createdAt).fromNow();
-    } catch (error) {
-      return 'Unknown time';
-    }
-  }, [notification.createdAt]);
+    const timestamp = useMemo(() => {
+      try {
+        return dayjs(notification.createdAt).fromNow();
+      } catch (error) {
+        return "Unknown time";
+      }
+    }, [notification.createdAt]);
 
-  return (
-    <div 
-      className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors duration-150 ${!notification.read ? 'bg-pink-50' : ''}`}
-      onClick={handleClick}
-    >
-      <div className="flex items-start">
-        <div className="flex-shrink-0">
-           <Avatar
-            src={notification.sender.avatar}
-            alt={notification.sender.name?.charAt(0).toUpperCase() || "U"}
-            className="h-full w-full bg-gray-300"
-          />
-        </div>
-        <div className="ml-3 w-0 flex-1">
-          <p className={`text-sm ${!notification.read ? 'font-medium' : ''} text-gray-900 line-clamp-2`}>
-            {notificationText}
-          </p>
-          <p className="mt-1 text-xs text-gray-500">
-            {timestamp}
-          </p>
-        </div>
-        {!notification.read && (
-          <div className="flex-shrink-0 ml-2">
-            <div className="h-2 w-2 bg-pink-500 rounded-full"></div>
+    return (
+      <div
+        className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors duration-150 ${
+          !notification.read ? "bg-pink-50" : ""
+        }`}
+        onClick={handleClick}
+      >
+        <div className="flex items-start">
+          <div className="flex-shrink-0">
+            <Avatar
+              src={notification.sender.avatar}
+              alt={notification.sender.name?.charAt(0).toUpperCase() || "U"}
+              className="h-full w-full bg-gray-300"
+            />
           </div>
-        )}
+          <div className="ml-3 w-0 flex-1">
+            <p
+              className={`text-sm ${
+                !notification.read ? "font-medium" : ""
+              } text-gray-900 line-clamp-2`}
+            >
+              {notificationText}
+            </p>
+            <p className="mt-1 text-xs text-gray-500">{timestamp}</p>
+          </div>
+          {!notification.read && (
+            <div className="flex-shrink-0 ml-2">
+              <div className="h-2 w-2 bg-pink-500 rounded-full"></div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
-NotificationItem.displayName = 'NotificationItem';
+NotificationItem.displayName = "NotificationItem";
 
 // Loading component for PostDetailView
 const PostDetailLoading = () => (
@@ -684,7 +112,11 @@ const PostDetailLoading = () => (
   </div>
 );
 
-const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDropdownProps) => {
+const NotificationDropdown = ({
+  isOpen,
+  onClose,
+  onCountUpdate,
+}: NotificationDropdownProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -695,28 +127,29 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
   const { user } = useAuth();
 
   // Memoize socket event handlers to prevent recreation on every render
-  const socketHandlers = useMemo(() => ({
-    onConnect: () => setIsConnected(true),
-    onDisconnect: () => setIsConnected(false),
-    onNotificationRead: (data: { notificationId: string }) => {
-      setNotifications(prev => 
-        prev.map(n => 
-          n._id === data.notificationId ? { ...n, read: true } : n
-        )
-      );
-    },
-    onAllNotificationsRead: () => {
-      setNotifications(prev => 
-        prev.map(n => ({ ...n, read: true }))
-      );
-      setUnreadCount(0);
-      onCountUpdate?.(0);
-    },
-    onUnreadCountUpdate: ({ count }: { count: number }) => {
-      setUnreadCount(count);
-      onCountUpdate?.(count);
-    }
-  }), [onCountUpdate]);
+  const socketHandlers = useMemo(
+    () => ({
+      onConnect: () => setIsConnected(true),
+      onDisconnect: () => setIsConnected(false),
+      onNotificationRead: (data: { notificationId: string }) => {
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n._id === data.notificationId ? { ...n, read: true } : n
+          )
+        );
+      },
+      onAllNotificationsRead: () => {
+        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        setUnreadCount(0);
+        onCountUpdate?.(0);
+      },
+      onUnreadCountUpdate: ({ count }: { count: number }) => {
+        setUnreadCount(count);
+        onCountUpdate?.(count);
+      },
+    }),
+    [onCountUpdate]
+  );
 
   // Initialize socket connection and event listeners
   useEffect(() => {
@@ -729,21 +162,24 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
       try {
         setError(null);
         socket = initializeSocket(user._id);
-        
+
         // Set up socket event listeners
-        socket.on('connect', socketHandlers.onConnect);
-        socket.on('disconnect', socketHandlers.onDisconnect);
-        socket.on('notificationRead', socketHandlers.onNotificationRead);
-        socket.on('allNotificationsRead', socketHandlers.onAllNotificationsRead);
-        socket.on('unreadCountUpdate', socketHandlers.onUnreadCountUpdate);
+        socket.on("connect", socketHandlers.onConnect);
+        socket.on("disconnect", socketHandlers.onDisconnect);
+        socket.on("notificationRead", socketHandlers.onNotificationRead);
+        socket.on(
+          "allNotificationsRead",
+          socketHandlers.onAllNotificationsRead
+        );
+        socket.on("unreadCountUpdate", socketHandlers.onUnreadCountUpdate);
 
         // Fetch initial data with Promise.all for better performance
         setLoading(true);
         const [notifs, count] = await Promise.all([
           notificationService.getNotifications(),
-          notificationService.getUnreadCount()
+          notificationService.getUnreadCount(),
         ]);
-        
+
         if (mounted) {
           setNotifications(notifs);
           setUnreadCount(count);
@@ -757,9 +193,9 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
           try {
             const [notifs, count] = await Promise.all([
               notificationService.getNotifications(),
-              notificationService.getUnreadCount()
+              notificationService.getUnreadCount(),
             ]);
-            
+
             if (mounted) {
               setNotifications(notifs);
               setUnreadCount(count);
@@ -782,134 +218,140 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
     return () => {
       mounted = false;
       if (socket) {
-        socket.off('connect', socketHandlers.onConnect);
-        socket.off('disconnect', socketHandlers.onDisconnect);
-        socket.off('notificationRead', socketHandlers.onNotificationRead);
-        socket.off('allNotificationsRead', socketHandlers.onAllNotificationsRead);
-        socket.off('unreadCountUpdate', socketHandlers.onUnreadCountUpdate);
+        socket.off("connect", socketHandlers.onConnect);
+        socket.off("disconnect", socketHandlers.onDisconnect);
+        socket.off("notificationRead", socketHandlers.onNotificationRead);
+        socket.off(
+          "allNotificationsRead",
+          socketHandlers.onAllNotificationsRead
+        );
+        socket.off("unreadCountUpdate", socketHandlers.onUnreadCountUpdate);
       }
     };
   }, [isOpen, user?._id, socketHandlers]);
 
   // Optimized notification click handler with better error handling
-  const handleNotificationClick = useCallback(async (notification: Notification) => {
-    if (notification.read) {
-      // If already read, just handle setting selected post
-      if (notification.post) {
-        setSelectedPost(notification.post);
-        setShowPostDetail(true);
+  const handleNotificationClick = useCallback(
+    async (notification: Notification) => {
+      if (notification.read) {
+        // If already read, just handle setting selected post
+        if (notification.post) {
+          setSelectedPost(notification.post);
+          setShowPostDetail(true);
+        }
+        return;
       }
-      return;
-    }
-    
-    // Store previous state for rollback if needed
-    const previousNotifications = [...notifications];
-    const previousUnreadCount = unreadCount;
-    
-    try {
-      // Optimistic UI update first
-      setNotifications(prev => 
-        prev.map(n => 
-          n._id === notification._id ? { ...n, read: true } : n
-        )
-      );
-      
-      // Calculate new unread count
-      const newUnreadCount = Math.max(0, unreadCount - 1);
-      setUnreadCount(newUnreadCount);
-      onCountUpdate?.(newUnreadCount);
-      
-      // Set selected post immediately if notification is about a post
-      if (notification.post) {
-        setSelectedPost(notification.post);
-        setShowPostDetail(true);
-      }
-      
-      // Make API call in the background with timeout
-      const markAsReadPromise = Promise.race([
-        notificationService.markAsRead(notification._id),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout')), 5000)
-        )
-      ]);
-      
-      markAsReadPromise
-        .then(() => {
-          // Try to emit socket event if socket is available
-          try {
-            const socket = getSocket();
-            if (socket && user) {
-              socket.emit('notificationRead', { 
-                notificationId: notification._id, 
-                userId: user._id 
-              });
+
+      // Store previous state for rollback if needed
+      const previousNotifications = [...notifications];
+      const previousUnreadCount = unreadCount;
+
+      try {
+        // Optimistic UI update first
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n._id === notification._id ? { ...n, read: true } : n
+          )
+        );
+
+        // Calculate new unread count
+        const newUnreadCount = Math.max(0, unreadCount - 1);
+        setUnreadCount(newUnreadCount);
+        onCountUpdate?.(newUnreadCount);
+
+        // Set selected post immediately if notification is about a post
+        if (notification.post) {
+          setSelectedPost(notification.post);
+          setShowPostDetail(true);
+        }
+
+        // Make API call in the background with timeout
+        const markAsReadPromise = Promise.race([
+          notificationService.markAsRead(notification._id),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Request timeout")), 5000)
+          ),
+        ]);
+
+        markAsReadPromise
+          .then(() => {
+            // Try to emit socket event if socket is available
+            try {
+              const socket = getSocket();
+              if (socket && user) {
+                socket.emit("notificationRead", {
+                  notificationId: notification._id,
+                  userId: user._id,
+                });
+              }
+            } catch (err) {
+              // Silent fail if socket is not available
+              console.warn("Socket emission failed:", err);
             }
-          } catch (err) {
-            // Silent fail if socket is not available
-            console.warn('Socket emission failed:', err);
-          }
-        })
-        .catch((error) => {
-          // Revert if API call fails
-          console.error('Error marking notification as read:', error);
-          
-          setNotifications(previousNotifications);
-          setUnreadCount(previousUnreadCount);
-          onCountUpdate?.(previousUnreadCount);
-        });
-    } catch (error) {
-      // Revert if any synchronous code fails
-      console.error('Error processing notification click:', error);
-      
-      setNotifications(previousNotifications);
-      setUnreadCount(previousUnreadCount);
-      onCountUpdate?.(previousUnreadCount);
-    }
-  }, [notifications, unreadCount, onCountUpdate, user]);
+          })
+          .catch((error) => {
+            // Revert if API call fails
+            console.error("Error marking notification as read:", error);
+
+            setNotifications(previousNotifications);
+            setUnreadCount(previousUnreadCount);
+            onCountUpdate?.(previousUnreadCount);
+          });
+      } catch (error) {
+        // Revert if any synchronous code fails
+        console.error("Error processing notification click:", error);
+
+        setNotifications(previousNotifications);
+        setUnreadCount(previousUnreadCount);
+        onCountUpdate?.(previousUnreadCount);
+      }
+    },
+    [notifications, unreadCount, onCountUpdate, user]
+  );
 
   // Optimized mark all as read handler
   const handleMarkAllAsRead = useCallback(async () => {
     if (unreadCount === 0) return;
-    
+
     const previousNotifications = [...notifications];
     const previousUnreadCount = unreadCount;
-    
+
     try {
       // Optimistic UI update immediately
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
       onCountUpdate?.(0);
-      
+
       // Make API call with timeout
       const markAllAsReadPromise = Promise.race([
         notificationService.markAllAsRead(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout')), 5000)
-        )
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Request timeout")), 5000)
+        ),
       ]);
-      
+
       markAllAsReadPromise
         .then(() => {
           try {
             const socket = getSocket();
             if (socket && user) {
-              socket.emit('allNotificationsRead', { userId: user._id });
+              socket.emit("allNotificationsRead", { userId: user._id });
             }
           } catch (err) {
-            console.warn('Socket emission failed:', err);
+            console.warn("Socket emission failed:", err);
           }
         })
         .catch((error) => {
-          console.error('Error marking all notifications as read:', error);
-          
+          console.error("Error marking all notifications as read:", error);
+
           // Revert on error
           setNotifications(previousNotifications);
           setUnreadCount(previousUnreadCount);
           onCountUpdate?.(previousUnreadCount);
         });
     } catch (error) {
-      console.error('Error processing mark all as read:', error);
-      
+      console.error("Error processing mark all as read:", error);
+
       setNotifications(previousNotifications);
       setUnreadCount(previousUnreadCount);
       onCountUpdate?.(previousUnreadCount);
@@ -939,13 +381,13 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
                 </span>
               )}
             </h3>
-            <button 
+            <button
               onClick={handleMarkAllAsRead}
               disabled={unreadCount === 0 || loading}
               className={`text-xs font-medium flex items-center transition-colors duration-150 ${
                 unreadCount > 0 && !loading
-                  ? 'text-pink-600 hover:text-pink-700' 
-                  : 'text-gray-400 cursor-not-allowed'
+                  ? "text-pink-600 hover:text-pink-700"
+                  : "text-gray-400 cursor-not-allowed"
               }`}
             >
               <Check size={12} className="mr-1" />
@@ -953,26 +395,28 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
             </button>
           </div>
         </div>
-        
+
         {/* Content */}
         <div className="overflow-y-auto max-h-80">
           {loading ? (
             <div className="flex flex-col justify-center items-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
-              <p className="mt-2 text-sm text-gray-500">Loading notifications...</p>
+              <p className="mt-2 text-sm text-gray-500">
+                Loading notifications...
+              </p>
             </div>
           ) : error ? (
             <div className="py-8 px-4 text-center">
               <p className="text-red-500 text-sm">{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
+              <button
+                onClick={() => window.location.reload()}
                 className="mt-2 text-pink-600 hover:text-pink-700 text-xs underline"
               >
                 Retry
               </button>
             </div>
           ) : notifications.length > 0 ? (
-            notifications.map(notification => (
+            notifications.map((notification) => (
               <NotificationItem
                 key={notification._id}
                 notification={notification}
@@ -1000,8 +444,8 @@ const NotificationDropdown = ({ isOpen, onClose, onCountUpdate }: NotificationDr
       )}
 
       {/* Backdrop for closing dropdown when clicking outside */}
-      <div 
-        className="fixed inset-0 h-full w-full z-40" 
+      <div
+        className="fixed inset-0 h-full w-full z-40"
         onClick={onClose}
         aria-label="Close notifications"
       />
