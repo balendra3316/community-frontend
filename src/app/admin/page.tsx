@@ -2021,8 +2021,8 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from './_components/AdminAuthContext';
 import { courseService, Course, CourseDetails } from './_components/courseManagementService';
-import CourseList from './components/CourseList';
-import CourseDetailView from './components/CourseDetailView';
+import CourseList from './(components)/CourseList';
+import CourseDetailView from './(components)/CourseDetailView';
 
 export default function AdminDashboard() {
   const { admin } = useAdminAuth();

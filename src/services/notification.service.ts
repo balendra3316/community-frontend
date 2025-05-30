@@ -43,9 +43,17 @@ class NotificationService {
   // Mark a notification as read
   async markAsRead(notificationId: string): Promise<void> {
     try {
-      await axios.put(`${API_URL}/notifications/${notificationId}`, {}, {
-        withCredentials: true
-      });
+      await axios.put(
+        `${API_URL}/notifications/${notificationId}`, 
+        {}, 
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
     } catch (error) {
       console.error('Error marking notification as read:', error);
       throw error;
@@ -55,9 +63,17 @@ class NotificationService {
   // Mark all notifications as read
   async markAllAsRead(): Promise<void> {
     try {
-      await axios.put(`${API_URL}/notifications`, {}, {
-        withCredentials: true
-      });
+      await axios.put(
+        `${API_URL}/notifications`, 
+        {}, 
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
       throw error;

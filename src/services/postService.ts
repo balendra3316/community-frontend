@@ -32,6 +32,7 @@ export interface Post {
   likes: string[];
   poll?: Poll;
   isPinned: boolean;
+  lastComment: string
   createdAt: string;
   updatedAt: string;
 }
@@ -42,17 +43,18 @@ export interface PostsResponse {
   currentPage: number;
 }
 
-// Post APIs
-export const fetchPosts = async (page = 1, limit = 10) => {
+// Post API
+export const fetchPosts = async (page = 1, limit = 10, filter = 'default') => {
   try {
-    const response = await axios.get<PostsResponse>(`${API_URL}/posts?page=${page}&limit=${limit}`);
+    const response = await axios.get<PostsResponse>(
+      `${API_URL}/posts?page=${page}&limit=${limit}&filter=${filter}`
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching posts:', error);
     throw error;
   }
 };
-
 export const fetchPostById = async (id: string) => {
   try {
     const response = await axios.get<{ post: Post; comments: any[] }>(`${API_URL}/posts/${id}`);

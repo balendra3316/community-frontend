@@ -235,15 +235,13 @@
 
 
 
-
-
-
 "use client"
 import { useRef, useEffect, useState } from 'react';
-import { ThumbsUp, MessageSquare, BarChart2 } from 'lucide-react';
+import { ThumbsUp, MessageSquare, BarChart2, User } from 'lucide-react';
 import { Post } from '../../services/postService';
 import { useAuth } from '../../context/AuthContext';
 import { usePostState } from '../../types/PostStateContext';
+import { Avatar } from '@mui/material';
 
 
 interface PostContentProps {
@@ -273,20 +271,29 @@ export default function PostContent({
   const [showFullContent, setShowFullContent] = useState(false);
   const contentRef = useRef<HTMLParagraphElement>(null);
   const [contentOverflows, setContentOverflows] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageAspectRatio, setImageAspectRatio] = useState(1);
 
 
-    // Get values from context or fallback to props
-    const isLiked = likedPosts[post._id] ?? isPostLikedByUser;
-    const currentLikeCount = likeCounts[post._id] ?? likes.length;
+  // Get values from context or fallback to props
+  const isLiked = likedPosts[post._id] ?? isPostLikedByUser;
+  const currentLikeCount = likeCounts[post._id] ?? likes.length;
   
-    useEffect(() => {
-      if (contentRef.current) {
-        const lineHeight = parseInt(window.getComputedStyle(contentRef.current).lineHeight);
-        const height = contentRef.current.scrollHeight;
-        const lines = height / lineHeight;
-        setContentOverflows(lines > 4);
-      }
-    }, [post.content]);
+  useEffect(() => {
+    if (contentRef.current) {
+      const lineHeight = parseInt(window.getComputedStyle(contentRef.current).lineHeight);
+      const height = contentRef.current.scrollHeight;
+      const lines = height / lineHeight;
+      setContentOverflows(lines > 4);
+    }
+  }, [post.content]);
+
+  // Handle image loading and get aspect ratio
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.target as HTMLImageElement;
+    setImageAspectRatio(img.naturalWidth / img.naturalHeight);
+    setImageLoaded(true);
+  };
 
   const toggleContentDisplay = () => {
     setShowFullContent(!showFullContent);
@@ -313,7 +320,7 @@ export default function PostContent({
     if (match && match[1]) {
       const videoId = match[1];
       return (
-        <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mb-4">
+        <div className="w-full h-[400px] rounded-lg overflow-hidden mb-4">
           <iframe
             src={`https://www.youtube.com/embed/${videoId}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -387,13 +394,13 @@ export default function PostContent({
   return (
     <div className="p-4 border-b">
       <div className="flex items-center mb-3">
-        <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden">
-          <img
-            src={post.author.avatar}
-            alt={post.author.name}
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
+    <Avatar
+      src={post.author.avatar }
+      alt={post.author.name?.charAt(0).toUpperCase()}
+      className="h-full w-full bg-gray-300"
+    />
+  </div>
         <div className="ml-3 flex-1">
           <div className="flex items-center">
             <span className="font-medium">{post.author.name}</span>
@@ -435,11 +442,16 @@ export default function PostContent({
       </div>
       
       {post.image && (
-        <div className="mb-4 rounded-lg overflow-hidden">
+        <div className="mb-4 rounded-lg overflow-hidden max-w-full">
           <img
             src={post.image}
             alt="Post image"
-            className="w-full object-cover"
+            className="w-full max-h-96 object-contain"
+            onLoad={handleImageLoad}
+            style={{
+              maxWidth: '100%',
+              maxHeight: imageAspectRatio < 1 ? '460px' : '360px'
+            }}
           />
         </div>
       )}
@@ -450,7 +462,7 @@ export default function PostContent({
       {post.poll && renderPoll()}
 
       <div className="flex items-center text-gray-500 text-sm mt-2 pt-2 border-t">
-      <button 
+        <button 
           onClick={handleLikePost}
           className={`flex items-center mr-6 ${isLiked ? 'text-blue-600' : ''}`}
         >

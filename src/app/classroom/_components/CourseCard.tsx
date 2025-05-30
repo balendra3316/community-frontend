@@ -10,11 +10,14 @@ interface CourseCardProps {
   
   const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     // Default progress to 0% 
-    const progress = course.progress?.completionPercentage || 0;
+    const progress = course.progress?.completionPercentage || 0
     
     return (
       <Link href={`/classroom/${course._id}`}>
-        <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+       <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col" style={{
+  boxShadow: "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px",
+  border: "1px solid rgb(228, 228, 228)"
+}}>
           {/* Course Image */}
           <div className="relative w-full h-48 bg-gray-200">
             {course.coverImage ? (

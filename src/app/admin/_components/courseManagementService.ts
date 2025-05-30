@@ -20,7 +20,7 @@ export interface Section {
   _id: string;
   title: string;
   courseId: string;
-  order: number;
+  order?: number;
   isPublished: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -125,11 +125,11 @@ const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
 
 
 
-// Course API service
+// Course API servic
 export const courseService = {
   // Get all courses
   async getAllCourses(): Promise<Course[]> {
-    const response = await fetch(`${API_URL}/courses`, {
+    const response = await fetch(`${API_URL}/admin/courses`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export const courseService = {
 
   // Get course details
   async getCourseDetails(courseId: string): Promise<CourseDetails> {
-    const response = await fetch(`${API_URL}/courses/${courseId}`, {
+    const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

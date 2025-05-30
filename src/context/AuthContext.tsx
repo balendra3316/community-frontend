@@ -248,7 +248,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [])
 
   return (
     <AuthContext.Provider value={{ 
@@ -271,4 +271,16 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+
+
+
+
+
+export const getToken = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token');
+  }
+  return null;
 };

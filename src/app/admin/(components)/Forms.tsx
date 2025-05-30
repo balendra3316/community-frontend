@@ -158,8 +158,7 @@ export const CourseForm = ({ data, setData, onSubmit, onCancel, isLoading = fals
 
 
 
-
-export const SectionForm = ({ data, setData, onSubmit, onCancel }: FormProps) => (
+export const SectionForm = ({ data, setData, onSubmit, onCancel, isLoading }: FormProps & { isLoading?: boolean }) => (
   <div className="bg-gray-100 p-4 rounded mb-4">
     <h4 className="text-md font-medium mb-2">{data._id ? 'Edit' : 'Create New'} Section</h4>
     <form onSubmit={onSubmit}>
@@ -173,19 +172,32 @@ export const SectionForm = ({ data, setData, onSubmit, onCancel }: FormProps) =>
           required
         />
       </div>
+      <div className="mb-3">
+        <label className="block text-sm font-medium text-gray-700">Order</label>
+        <input
+          type="number"
+          value={data.order}
+          onChange={(e) => setData({...data, order: parseInt(e.target.value, 10)})}
+          className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
+          min="0"
+          required
+        />
+      </div>
       <div className="flex justify-end space-x-2">
         <button
           type="button"
           onClick={onCancel}
           className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+          disabled={isLoading}
         >
           Cancel
         </button>
         <button
           type="submit"
           className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
+          disabled={isLoading}
         >
-          {data._id ? 'Update' : 'Create'}
+          {isLoading ? 'Saving...' : (data._id ? 'Update' : 'Create')}
         </button>
       </div>
     </form>
