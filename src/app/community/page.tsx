@@ -1,6 +1,6 @@
 
 
-// src/app/community/page.tsx
+
 
 "use client";
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
@@ -11,7 +11,7 @@ import { fetchPosts, Post as PostType } from "../../services/postService";
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { initializeSocket, getSocket } from "../../services/socket.service";
 
-// Static imports for critical components
+
 import NavBar from "../../components/Navbar";
 import CreatePostSection from "./_components/CreatePostSection";
 import CategoryFilter from "./_components/CategoryFilter";
@@ -19,7 +19,7 @@ import PostsList from "./_components/PostsList";
 import LoadingIndicator from "./_components/LoadingIndicator";
 import NotificationSnackbar from "./_components/NotificationSnackbar";
 
-// Dynamic imports for non-critical components
+
 const CreatePostModal = dynamic(() => import("../../components/CreatePostModal"), {
   loading: () => <div className="animate-pulse">Loading...</div>,
   ssr: false
@@ -35,7 +35,7 @@ const CommunityInfoSidebar = dynamic(() => import("../../components/CommunityInf
   ssr: false
 });
 
-// Custom hooks for better performance
+
 function usePosts(currentFilter: string) {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,6 @@ function usePosts(currentFilter: string) {
       setError(null);
     } catch (err) {
       setError("Failed to load posts. Please try again later.");
-      console.error("Error loading posts:", err);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -116,7 +115,7 @@ export default function Community() {
   const [showPostDetail, setShowPostDetail] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("default");
 
-  // Custom hooks
+
   const { 
     posts, 
     setPosts, 
@@ -138,69 +137,62 @@ export default function Community() {
     showNotification
   } = useNotifications();
 
-  // Socket initialization and event listeners
+
   useEffect(() => {
     if (user?._id) {
       try {
         const socket = initializeSocket(user._id);
 
-        // Listen for user-specific post creation events
+
         const handleUserPostCreated = (data: { post: PostType; message: string }) => {
-          console.log('User post created:', data);
-          
-          // Add the new post to the beginning of the posts array
           setPosts(prevPosts => [data.post, ...prevPosts]);
           
-          // Show success notification
+
           showNotification(data.message, "success");
           
-          // Stop the creating post loading state
+
           setIsCreatingPost(false);
         };
 
-        // Listen for user-specific post deletion events
+
         const handlePostDeleted = (data: { postId: string; message: string }) => {
-          console.log('User post deleted:', data);
-          
-          // Remove the deleted post from the posts array
           setPosts(prevPosts => prevPosts.filter(post => post._id !== data.postId));
           
-          // Show success notification
+
           showNotification(data.message, "success");
           
-          // Close post detail view if the deleted post was being viewed
+
           if (selectedPost && selectedPost._id === data.postId) {
             setShowPostDetail(false);
             setSelectedPost(null);
           }
         };
 
-        // Add event listeners
+
         socket.on('userPostCreated', handleUserPostCreated);
         socket.on('postDeleted', handlePostDeleted);
 
-        // Cleanup function
+
         return () => {
           socket.off('userPostCreated', handleUserPostCreated);
           socket.off('postDeleted', handlePostDeleted);
         };
       } catch (error) {
-        console.error('Socket initialization error:', error);
       }
     }
   }, [user?._id, setPosts, showNotification, selectedPost, setIsCreatingPost]);
 
-  // Memoized filtered posts
+
   const filteredPosts = useMemo(() => {
     return selectedCategory === "All" 
       ? posts 
       : posts.filter(post => post.tags && post.tags.includes(selectedCategory));
   }, [posts, selectedCategory]);
 
-  // Memoized event handlers
+
   const handlePostCreated = useCallback(() => {
-    // The socket event will handle adding the post and showing notification
-    // Just close the modal and stop the loading state
+
+
     setShowModal(false);
     setIsCreatingPost(false);
   }, []);
@@ -223,8 +215,8 @@ export default function Community() {
   }, [setPosts]);
 
   const handlePostDelete = useCallback((deletedPostId: string) => {
-    // The socket event will handle removing the post
-    // This is kept as fallback for manual deletion from UI
+
+
     setPosts(prevPosts => prevPosts.filter((p) => p._id !== deletedPostId));
   }, [setPosts]);
 

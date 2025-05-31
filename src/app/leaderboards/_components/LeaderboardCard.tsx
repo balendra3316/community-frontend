@@ -1,7 +1,7 @@
 
 
 
-// src/components/leaderboard/LeaderboardCard.tsx
+
 import React, { memo, useMemo } from 'react';
 import { Card, CardContent, Typography, Box, Skeleton } from '@mui/material';
 import { LeaderboardUser } from '../../../services/leaderboard.service';
@@ -15,7 +15,7 @@ interface LeaderboardCardProps {
   loading: boolean;
 }
 
-// Memoized skeleton item
+
 const SkeletonItem = memo(() => (
   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
     <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
@@ -26,7 +26,7 @@ const SkeletonItem = memo(() => (
   </Box>
 ));
 
-// Virtualized row component for better performance with large lists
+
 const Row = memo(({ index, style, data }: { index: number; style: React.CSSProperties; data: LeaderboardUser[] }) => (
   <div style={style}>
     <React.Suspense fallback={<SkeletonItem />}>
@@ -36,13 +36,13 @@ const Row = memo(({ index, style, data }: { index: number; style: React.CSSPrope
 ));
 
 const LeaderboardCard: React.FC<LeaderboardCardProps> = memo(({ title, users, loading }) => {
-  // Memoize skeleton items
+
   const skeletonItems = useMemo(() => 
     Array.from(new Array(8)).map((_, index) => <SkeletonItem key={index} />),
     []
   );
 
-  // Use virtualization for large lists (>50 items)
+
   const shouldVirtualize = users.length > 50;
 
   return (

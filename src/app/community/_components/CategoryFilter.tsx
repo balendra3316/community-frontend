@@ -1,4 +1,4 @@
-// src/app/community/_components/CategoryFilter.tsx
+
 
 import React, { useState } from "react";
 import { Filter } from "lucide-react";

@@ -1,4 +1,4 @@
-// src/app/_components/TestimonialsSection.tsx
+
 "use client"
 import { useState } from 'react';
 import { Avatar, Box, Card, CardContent, Container, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material';

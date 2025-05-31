@@ -1,4 +1,4 @@
-// src/app/_components/LoadingSpinner.tsx
+
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { memo } from 'react';
 
@@ -20,7 +20,7 @@ const LoadingSpinner = memo(({
         height: '100vh',
         flexDirection: 'column',
         gap: 2,
-        // Optimize for better performance
+
         contain: 'layout style paint',
       }}
       role="status"
@@ -30,7 +30,7 @@ const LoadingSpinner = memo(({
         size={size}
         sx={{
           color: '#FFD700',
-          // Use CSS custom properties for better performance
+
           '& .MuiCircularProgress-circle': {
             strokeLinecap: 'round',
           },
@@ -43,7 +43,7 @@ const LoadingSpinner = memo(({
         sx={{ 
           textAlign: 'center',
           opacity: 0.8,
-          // Prevent layout shift
+
           minHeight: '1.5rem',
         }}
       >

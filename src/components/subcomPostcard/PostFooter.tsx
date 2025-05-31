@@ -1,4 +1,4 @@
-// components/PostFooter.tsx
+
 import React, { memo } from "react";
 import { ThumbsUp, MessageSquare, Clock } from "lucide-react";
 

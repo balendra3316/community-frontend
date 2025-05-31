@@ -1,4 +1,4 @@
-// components/NavBar/index.tsx (Main NavBar component)
+
 "use client";
 import {
   useState,
@@ -14,16 +14,16 @@ import { useAuth } from "../context/AuthContext";
 import notificationService from "../services/notification.service";
 import { initializeSocket } from "../services/socket.service";
 
-// Static imports for critical components
+
 import Logo from "./subcomNavbar/Logo";
 import TabSwitcher from "./subcomNavbar/TabSwitcher";
 import NotificationButton from "./subcomNavbar/NotificationButton";
 import ProfileMenu from "./subcomNavbar/ProfileMenu";
 
-// Lazy load notification dropdown (non-critical)
+
 const NotificationDropdown = lazy(() => import("./NotificationDropdown"));
 
-// Loading component for notification dropdown
+
 const NotificationLoading = () => (
   <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-4">
     <div className="animate-pulse space-y-3">
@@ -39,11 +39,11 @@ const NavBar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const { user, logout } = useAuth();
 
-  // For MUI Menu
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  // Memoize navigation items to prevent unnecessary re-renders
+
   const navItems = useMemo(
     () => [
       { name: "Community", path: "/community" },
@@ -53,7 +53,7 @@ const NavBar = () => {
     []
   );
 
-  // Only show Community, Classroom, and Leaderboards in the tab switcher
+
   const tabItems = useMemo(
     () =>
       navItems.filter((item) =>
@@ -62,7 +62,7 @@ const NavBar = () => {
     [navItems]
   );
 
-  // Fetch unread notification count with optimized socket handling
+
   useEffect(() => {
     if (!user) return;
 
@@ -71,10 +71,10 @@ const NavBar = () => {
 
     const initializeNotifications = async () => {
       try {
-        // Initialize socket connection
+
         socket = initializeSocket(user._id);
 
-        // Listen for unread count updates
+
         const handleUnreadCountUpdate = ({ count }: { count: number }) => {
           if (mounted) {
             setUnreadCount(count);
@@ -83,26 +83,21 @@ const NavBar = () => {
 
         socket.on("unreadCountUpdate", handleUnreadCountUpdate);
 
-        // Initial fetch of unread count
+
         try {
           const count = await notificationService.getUnreadCount();
           if (mounted) {
             setUnreadCount(count);
           }
         } catch (error) {
-          console.error("Error fetching unread count:", error);
         }
       } catch (error) {
-        console.error("Error initializing socket in NavBar:", error);
-
-        // Fallback to direct API call if socket initialization fails
         try {
           const count = await notificationService.getUnreadCount();
           if (mounted) {
             setUnreadCount(count);
           }
         } catch (apiError) {
-          console.error("Error fetching unread count:", apiError);
         }
       }
     };
@@ -111,11 +106,11 @@ const NavBar = () => {
 
     return () => {
       mounted = false;
-      // Clean up socket listeners
+
       if (socket) {
         socket.off("unreadCountUpdate");
       }
-      // Don't disconnect socket here - keep it alive for the app lifetime
+
     };
   }, [user]);
 
@@ -140,7 +135,7 @@ const NavBar = () => {
     setShowNotifications(false);
   }, []);
 
-  // Handle notification count update from dropdown
+
   const handleNotificationCountUpdate = useCallback((count: number) => {
     setUnreadCount(count);
   }, []);

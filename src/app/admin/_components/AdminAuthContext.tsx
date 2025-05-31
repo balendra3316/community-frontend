@@ -32,20 +32,20 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if we have admin info in localStorage
+
     const storedAdmin = localStorage.getItem('adminInfo');
     
     if (storedAdmin) {
       setAdmin(JSON.parse(storedAdmin));
     }
     
-    // Verify with the server
+
     const verifyAdmin = async () => {
       try {
         const adminData = await adminService.getCurrentAdmin();
         setAdmin(adminData);
       } catch (error) {
-        // Clear invalid admin data
+
         localStorage.removeItem('adminInfo');
         setAdmin(null);
       } finally {
@@ -76,7 +76,6 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
       setAdmin(null);
       router.push('/admin/login');
     } catch (error) {
-      console.error('Logout error:', error);
     } finally {
       setLoading(false);
     }

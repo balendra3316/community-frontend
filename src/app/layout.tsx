@@ -1,10 +1,6 @@
 
 
 
-// "use client"
-// import { AuthProvider } from '@/context/AuthContext';
-// import './globals.css';
-// import { PostStateProvider } from '../types/PostStateContext'; 
 
 
 
@@ -12,37 +8,41 @@
 
 
 
-// const metadata = {
-//   title: 'My Community App',
-//   description: 'Connect, share, and learn in your own private community.',
-// };
 
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="en">
-//       <head>
-//         <link
-//           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-//           rel="stylesheet"
-//         />
-//         <link rel="icon" href="/logo acd.png" />
-//       </head>
-//       <body className="font-Arial">
-//         <PostStateProvider>
-//           <AuthProvider>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
            
-//             {children}
+
             
-//             </AuthProvider>
-//         </PostStateProvider>
-//       </body>
-//     </html>
-//   )
-// }
+
+
+
+
+
+
 
 
 
@@ -60,7 +60,7 @@ import './globals.css';
 import { PostStateProvider } from '../types/PostStateContext';
 import type { Metadata } from 'next';
 
-// Export metadata (this is the correct way in Next.js 13+ App Router)
+
 export const metadata: Metadata = {
   title: 'Anyone Can Dance Community',
   description: 'Connect, share, and learn dance in your own private community. Join fellow dancers, share your moves, and grow together.',
@@ -111,8 +111,8 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // google: 'your-google-verification-code', // Add if needed
-    // yandex: 'your-yandex-verification-code', // Add if needed
+
+
   },
 };
 

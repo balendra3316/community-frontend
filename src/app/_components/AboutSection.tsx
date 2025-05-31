@@ -1,4 +1,4 @@
-// src/app/_components/AboutSection.tsx
+
 "use client"
 import { Box, Container, Typography, useMediaQuery, useTheme } from '@mui/material';
 

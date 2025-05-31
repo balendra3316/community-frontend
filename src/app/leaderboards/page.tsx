@@ -1,7 +1,7 @@
 
 
 
-// src/app/leaderboard/page.tsx
+
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -26,14 +26,14 @@ export default function Leaderboards() {
   const [activeTab, setActiveTab] = useState(0);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   
-  // Separate state for each leaderboard type
+
   const [leaderboards, setLeaderboards] = useState<Record<LeaderboardType, LeaderboardState>>({
     weekly: { data: null, loading: false, loaded: false },
     monthly: { data: null, loading: false, loaded: false },
     allTime: { data: null, loading: false, loaded: false }
   });
 
-  // Helper function to update specific leaderboard state
+
   const updateLeaderboardState = useCallback((type: LeaderboardType, updates: Partial<LeaderboardState>) => {
     setLeaderboards(prev => ({
       ...prev,
@@ -41,9 +41,9 @@ export default function Leaderboards() {
     }));
   }, []);
 
-  // Fetch specific leaderboard data
+
   const fetchLeaderboardData = useCallback(async (type: LeaderboardType) => {
-    // Don't fetch if already loaded or currently loading
+
     if (leaderboards[type].loaded || leaderboards[type].loading) {
       return;
     }
@@ -73,7 +73,7 @@ export default function Leaderboards() {
         loaded: true 
       });
 
-      // Set last updated timestamp only once
+
       if (!lastUpdated) {
         const now = new Date();
         const formattedDate = now.toLocaleDateString('en-US', {
@@ -89,16 +89,15 @@ export default function Leaderboards() {
         setLastUpdated(`${formattedDate} ${formattedTime}`);
       }
     } catch (error) {
-      console.error(`Error fetching ${type} leaderboard data:`, error);
       updateLeaderboardState(type, { loading: false });
     }
   }, [leaderboards, updateLeaderboardState, lastUpdated]);
 
-  // Handle tab change
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
     
-    // Fetch data for the selected tab if not already loaded
+
     const typeMap: LeaderboardType[] = ['weekly', 'monthly', 'allTime'];
     const selectedType = typeMap[newValue];
     
@@ -107,12 +106,12 @@ export default function Leaderboards() {
     }
   };
 
-  // Load weekly leaderboard on initial mount
+
   useEffect(() => {
     fetchLeaderboardData('weekly');
   }, [fetchLeaderboardData]);
 
-  // Get current user data based on active tab
+
   const getCurrentUserData = () => {
     const typeMap: LeaderboardType[] = ['weekly', 'monthly', 'allTime'];
     const currentType = typeMap[activeTab];
@@ -124,7 +123,7 @@ export default function Leaderboards() {
     return { _id: '', name: '', avatar: '', points: 0, rank: null };
   };
 
-  // Get current leaderboard data and loading state
+
   const getCurrentLeaderboardState = () => {
     const typeMap: LeaderboardType[] = ['weekly', 'monthly', 'allTime'];
     const currentType = typeMap[activeTab];

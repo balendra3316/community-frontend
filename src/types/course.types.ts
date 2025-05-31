@@ -1,4 +1,4 @@
-// types/course.types.ts
+
 export interface Resource {
     _id: string;
     title: string;

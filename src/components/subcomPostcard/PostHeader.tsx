@@ -1,4 +1,4 @@
-// components/PostHeader.tsx
+
 import React, { memo } from "react";
 import { MoreVertical } from "lucide-react";
 import { Avatar } from "@mui/material";

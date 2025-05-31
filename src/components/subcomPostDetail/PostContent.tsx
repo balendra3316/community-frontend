@@ -35,7 +35,7 @@ export default function PostContent({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState(1);
 
-  // Get values from context or fallback to props
+
   const isLiked = likedPosts[post._id] ?? isPostLikedByUser;
   const currentLikeCount = likeCounts[post._id] ?? likes.length;
 
@@ -50,7 +50,7 @@ export default function PostContent({
     }
   }, [post.content]);
 
-  // Handle image loading and get aspect ratio
+
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.target as HTMLImageElement;
     setImageAspectRatio(img.naturalWidth / img.naturalHeight);
@@ -61,7 +61,7 @@ export default function PostContent({
     setShowFullContent(!showFullContent);
   };
 
-  // Calculate total votes for the poll
+
   const calculateTotalVotes = () => {
     if (!post.poll?.options) return 0;
     return post.poll.options.reduce(
@@ -70,7 +70,7 @@ export default function PostContent({
     );
   };
 
-  // Calculate percentage for each poll option
+
   const calculatePercentage = (optionIndex: number) => {
     if (!post.poll?.options) return 0;
     const optionVotes = post.poll.options[optionIndex].votes?.length || 0;
@@ -100,7 +100,7 @@ export default function PostContent({
     return null;
   };
 
-  // Render Poll UI
+
   const renderPoll = () => {
     if (!post.poll?.options || post.poll.options.length === 0) return null;
 
@@ -125,7 +125,7 @@ export default function PostContent({
             return (
               <div key={index} className="relative">
                 {hasVotedOnPoll ? (
-                  // Show results view if user has voted
+
                   <div className="relative bg-gray-100 rounded-md overflow-hidden">
                     <div
                       className={`absolute top-0 left-0 h-full ${
@@ -146,7 +146,7 @@ export default function PostContent({
                     </div>
                   </div>
                 ) : (
-                  // Show voting options if user hasn't voted
+
                   <button
                     className="w-full px-4 py-3 bg-white hover:bg-gray-50 border rounded-md flex justify-between items-center disabled:opacity-70"
                     onClick={() => handleVote(index)}

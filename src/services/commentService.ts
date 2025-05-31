@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export interface Comment {
   _id: string;
@@ -28,18 +28,17 @@ export interface CommentsResponse {
   totalCount: number;
 }
 
-// Get comments for a post
+
 export const fetchCommentsByPost = async (postId: string, page = 1) => {
   try {
     const response = await axios.get<CommentsResponse>(`${API_URL}/comments/${postId}?page=${page}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching comments:', error);
     throw error;
   }
 };
 
-// Create a new comment
+
 export const createComment = async (postId: string, formData: FormData) => {
   try {
     const response = await axios.post<Comment>(
@@ -54,12 +53,11 @@ export const createComment = async (postId: string, formData: FormData) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Error creating comment:', error);
     throw error;
   }
 };
 
-// Like or unlike a comment
+
 export const likeComment = async (commentId: string) => {
   try {
     const response = await axios.put<{ liked: boolean; likeCount: number }>(
@@ -69,18 +67,16 @@ export const likeComment = async (commentId: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Error liking comment:', error);
     throw error;
   }
 };
 
-// Delete a comment
+
 export const deleteComment = async (commentId: string) => {
   try {
     const response = await axios.delete(`${API_URL}/comments/${commentId}`, { withCredentials: true });
     return response.data;
   } catch (error) {
-    console.error('Error deleting comment:', error);
     throw error;
   }
 };

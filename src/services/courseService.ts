@@ -1,4 +1,4 @@
-// services/course.service.ts
+
 import axios from 'axios';
 import {  CourseDetail } from '../types/course.types';
 
@@ -18,7 +18,7 @@ export interface Course {
   progress?: Progress;
 }
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export const CourseService = {
   getAllCourses: async (): Promise<Course[]> => {
@@ -28,7 +28,6 @@ export const CourseService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching courses:', error);
       return [];
     }
   },
@@ -40,7 +39,6 @@ export const CourseService = {
       });
       return response.data;
     } catch (error) {
-      console.error(`Error fetching course with id ${courseId}:`, error);
       return null;
     }
   },
@@ -53,7 +51,6 @@ export const CourseService = {
       });
       return true;
     } catch (error) {
-      console.error('Error updating lesson progress:', error);
       return false;
     }
   },
@@ -73,7 +70,6 @@ export const CourseService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error toggling lesson completion:', error);
       throw error;
     }
   }

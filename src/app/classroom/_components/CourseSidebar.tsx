@@ -24,7 +24,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     Record<string, boolean>
   >(
     sections.reduce((acc, section) => {
-      // Set the section with the current lesson as expanded by default
+
       const isExpanded = section.lessons.some(
         (lesson) => lesson._id === currentLessonId
       );
@@ -66,10 +66,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
 
       <nav className="mt-2">
         {sections.map((section) => {
-          // Determine if it's the special "direct" section for lessons without sectionId
+
           const isDirect = section._id === "direct";
 
-          // For direct lessons, display them without a section header
+
           if (isDirect) {
             return (
               <div key="direct" className="mb-2">
@@ -106,7 +106,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
             );
           }
 
-          // Regular sections with normal toggleable behavior
+
           return (
             <div key={section._id} className="mb-2">
               <button

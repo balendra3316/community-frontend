@@ -1,10 +1,10 @@
-// src/app/admin/_components/courseManagementService.ts
+
 "use client";
 
-// API base URL
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-// Types
+
 export interface Course {
   _id: string;
   title: string;
@@ -71,42 +71,42 @@ export interface CourseDetails extends Course {
 
 
 
-// Helper function to prepare form data with files and metadata
+
 const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
   const formData = new FormData();
   const { images = [], resources = [], ...otherData } = lessonData;
 
-  // Add basic fields
+
   Object.entries(otherData).forEach(([key, value]) => {
     if (value !== undefined) {
       formData.append(key, value.toString());
     }
   });
 
-  // Process images - handle both URLs and files
+
   images.forEach((img, index) => {
     if (img.url) {
-      // Direct URL case
+
       formData.append(`images[${index}][url]`, img.url);
       if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
       if (img.altText) formData.append(`images[${index}][altText]`, img.altText);
     } else if (img.file) {
-      // File upload case
+
       formData.append(`imageFiles[${index}]`, img.file);
       if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
       if (img.altText) formData.append(`images[${index}][altText]`, img.altText || img.file.name);
     }
   });
 
-  // Process resources - handle both URLs and files
+
   resources.forEach((res, index) => {
     if (res.fileUrl) {
-      // Direct URL case
+
       formData.append(`resources[${index}][title]`, res.title || '');
       formData.append(`resources[${index}][fileUrl]`, res.fileUrl);
       if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
     } else if (res.file) {
-      // File upload case
+
       formData.append(`resourceFiles[${index}]`, res.file);
       formData.append(`resources[${index}][title]`, res.title || res.file.name);
       if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
@@ -125,9 +125,9 @@ const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
 
 
 
-// Course API servic
+
 export const courseService = {
-  // Get all courses
+
   async getAllCourses(): Promise<Course[]> {
     const response = await fetch(`${API_URL}/admin/courses`, {
       method: 'GET',
@@ -144,7 +144,7 @@ export const courseService = {
     return response.json();
   },
 
-  // Get course details
+
   async getCourseDetails(courseId: string): Promise<CourseDetails> {
     const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
       method: 'GET',
@@ -169,43 +169,43 @@ export const courseService = {
 
 
 
-  // // Create a new course
-  // async createCourse(courseData: Partial<Course>): Promise<Course> {
-  //   const response = await fetch(`${API_URL}/admin/courses`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //     body: JSON.stringify(courseData),
-  //   });
 
-  //   if (!response.ok) {
-  //     const error = await response.json();
-  //     throw new Error(error.message || 'Failed to create course');
-  //   }
 
-  //   return response.json();
-  // },
 
-  // // Update an existing course
-  // async updateCourse(courseId: string, courseData: Partial<Course>): Promise<Course> {
-  //   const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //     body: JSON.stringify(courseData),
-  //   });
 
-  //   if (!response.ok) {
-  //     const error = await response.json();
-  //     throw new Error(error.message || 'Failed to update course');
-  //   }
 
-  //   return response.json();
-  // },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -215,18 +215,18 @@ export const courseService = {
 async createCourse(courseData: Partial<Course>, coverImageFile?: File): Promise<Course> {
   const formData = new FormData();
   
-  // Add course data fields to FormData
+
   formData.append('title', courseData.title || '');
   if (courseData.description) formData.append('description', courseData.description);
   
-  // Add order field explicitly (ensure it's set even if zero)
+
   formData.append('order', (courseData.order !== undefined ? courseData.order : 0).toString());
   
-  // If there's a file, add it to FormData
+
   if (coverImageFile) {
     formData.append('coverImage', coverImageFile);
   } 
-  // If there's a URL but no file, we might still want to keep the existing URL
+
   else if (courseData.coverImage && !coverImageFile) {
     formData.append('coverImageUrl', courseData.coverImage);
   }
@@ -245,24 +245,24 @@ async createCourse(courseData: Partial<Course>, coverImageFile?: File): Promise<
   return response.json();
 },
 
-// Update an existing course
+
 async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile?: File): Promise<Course> {
   const formData = new FormData();
   
-  // Add course data fields to FormData
+
   if (courseData.title) formData.append('title', courseData.title);
   if (courseData.description !== undefined) formData.append('description', courseData.description);
   
-  // Always include the order field when updating a course
+
   if (courseData.order !== undefined) {
     formData.append('order', courseData.order.toString());
   }
   
-  // If there's a file, add it to FormData
+
   if (coverImageFile) {
     formData.append('coverImage', coverImageFile);
   } 
-  // If there's a URL but no file, we might still want to keep the existing URL
+
   else if (courseData.coverImage && !coverImageFile) {
     formData.append('coverImageUrl', courseData.coverImage);
   }
@@ -286,7 +286,7 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
 
 
 
-  // Delete a course
+
   async deleteCourse(courseId: string): Promise<{ message: string }> {
     const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
       method: 'DELETE',
@@ -304,7 +304,7 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
     return response.json();
   },
 
-  // Create a new section
+
   async createSection(courseId: string, sectionData: Partial<Section>): Promise<Section> {
     const response = await fetch(`${API_URL}/admin/courses/${courseId}/sections`, {
       method: 'POST',
@@ -323,7 +323,7 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
     return response.json();
   },
 
-  // Update a section
+
   async updateSection(sectionId: string, sectionData: Partial<Section>): Promise<Section> {
     const response = await fetch(`${API_URL}/admin/sections/${sectionId}`, {
       method: 'PUT',
@@ -342,7 +342,7 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
     return response.json();
   },
 
-  // Delete a section
+
   async deleteSection(sectionId: string): Promise<{ message: string }> {
     const response = await fetch(`${API_URL}/admin/sections/${sectionId}`, {
       method: 'DELETE',
@@ -365,7 +365,7 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
 
 
 
-// Create a lesson in a course
+
 async createLessonInCourse(courseId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
   const formData = prepareLessonFormData(lessonData);
 
@@ -383,7 +383,7 @@ async createLessonInCourse(courseId: string, lessonData: Partial<Lesson>): Promi
   return response.json();
 },
 
-// Create a lesson in a section
+
 async createLessonInSection(sectionId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
   const formData = prepareLessonFormData(lessonData);
 
@@ -401,7 +401,7 @@ async createLessonInSection(sectionId: string, lessonData: Partial<Lesson>): Pro
   return response.json();
 },
 
-// Update a lesson
+
 async updateLesson(lessonId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
   const formData = prepareLessonFormData(lessonData);
 
@@ -425,7 +425,7 @@ async updateLesson(lessonId: string, lessonData: Partial<Lesson>): Promise<Lesso
 
 
 
-  // Delete a lesson
+
   async deleteLesson(lessonId: string): Promise<{ message: string }> {
     const response = await fetch(`${API_URL}/admin/lessons/${lessonId}`, {
       method: 'DELETE',

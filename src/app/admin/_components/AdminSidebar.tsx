@@ -20,7 +20,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
     return pathname === path;
   };
 
-  // Close sidebar on route change on mobile
+
   useEffect(() => {
     if (window.innerWidth < 768) {
       setIsOpen(false);

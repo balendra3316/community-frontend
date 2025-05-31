@@ -28,7 +28,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
   onLessonCompletionToggle,
   isCompleted,
 }) => {
-  // Extract YouTube video ID from URL
+
   const getYouTubeVideoId = (url: string): string | null => {
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -36,7 +36,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
     return match && match[2].length === 11 ? match[2] : null;
   };
 
-  // Check if lesson has a valid video URL and extract video ID
+
   const videoId = lesson.videoUrl ? getYouTubeVideoId(lesson.videoUrl) : null;
 
   const getFileIcon = (fileType: string) => {
@@ -65,38 +65,36 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
   const handleToggleCompletion = async () => {
     try {
-      // Optimistically update UI first
+
       const newCompletionStatus = !isCompleted;
       onLessonCompletionToggle(lesson._id, newCompletionStatus);
 
-      // Then make the API call in the background
+
       await CourseService.toggleLessonCompletion(courseId, lesson._id);
 
-      // Note: We don't need to update the UI again after the API call
-      // as we've already updated it optimistically
+
+
     } catch (error) {
-      // If the API call fails, revert the optimistic update
-      console.error("Error toggling lesson completion status:", error);
       onLessonCompletionToggle(lesson._id, isCompleted);
-      // Optionally show an error toast/notification here
+
     }
   };
 
-  // Function to convert Cloudinary raw URL to viewable URL
+
   const getViewableCloudinaryUrl = (rawUrl: string): string => {
-    // Convert from raw upload to image upload for PDF viewing
-    // From: https://res.cloudinary.com/db4mveamn/raw/upload/v1747906800/lesson-resources/lesson-1747906796510-Balendra_Singh_resume.pdf
-    // To: https://res.cloudinary.com/db4mveamn/image/upload/v1747906800/lesson-resources/lesson-1747906796510-Balendra_Singh_resume.pdf
+
+
+
     return rawUrl.replace("/raw/upload/", "/image/upload/");
   };
 
-  // Function to get download URL with attachment flag
+
   const getDownloadUrl = (rawUrl: string): string => {
-    // Add fl_attachment flag to force download
+
     return rawUrl.replace("/upload/", "/upload/fl_attachment/");
   };
 
-  // Function to handle file download/view - FIXED VERSION
+
   const handleFileAction = (
     fileUrl: string,
     fileName: string,
@@ -106,22 +104,22 @@ const LessonContent: React.FC<LessonContentProps> = ({
     try {
       if (action === "view") {
         if (fileType.toLowerCase() === "pdf") {
-          // For PDF viewing, use Google Docs viewer or Mozilla PDF.js
+
           const viewableUrl = getViewableCloudinaryUrl(fileUrl);
 
-          // Option 1: Use Google Docs PDF viewer
+
           const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
             fileUrl
           )}&embedded=true`;
           window.open(googleViewerUrl, "_blank");
 
-          // Option 2: Try direct URL (uncomment if you prefer)
-          // window.open(viewableUrl, '_blank');
+
+
         } else {
           window.open(fileUrl, "_blank");
         }
       } else {
-        // For download
+
         const downloadUrl = getDownloadUrl(fileUrl);
         const link = document.createElement("a");
         link.href = downloadUrl;
@@ -133,8 +131,6 @@ const LessonContent: React.FC<LessonContentProps> = ({
         document.body.removeChild(link);
       }
     } catch (error) {
-      console.error("File action failed:", error);
-      // Fallback: try Google Docs viewer
       if (fileType.toLowerCase() === "pdf") {
         const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
           fileUrl

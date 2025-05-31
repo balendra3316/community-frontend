@@ -1,4 +1,4 @@
-//src/app/profile/_components/MyPostTab
+
 
 "use client";
 import { useState, useEffect } from "react";
@@ -31,42 +31,35 @@ export default function MyPostsTab({ user, onPostClick }: MyPostsTabProps) {
   const [totalPages, setTotalPages] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Load user posts when component mounts
+
   useEffect(() => {
     loadUserPosts();
   }, []);
 
-  // Socket initialization and event listeners for post deletion
+
   useEffect(() => {
     if (user?._id) {
       try {
         const socket = initializeSocket(user._id);
 
-        // Listen for user-specific post deletion events
+
         const handlePostDeleted = (data: {
           postId: string;
           message: string;
         }) => {
-          console.log("User post deleted from profile:", data);
-
-          // Remove the deleted post from the posts array
           setPosts((prevPosts) =>
             prevPosts.filter((post) => post._id !== data.postId)
           );
-
-          // Optional: You could show a toast notification here if you have one
-          console.log(data.message);
         };
 
-        // Add event listener
+
         socket.on("postDeleted", handlePostDeleted);
 
-        // Cleanup function
+
         return () => {
           socket.off("postDeleted", handlePostDeleted);
         };
       } catch (error) {
-        console.error("Socket initialization error in MyPostsTab:", error);
       }
     }
   }, [user?._id]);
@@ -91,7 +84,6 @@ export default function MyPostsTab({ user, onPostClick }: MyPostsTabProps) {
       setError(null);
     } catch (err) {
       setError("Failed to load your posts. Please try again later.");
-      console.error("Error loading user posts:", err);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -105,8 +97,8 @@ export default function MyPostsTab({ user, onPostClick }: MyPostsTabProps) {
   };
 
   const handlePostDelete = (deletedPostId: string) => {
-    // Remove the deleted post from the posts state
-    // The socket event will also handle this, but this serves as immediate feedback
+
+
     setPosts((prev) => prev.filter((p) => p._id !== deletedPostId));
   };
 

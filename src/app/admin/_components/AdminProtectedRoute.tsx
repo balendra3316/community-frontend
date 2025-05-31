@@ -10,12 +10,12 @@ export default function AdminProtectedRoute({ children }: { children: ReactNode 
   const pathname = usePathname();
 
   useEffect(() => {
-    // Skip redirect for login page
+
     if (pathname === '/admin/login') {
       return;
     }
     
-    // Redirect to login if not authenticated
+
     if (!loading && !admin) {
       router.push('/admin/login');
     }
@@ -29,7 +29,7 @@ export default function AdminProtectedRoute({ children }: { children: ReactNode 
     );
   }
 
-  // Don't show children until we know user is logged in (except on login page)
+
   if (!admin && pathname !== '/admin/login') {
     return null;
   }

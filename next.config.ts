@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     domains: [
       'localhost', 
       'example.com',
-      // Add any other domains you'll use for course images
+
     ],
   },
 };

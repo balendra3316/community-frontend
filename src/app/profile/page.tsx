@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const [showPostDetail, setShowPostDetail] = useState(false);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
-  // Yellow color theme
+
   const themeYellow = {
     primary: "#FFC107", // Amber/Yellow
     primaryDark: "#FFA000", // Darker Yellow
@@ -43,12 +43,12 @@ export default function ProfilePage() {
     setShowPostDetail(false);
   };
 
-  // Function to go back to community page
+
   const goToCommunity = () => {
     router.push("/community");
   };
 
-  // Profile update handlers
+
   const handleProfileUpdateStart = () => {
     setIsUpdatingProfile(true);
   };

@@ -1,4 +1,4 @@
-// components/NavBar/Logo.tsx
+
 import Link from 'next/link';
 import { memo } from 'react';
 

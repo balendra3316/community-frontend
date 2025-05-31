@@ -1,4 +1,4 @@
-// src/app/community/_hooks/useCommunityPosts.ts
+
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { fetchPosts, Post as PostType } from "../../../services/postService";
 
@@ -30,7 +30,7 @@ export const useCommunityPosts = (currentFilter: string): UseCommunityPostsRetur
     loadingMore: false,
   });
 
-  // Optimized posts loading function with error handling
+
   const loadPosts = useCallback(async (pageNum = 1, replace = true) => {
     try {
       setState(prev => ({
@@ -58,11 +58,10 @@ export const useCommunityPosts = (currentFilter: string): UseCommunityPostsRetur
         loading: false,
         loadingMore: false
       }));
-      console.error("Error loading posts:", err);
     }
   }, [currentFilter]);
 
-  // Update a specific post in the list
+
   const updatePost = useCallback((updatedPost: PostType) => {
     setState(prev => ({
       ...prev,
@@ -72,7 +71,7 @@ export const useCommunityPosts = (currentFilter: string): UseCommunityPostsRetur
     }));
   }, []);
 
-  // Delete a post from the list
+
   const deletePost = useCallback((postId: string) => {
     setState(prev => ({
       ...prev,
@@ -80,7 +79,7 @@ export const useCommunityPosts = (currentFilter: string): UseCommunityPostsRetur
     }));
   }, []);
 
-  // Add a new post to the beginning of the list
+
   const addPost = useCallback((newPost: PostType) => {
     setState(prev => ({
       ...prev,
@@ -88,19 +87,19 @@ export const useCommunityPosts = (currentFilter: string): UseCommunityPostsRetur
     }));
   }, []);
 
-  // Load more posts
+
   const loadMore = useCallback(() => {
     if (state.page < state.totalPages && !state.loadingMore) {
       loadPosts(state.page + 1, false);
     }
   }, [state.page, state.totalPages, state.loadingMore, loadPosts]);
 
-  // Check if more posts can be loaded
+
   const canLoadMore = useMemo(() => {
     return state.page < state.totalPages;
   }, [state.page, state.totalPages]);
 
-  // Load posts when filter changes
+
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);

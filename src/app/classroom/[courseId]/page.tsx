@@ -1,4 +1,4 @@
-//  //src/app/classroom/[courseId]/page.tsx
+
 
 "use client";
 import React, {
@@ -15,11 +15,11 @@ import { CourseService } from "../../../services/courseService";
 import { CourseDetail, Lesson } from "../../../types/course.types";
 import { Menu, X } from "lucide-react";
 
-// Lazy load heavy components
+
 const CourseSidebar = lazy(() => import("../_components/CourseSidebar"));
 const LessonContent = lazy(() => import("../_components/LessonContent"));
 
-// Component fallback for lazy loading
+
 const ComponentFallback = () => (
   <div className="flex justify-center items-center h-32">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
@@ -39,7 +39,7 @@ export default function CourseDetailPage() {
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [progress, setProgress] = useState<number>(0);
 
-  // Memoized resize handler to prevent recreation on every render
+
   const handleResize = useCallback(() => {
     if (window.innerWidth >= 1024) {
       setIsSidebarOpen(true);
@@ -48,14 +48,14 @@ export default function CourseDetailPage() {
     }
   }, []);
 
-  // Viewport size effect with optimized cleanup
+
   useEffect(() => {
     handleResize(); // Initial check
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
-  // Memoized course fetching function
+
   const fetchCourseDetails = useCallback(async () => {
     setLoading(true);
     try {
@@ -63,13 +63,13 @@ export default function CourseDetailPage() {
       if (data) {
         setCourse(data);
 
-        // Set completed lessons
+
         if (data.progress?.completedLessons) {
           setCompletedLessons(data.progress.completedLessons);
           setProgress(data.progress.completionPercentage || 0);
         }
 
-        // Set initial lesson (first lesson of first section)
+
         if (data.sections?.length > 0) {
           const firstSection = data.sections[0];
           setCurrentSectionId(firstSection._id);
@@ -80,7 +80,6 @@ export default function CourseDetailPage() {
         }
       }
     } catch (error) {
-      console.error("Error fetching course details:", error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +89,7 @@ export default function CourseDetailPage() {
     fetchCourseDetails();
   }, [fetchCourseDetails]);
 
-  // Optimized lesson selection handler
+
   const handleSelectLesson = useCallback(
     (sectionId: string, lessonId: string) => {
       setCurrentSectionId(sectionId);
@@ -103,7 +102,7 @@ export default function CourseDetailPage() {
     []
   );
 
-  // Memoized total lessons calculation
+
   const totalLessons = useMemo(() => {
     if (!course?.sections) return 0;
     return course.sections.reduce(
@@ -112,7 +111,7 @@ export default function CourseDetailPage() {
     );
   }, [course?.sections]);
 
-  // Memoized progress calculation
+
   const updateProgressPercentage = useCallback(
     (lessonsCompleted: string[]): number => {
       if (totalLessons === 0) return 0;
@@ -121,7 +120,7 @@ export default function CourseDetailPage() {
     [totalLessons]
   );
 
-  // Optimized lesson completion handler with useCallback
+
   const handleLessonCompletionToggle = useCallback(
     (lessonId: string, isCompleted: boolean) => {
       setCompletedLessons((prevCompleted) => {
@@ -129,11 +128,11 @@ export default function CourseDetailPage() {
           ? [...prevCompleted, lessonId]
           : prevCompleted.filter((id) => id !== lessonId);
 
-        // Calculate new progress
+
         const newProgress = updateProgressPercentage(newCompletedLessons);
         setProgress(newProgress);
 
-        // Update course object
+
         setCourse((prevCourse) => {
           if (!prevCourse?.progress) return prevCourse;
 
@@ -155,7 +154,7 @@ export default function CourseDetailPage() {
     [updateProgressPercentage]
   );
 
-  // Memoized current lesson finder
+
   const currentLesson = useMemo((): Lesson | null => {
     if (!course?.sections) return null;
 
@@ -166,7 +165,7 @@ export default function CourseDetailPage() {
     return null;
   }, [course?.sections, currentLessonId]);
 
-  // Memoized completion checker
+
   const isLessonCompleted = useCallback(
     (lessonId: string): boolean => {
       return completedLessons.includes(lessonId);
@@ -174,17 +173,17 @@ export default function CourseDetailPage() {
     [completedLessons]
   );
 
-  // Memoized sidebar toggle handler
+
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
   }, []);
 
-  // Memoized overlay click handler
+
   const handleOverlayClick = useCallback(() => {
     setIsSidebarOpen(false);
   }, []);
 
-  // Memoized back to classroom handler
+
   const handleBackToClassroom = useCallback(() => {
     router.push("/classroom");
   }, [router]);

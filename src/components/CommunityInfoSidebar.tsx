@@ -1,4 +1,4 @@
-// src/components/CommunityInfoSidebar.tsx
+
 import { FC } from 'react';
 import Link from 'next/link';
 
@@ -8,7 +8,7 @@ const CommunityInfoSidebar: FC = () => {
       {/* Community banner with overlay effect */}
       <div className="relative h-40 bg-gray-200 overflow-hidden">
         <img
-          src="https://assets.skool.com/f/d74f0e78f72649c6ae3bfe6a6687f80c/39f727770ee1468fb17f3f9286a6761b98727390e34241408086b764f2684ac8-md.jpg"
+          src="community-info.jpg"
           alt="Dance Academy"
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />

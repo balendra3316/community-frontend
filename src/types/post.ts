@@ -1,4 +1,4 @@
-// src/types/post.ts
+
 
 export interface Author {
     id: number;

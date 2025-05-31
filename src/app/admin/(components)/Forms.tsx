@@ -2,15 +2,15 @@ import React, { useState } from "react";
 
 import { Image, Resource } from "../_components/courseManagementService";
 
-// interface FormProps {
-//   type?: 'course' | 'section' | 'lesson';
-//   data: any;
-//   setData: (data: any) => void;
-//   onSubmit: (e: React.FormEvent) => void;
-//   onCancel: () => void;
-// }
 
-//import { useState } from 'react';
+
+
+
+
+
+
+
+
 
 interface FormProps {
   type?: "course" | "section" | "lesson";
@@ -36,14 +36,14 @@ export const CourseForm = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Store the file in the data state
+
       setData({ ...data, coverImageFile: file });
 
-      // Create a preview URL
+
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
 
-      // Clean up the preview URL when component unmounts
+
       return () => URL.revokeObjectURL(objectUrl);
     }
   };
@@ -253,7 +253,7 @@ export const LessonForm = ({
 }: FormProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Ensure arrays exist
+
   const safeData = {
     ...data,
     images: data.images || [],
@@ -268,7 +268,7 @@ export const LessonForm = ({
       const file = e.target.files[0];
       const newImages = [...safeData.images];
 
-      // Update or add the image with file for later upload
+
       if (newImages[index]) {
         newImages[index] = {
           ...newImages[index],
@@ -298,7 +298,7 @@ export const LessonForm = ({
       const file = e.target.files[0];
       const newResources = [...safeData.resources];
 
-      // Determine file type
+
       let fileType = "document";
       if (file.type.includes("pdf")) {
         fileType = "pdf";
@@ -306,7 +306,7 @@ export const LessonForm = ({
         fileType = "doc";
       }
 
-      // Update or add the resource with file for later upload
+
       if (newResources[index]) {
         newResources[index] = {
           ...newResources[index],
@@ -493,7 +493,7 @@ export const LessonForm = ({
                     value={image.url || ""}
                     onChange={(e) => {
                       const newImages = [...safeData.images];
-                      // Clear the file if URL is provided
+
                       if (e.target.value) {
                         delete newImages[index].file;
                       }
@@ -664,7 +664,7 @@ export const LessonForm = ({
                     value={resource.fileUrl || ""}
                     onChange={(e) => {
                       const newResources = [...safeData.resources];
-                      // Clear the file if URL is provided
+
                       if (e.target.value) {
                         delete newResources[index].file;
                       }

@@ -33,14 +33,14 @@ export default function ProfileEditTab({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-  // Snackbar states
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<
     "success" | "error" | "info" | "warning"
   >("success");
 
-  // Yellow color theme (keeping some definitions for reference)
+
   const themeYellow = {
     primary: "#FFC107", // Amber/Yellow
     primaryDark: "#FFA000", // Darker Yellow
@@ -48,26 +48,26 @@ export default function ProfileEditTab({
     text: "#212121", // Dark text for contrast
   };
 
-  // Set initial name when user data loads
+
   useEffect(() => {
     if (user) {
       setNameInput(user.name);
     }
   }, [user]);
 
-  // Validate name field
+
   const validateName = (value: string) => {
-    // Check for numbers and symbols
+
     if (!/^[a-zA-Z\s]+$/.test(value)) {
       return "Name should only contain letters and spaces";
     }
 
-    // Check length
+
     if (value.length > 25) {
       return "Name should be up to 25 characters";
     }
 
-    // Check if empty
+
     if (value.trim() === "") {
       return "Name is required";
     }
@@ -88,7 +88,7 @@ export default function ProfileEditTab({
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
 
-      // Show snackbar notification for avatar update
+
       setSnackbarMessage("Profile picture selected");
       setSnackbarSeverity("info");
       setSnackbarOpen(true);
@@ -102,7 +102,7 @@ export default function ProfileEditTab({
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate name before submission
+
     const nameValidationError = validateName(nameInput);
     if (nameValidationError) {
       setNameError(nameValidationError);
@@ -110,7 +110,7 @@ export default function ProfileEditTab({
     }
 
     try {
-      // Start the navbar loading indicator
+
       onUpdateStart();
 
       const result = await updateProfile({
@@ -123,7 +123,7 @@ export default function ProfileEditTab({
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
 
-        // Clear the avatar file and preview after successful update
+
         setAvatarFile(null);
         setAvatarPreview(null);
       }
@@ -131,9 +131,8 @@ export default function ProfileEditTab({
       setSnackbarMessage("Failed to update profile");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
-      console.error("Error updating profile:", err);
     } finally {
-      // Stop the navbar loading indicator
+
       onUpdateEnd();
     }
   };

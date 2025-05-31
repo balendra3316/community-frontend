@@ -1,4 +1,4 @@
-// src/app/_components/FeaturesSection.tsx
+
 "use client"
 import { Box, Card, CardContent, Container, Typography, useMediaQuery, useTheme } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';

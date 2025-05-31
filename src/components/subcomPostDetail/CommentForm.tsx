@@ -6,7 +6,7 @@ import { Post } from "../../services/postService";
 import { createComment } from "../../services/commentService";
 import { User } from "../../context/AuthContext";
 
-// Using the bad-words npm package
+
 import { Filter } from "bad-words";
 
 interface CommentFormProps {
@@ -47,26 +47,26 @@ export default function CommentForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MAX_WORDS = 50;
 
-  // Update word count whenever comment text changes
+
   useEffect(() => {
     const words = commentText.trim() ? commentText.trim().split(/\s+/) : [];
     setWordCount(words.length);
 
-    // Reset error state when text changes
+
     if (hasError) {
       setHasError(false);
       setErrorMessage("");
     }
   }, [commentText]);
 
-  // Create a filter instance with custom words and better options
+
   const [filter] = useState(() => {
     const filterInstance = new Filter();
 
-    // Add your custom words
+
     filterInstance.addWords("fuckk", "customword2");
 
-    // You can add many variations of the same word to be thorough
+
     const variations = [
       "fuckk",
       "fuuuck",
@@ -81,28 +81,27 @@ export default function CommentForm({
     return filterInstance;
   });
 
-  // Enhanced check for bad words - this is the key improvement
+
   const containsBadWords = (text: string) => {
     try {
-      // First try the basic filter check
+
       if (filter.isProfane(text)) {
         return true;
       }
 
-      // Then try more aggressive normalization for evasion tactics
+
       const normalizedText = text
         .toLowerCase()
-        // Remove spaces between single characters (catches "f u c k")
+
         .replace(/\b(\w)\s+(\w)\s+(\w)\s+(\w)\b/g, "$1$2$3$4")
-        // Remove common substitution characters
+
         .replace(/[*_\-\.@#\$%\^&\+\=\[\]\{\}]/g, "")
-        // Remove repeated characters (convert "fuuuck" to "fuck")
+
         .replace(/([a-z])\1+/g, "$1");
 
-      // Check the normalized version
+
       return filter.isProfane(normalizedText);
     } catch (error) {
-      console.error("Error checking profanity:", error);
       return false;
     }
   };
@@ -112,7 +111,7 @@ export default function CommentForm({
     const words = newText.trim() ? newText.trim().split(/\s+/) : [];
 
     if (words.length > MAX_WORDS) {
-      // Don't update the text if it exceeds the word limit
+
       return;
     }
 
@@ -125,14 +124,14 @@ export default function CommentForm({
     if (!post || !user) return;
     if (isSubmitting) return; // Prevent double submission
 
-    // Check word count
+
     if (wordCount > MAX_WORDS) {
       setHasError(true);
       setErrorMessage(`Comment exceeds maximum of ${MAX_WORDS} words.`);
       return;
     }
 
-    // Check for bad words
+
     if (containsBadWords(commentText)) {
       setHasError(true);
       setErrorMessage("Your comment contains inappropriate language.");
@@ -158,13 +157,12 @@ export default function CommentForm({
 
       await createComment(post._id, formData);
 
-      // Note: We don't need to manually update the comments list anymore
-      // The socket event will handle that
 
-      // Call onSubmitSuccess to do any additional cleanup in the parent component
+
+
+
       onSubmitSuccess();
     } catch (error) {
-      console.error("Error creating comment:", error);
       setHasError(true);
       setErrorMessage("Failed to post comment. Please try again.");
     } finally {
@@ -173,7 +171,7 @@ export default function CommentForm({
   };
 
   const onEmojiClick = (emojiObject: { emoji: string }) => {
-    // Make sure adding the emoji won't exceed word limit
+
     const newText = commentText + emojiObject.emoji;
     const words = newText.trim() ? newText.trim().split(/\s+/) : [];
 

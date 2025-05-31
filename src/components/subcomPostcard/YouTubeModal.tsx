@@ -1,4 +1,4 @@
-// components/YouTubeModal.tsx
+
 import React, { memo } from "react";
 import { X } from "lucide-react";
 

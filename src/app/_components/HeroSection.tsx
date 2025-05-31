@@ -1,4 +1,4 @@
-// src/app/_components/HeroSection.tsx
+
 "use client"
 import { Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
 

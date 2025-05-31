@@ -1,9 +1,9 @@
-// src/components/leaderboard/UserRankItem.tsx
+
 import React, { memo } from "react";
 import { Box, Avatar, Typography, Tooltip } from "@mui/material";
 import { LeaderboardUser } from "../../../services/leaderboard.service";
 
-// Medal colors for top positions
+
 const RANK_COLORS = {
   1: "#FFD700", // Gold
   2: "#C0C0C0", // Silver
@@ -19,7 +19,7 @@ const UserRankItem: React.FC<UserRankItemProps> = memo(
   ({ user, isCurrentUser = false }) => {
     const { rank, name, avatar, points } = user;
 
-    // Determine if this is a top-3 position for medal
+
     const isTopRank = rank && rank <= 3;
     const rankColor = isTopRank
       ? RANK_COLORS[rank as keyof typeof RANK_COLORS]

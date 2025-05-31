@@ -1,4 +1,4 @@
-// src/components/leaderboard/UserRankCard.tsx
+
 import React, { memo } from "react";
 import {
   Paper,

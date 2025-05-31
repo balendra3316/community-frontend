@@ -43,24 +43,24 @@ export default function CommentItem({
   const hasReplies = comment.replies && comment.replies.length > 0;
   const isExpanded = expandedComments.has(comment._id);
 
-  // Get state from CommentStateContext
+
   const { likedComments, likeCounts } = useCommentState();
   const { toggleLike } = useCommentStateDispatch();
 
-  // Get values from context with fallbacks to server data
+
   const isLiked =
     likedComments[comment._id] ??
     (user ? comment.likes.includes(user._id) : false);
   const currentLikeCount = likeCounts[comment._id] ?? comment.likes.length;
 
-  // Handle optimistic like updates
+
   const handleLike = async () => {
     if (!user) return;
 
-    // Update state optimistically through context
+
     toggleLike(comment._id, comment.likes, user._id);
 
-    // Call the API in the background
+
     onLike(comment._id);
   };
 

@@ -31,7 +31,7 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
     setIsLoading(true);
     
     try {
-      // Set the course ID and prepare the lesson data
+
       const directSection = selectedCourse.sections.find(s => s._id === 'direct');
       const lessonOrder = directSection?.lessons ? directSection.lessons.length : 0;
       
@@ -41,10 +41,10 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
         order: lessonOrder
       };
 
-      // Let the API service handle the formData preparation
+
       await courseService.createLessonInCourse(selectedCourse._id, lessonData);
 
-      // Reset form and reload course data
+
       setNewLesson({ 
         title: '', 
         courseId: '', 
@@ -60,7 +60,6 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
       setIsCreatingDirectLesson(false);
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error("Error creating lesson:", err.message);
       alert(`Failed to create lesson: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -74,15 +73,14 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
     
     setIsLoading(true);
     try {
-      // Let the API service handle the formData preparation
+
       await courseService.updateLesson(isEditing.id, editData);
 
-      // Reset form and reload course data
+
       setIsEditing(null);
       setEditData({});
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error("Error updating lesson:", err.message);
       alert(`Failed to update lesson: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -97,14 +95,13 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
       await courseService.deleteLesson(lessonId);
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error("Error deleting lesson:", err.message);
       alert(`Failed to delete lesson: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Get direct lessons sorted by order
+
   const directLessons = selectedCourse.sections
     .find(section => section._id === 'direct')?.lessons
     ?.sort((a, b) => a.order - b.order) || [];

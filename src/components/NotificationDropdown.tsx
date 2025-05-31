@@ -19,7 +19,7 @@ import { useAuth } from "../context/AuthContext";
 import { initializeSocket, getSocket } from "../services/socket.service";
 import { Avatar } from "@mui/material";
 
-// Lazy load PostDetailView as it's not immediately needed
+
 const PostDetailView = lazy(() => import("../components/PostDetailView"));
 
 dayjs.extend(relativeTime);
@@ -30,7 +30,7 @@ interface NotificationDropdownProps {
   onCountUpdate?: (count: number) => void;
 }
 
-// Memoized notification item component to prevent unnecessary re-renders
+
 const NotificationItem = memo(
   ({
     notification,
@@ -102,7 +102,7 @@ const NotificationItem = memo(
 
 NotificationItem.displayName = "NotificationItem";
 
-// Loading component for PostDetailView
+
 const PostDetailLoading = () => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white rounded-lg p-8">
@@ -126,7 +126,7 @@ const NotificationDropdown = ({
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  // Memoize socket event handlers to prevent recreation on every render
+
   const socketHandlers = useMemo(
     () => ({
       onConnect: () => setIsConnected(true),
@@ -151,7 +151,7 @@ const NotificationDropdown = ({
     [onCountUpdate]
   );
 
-  // Initialize socket connection and event listeners
+
   useEffect(() => {
     if (!isOpen || !user?._id) return;
 
@@ -163,7 +163,7 @@ const NotificationDropdown = ({
         setError(null);
         socket = initializeSocket(user._id);
 
-        // Set up socket event listeners
+
         socket.on("connect", socketHandlers.onConnect);
         socket.on("disconnect", socketHandlers.onDisconnect);
         socket.on("notificationRead", socketHandlers.onNotificationRead);
@@ -173,7 +173,7 @@ const NotificationDropdown = ({
         );
         socket.on("unreadCountUpdate", socketHandlers.onUnreadCountUpdate);
 
-        // Fetch initial data with Promise.all for better performance
+
         setLoading(true);
         const [notifs, count] = await Promise.all([
           notificationService.getNotifications(),
@@ -186,10 +186,9 @@ const NotificationDropdown = ({
           onCountUpdate?.(count);
         }
       } catch (error) {
-        console.error("Error initializing notifications:", error);
         if (mounted) {
           setError("Failed to load notifications");
-          // Fallback to regular API fetch
+
           try {
             const [notifs, count] = await Promise.all([
               notificationService.getNotifications(),
@@ -203,7 +202,6 @@ const NotificationDropdown = ({
               setError(null);
             }
           } catch (fallbackError) {
-            console.error("Fallback API fetch failed:", fallbackError);
           }
         }
       } finally {
@@ -230,11 +228,11 @@ const NotificationDropdown = ({
     };
   }, [isOpen, user?._id, socketHandlers]);
 
-  // Optimized notification click handler with better error handling
+
   const handleNotificationClick = useCallback(
     async (notification: Notification) => {
       if (notification.read) {
-        // If already read, just handle setting selected post
+
         if (notification.post) {
           setSelectedPost(notification.post);
           setShowPostDetail(true);
@@ -242,30 +240,30 @@ const NotificationDropdown = ({
         return;
       }
 
-      // Store previous state for rollback if needed
+
       const previousNotifications = [...notifications];
       const previousUnreadCount = unreadCount;
 
       try {
-        // Optimistic UI update first
+
         setNotifications((prev) =>
           prev.map((n) =>
             n._id === notification._id ? { ...n, read: true } : n
           )
         );
 
-        // Calculate new unread count
+
         const newUnreadCount = Math.max(0, unreadCount - 1);
         setUnreadCount(newUnreadCount);
         onCountUpdate?.(newUnreadCount);
 
-        // Set selected post immediately if notification is about a post
+
         if (notification.post) {
           setSelectedPost(notification.post);
           setShowPostDetail(true);
         }
 
-        // Make API call in the background with timeout
+
         const markAsReadPromise = Promise.race([
           notificationService.markAsRead(notification._id),
           new Promise((_, reject) =>
@@ -275,7 +273,7 @@ const NotificationDropdown = ({
 
         markAsReadPromise
           .then(() => {
-            // Try to emit socket event if socket is available
+
             try {
               const socket = getSocket();
               if (socket && user) {
@@ -285,22 +283,14 @@ const NotificationDropdown = ({
                 });
               }
             } catch (err) {
-              // Silent fail if socket is not available
-              console.warn("Socket emission failed:", err);
             }
           })
           .catch((error) => {
-            // Revert if API call fails
-            console.error("Error marking notification as read:", error);
-
             setNotifications(previousNotifications);
             setUnreadCount(previousUnreadCount);
             onCountUpdate?.(previousUnreadCount);
           });
       } catch (error) {
-        // Revert if any synchronous code fails
-        console.error("Error processing notification click:", error);
-
         setNotifications(previousNotifications);
         setUnreadCount(previousUnreadCount);
         onCountUpdate?.(previousUnreadCount);
@@ -309,7 +299,7 @@ const NotificationDropdown = ({
     [notifications, unreadCount, onCountUpdate, user]
   );
 
-  // Optimized mark all as read handler
+
   const handleMarkAllAsRead = useCallback(async () => {
     if (unreadCount === 0) return;
 
@@ -317,12 +307,12 @@ const NotificationDropdown = ({
     const previousUnreadCount = unreadCount;
 
     try {
-      // Optimistic UI update immediately
+
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
       onCountUpdate?.(0);
 
-      // Make API call with timeout
+
       const markAllAsReadPromise = Promise.race([
         notificationService.markAllAsRead(),
         new Promise((_, reject) =>
@@ -338,33 +328,27 @@ const NotificationDropdown = ({
               socket.emit("allNotificationsRead", { userId: user._id });
             }
           } catch (err) {
-            console.warn("Socket emission failed:", err);
           }
         })
         .catch((error) => {
-          console.error("Error marking all notifications as read:", error);
-
-          // Revert on error
           setNotifications(previousNotifications);
           setUnreadCount(previousUnreadCount);
           onCountUpdate?.(previousUnreadCount);
         });
     } catch (error) {
-      console.error("Error processing mark all as read:", error);
-
       setNotifications(previousNotifications);
       setUnreadCount(previousUnreadCount);
       onCountUpdate?.(previousUnreadCount);
     }
   }, [notifications, unreadCount, onCountUpdate, user]);
 
-  // Memoized close handler for post detail
+
   const handlePostDetailClose = useCallback(() => {
     setShowPostDetail(false);
     setSelectedPost(null);
   }, []);
 
-  // Don't render if not open
+
   if (!isOpen) return null;
 
   return (

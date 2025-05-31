@@ -1,4 +1,4 @@
-// hooks/usePostInteractions.ts
+
 import { useState, useCallback } from "react";
 import { likePost, deletePost } from "../../services/postService";
 import { useAuth } from "../../context/AuthContext";
@@ -20,7 +20,6 @@ export const usePostInteractions = (post: any, onRefresh?: () => void, onDelete?
       await likePost(post._id);
       onRefresh?.();
     } catch (error) {
-      console.error("Error liking post:", error);
       toggleLike(post._id, post.likes, user._id);
     } finally {
       setIsLiking(false);
@@ -36,7 +35,6 @@ export const usePostInteractions = (post: any, onRefresh?: () => void, onDelete?
       onDelete?.(post._id);
       onRefresh?.();
     } catch (error) {
-      console.error("Error deleting post:", error);
     } finally {
       setIsDeleting(false);
     }

@@ -1,4 +1,4 @@
-// src/app/_components/AuthModal.tsx
+
 "use client"
 import { 
   Box, 

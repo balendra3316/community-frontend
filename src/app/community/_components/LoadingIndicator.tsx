@@ -1,4 +1,4 @@
-// src/app/community/_components/LoadingIndicator.tsx
+
 
 import React from "react";
 import { Typography } from "@mui/material";

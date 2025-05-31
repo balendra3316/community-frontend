@@ -1,4 +1,4 @@
-// src/app/_components/Footer.tsx
+
 "use client"
 import { Box, Container, Link, Typography } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';

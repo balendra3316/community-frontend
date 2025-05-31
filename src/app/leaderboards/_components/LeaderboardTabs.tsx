@@ -1,4 +1,4 @@
-// src/components/leaderboard/LeaderboardTabs.tsx
+
 import React from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 

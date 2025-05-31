@@ -1,5 +1,5 @@
 
-// components/DeleteModal.tsx
+
 import React, { memo } from "react";
 
 interface DeleteModalProps {

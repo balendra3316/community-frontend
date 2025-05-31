@@ -9,12 +9,12 @@ interface AdminCredentials {
     email: string;
   }
   
-  // API base URL
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   
-  // Admin API service
+
   export const adminService = {
-    // Login admin
+
     async login(credentials: AdminCredentials): Promise<AdminData> {
       const response = await fetch(`${API_URL}/admin/login`, {
         method: 'POST',
@@ -32,7 +32,7 @@ interface AdminCredentials {
   
       const data = await response.json();
       
-      // Save admin in localStorage for UI state (not for auth)
+
       if (typeof window !== 'undefined') {
         localStorage.setItem('adminInfo', JSON.stringify(data.admin));
       }
@@ -40,7 +40,7 @@ interface AdminCredentials {
       return data.admin;
     },
   
-    // Get current admin
+
     async getCurrentAdmin(): Promise<AdminData> {
       const response = await fetch(`${API_URL}/admin/me`, {
         method: 'GET',
@@ -58,20 +58,20 @@ interface AdminCredentials {
       return data;
     },
   
-    // Logout admin
+
     async logout(): Promise<void> {
       await fetch(`${API_URL}/admin/logout`, {
         method: 'POST',
         credentials: 'include', // Important for cookies
       });
       
-      // Remove admin from localStorage
+
       if (typeof window !== 'undefined') {
         localStorage.removeItem('adminInfo');
       }
     },
   
-    // Check if admin is logged in (client-side)
+
     isLoggedIn(): boolean {
       if (typeof window === 'undefined') {
         return false;

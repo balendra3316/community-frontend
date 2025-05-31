@@ -1,4 +1,4 @@
-// src/services/leaderboard.service.ts
+
 import axios from 'axios';
 
 export interface LeaderboardUser {
@@ -20,7 +20,7 @@ export interface LeaderboardResponse {
   };
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export const LeaderboardService = {
   getAllTimeLeaderboard: async (limit: number = 10): Promise<LeaderboardResponse> => {
@@ -31,7 +31,6 @@ export const LeaderboardService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching all-time leaderboard:', error);
       throw error;
     }
   },
@@ -44,7 +43,6 @@ export const LeaderboardService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching weekly leaderboard:', error);
       throw error;
     }
   },
@@ -57,7 +55,6 @@ export const LeaderboardService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching monthly leaderboard:', error);
       throw error;
     }
   }

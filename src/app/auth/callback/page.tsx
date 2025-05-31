@@ -1,4 +1,4 @@
-// src/app/auth/callback/page.tsx
+
 "use client"
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,21 +14,16 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        console.log("Auth callback initiated");
         if (!authAttempted) {
           setAuthAttempted(true);
           const isAuthenticated = await checkAuth();
-          console.log("Authentication check result:", isAuthenticated);
-          
           if (isAuthenticated) {
-            console.log("User authenticated, redirecting to community");
             router.push('/community');
           } else {
             setError("Authentication failed. Please try again.");
           }
         }
       } catch (error) {
-        console.error('Auth callback error:', error);
         setError("An error occurred during authentication.");
       }
     };
@@ -36,7 +31,6 @@ export default function AuthCallback() {
     if (!loading && !user && !authAttempted) {
       handleCallback();
     } else if (user && !loading) {
-      console.log("User already authenticated, redirecting to community");
       router.push('/community');
     }
   }, [loading, user, authAttempted, checkAuth, router]);

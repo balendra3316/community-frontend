@@ -1,16 +1,16 @@
 
 
-//src/app/classroom/page.tsx
+
 'use client';
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import NavBar from '../../components/Navbar';
 import { CourseService, Course } from '../../services/courseService';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
-// Lazy load CourseGrid component
+
 const CourseGrid = lazy(() => import('./_components/CourseGrid'));
 
-// Constants
+
 const COURSES_PER_PAGE = 6;
 
 export default function Classroom() {
@@ -18,14 +18,13 @@ export default function Classroom() {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Memoized fetch function to prevent recreation on every render
+
   const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const data = await CourseService.getAllCourses();
       setCourses(data);
     } catch (error) {
-      console.error('Error fetching courses:', error);
     } finally {
       setLoading(false);
     }
@@ -35,7 +34,7 @@ export default function Classroom() {
     fetchCourses();
   }, [fetchCourses]);
 
-  // Memoized pagination calculations
+
   const paginationData = useMemo(() => {
     const totalPages = Math.ceil(courses.length / COURSES_PER_PAGE);
     const indexOfLastCourse = currentPage * COURSES_PER_PAGE;
@@ -45,7 +44,7 @@ export default function Classroom() {
     return { currentCourses, totalPages };
   }, [courses, currentPage]);
 
-  // Memoized pagination handlers
+
   const handlePreviousPage = useCallback(() => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
   }, []);
@@ -58,7 +57,7 @@ export default function Classroom() {
     setCurrentPage(page);
   }, []);
 
-  // Memoized page numbers array
+
   const pageNumbers = useMemo(() => 
     Array.from({ length: paginationData.totalPages }, (_, i) => i + 1),
     [paginationData.totalPages]
@@ -72,7 +71,21 @@ export default function Classroom() {
           <h1 className="text-2xl font-semibold text-gray-800 mb-6">Classroom</h1>
           
           <div className="mb-8">
-            <Suspense fallback={<div>Loading courses...</div>}>
+            <Suspense fallback={ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md h-full animate-pulse">
+            <div className="w-full h-48 bg-gray-300"></div>
+            <div className="p-4">
+              <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+            </div>
+            <div className="px-4 pb-4">
+              <div className="w-full bg-gray-300 rounded-full h-2.5 mt-4"></div>
+            </div>
+          </div>
+        ))}
+      </div>}>
               <CourseGrid courses={paginationData.currentCourses} loading={loading} />
             </Suspense>
           </div>

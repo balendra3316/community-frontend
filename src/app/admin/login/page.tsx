@@ -12,7 +12,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect if already logged in
+
     if (admin && !loading) {
       router.push('/admin');
     }

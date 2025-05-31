@@ -24,7 +24,7 @@ interface PostDetailViewProps {
   onRefresh?: () => void;
 }
 
-// Inner component wrapped by CommentStateProvider
+
 function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewProps) {
   const { user } = useAuth();
   const [commentText, setCommentText] = useState('');
@@ -43,7 +43,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
   const { setLikedPosts, setLikeCounts, toggleLike } = usePostStateDispatch();
   const { initializeCommentState } = useCommentStateDispatch();
   
-  // Poll state
+
   const [pollVoting, setPollVoting] = useState(false);
   const [pollVotes, setPollVotes] = useState<{[key: number]: string[]}>({});
 
@@ -52,7 +52,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
       setLikes(post.likes || []);
       loadComments();
       
-      // Initialize poll votes from post data
+
       if (post.poll && post.poll.options) {
         const votesMap: {[key: number]: string[]} = {};
         post.poll.options.forEach((option, index) => {
@@ -61,10 +61,10 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         setPollVotes(votesMap);
       }
       
-      // Set up socket listeners for this post
+
       const socket = getSocket();
       
-      // Listen for new comments
+
       socket.on('newComment', (data: {
         postId: string;
         comment: Comment;
@@ -76,7 +76,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         }
       });
       
-      // Listen for deleted comments
+
       socket.on('commentDeleted', (data: {
         postId: string;
         commentId: string;
@@ -88,7 +88,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         }
       });
       
-      // Cleanup function
+
       return () => {
         socket.off('newComment');
         socket.off('commentDeleted');
@@ -96,7 +96,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     }
   }, [isOpen, post]);
 
-  // Function to handle new comment from socket
+
   const handleNewComment = (data: {
     postId: string;
     comment: Comment;
@@ -104,27 +104,27 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     parentId: string | null;
   }) => {
     if (data.isReply && data.parentId) {
-      // Handle reply comment
+
       setComments(prevComments => {
         const updatedComments = prevComments.map(comment => {
           if (comment._id === data.parentId) {
-            // Add new reply to this comment
+
             const replies = comment.replies ? [...comment.replies, data.comment] : [data.comment];
             return { ...comment, replies };
           }
           return comment;
         });
         
-        // Initialize comment state for new comments
+
         if (user) {
-          // We only need to initialize the new comment
+
           initializeCommentState([data.comment], user._id);
         }
         
         return updatedComments;
       });
       
-      // Make sure parent comment's replies are expanded
+
       setExpandedComments(prev => {
         const newSet = new Set(prev);
         if (data.parentId) {
@@ -133,13 +133,13 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         return newSet;
       });
     } else {
-      // Handle direct comment
+
       setComments(prevComments => {
         const updatedComments = [data.comment, ...prevComments];
         
-        // Initialize comment state for new comments
+
         if (user) {
-          // We only need to initialize the new comment
+
           initializeCommentState([data.comment], user._id);
         }
         
@@ -148,7 +148,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     }
   };
 
-  // Function to handle deleted comment from socket
+
   const handleCommentDeleted = (data: {
     postId: string;
     commentId: string;
@@ -156,11 +156,11 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     parentId: string | null;
   }) => {
     if (data.isReply && data.parentId) {
-      // Handle deleted reply
+
       setComments(prevComments => {
         return prevComments.map(comment => {
           if (comment._id === data.parentId && comment.replies) {
-            // Filter out the deleted reply
+
             const replies = comment.replies.filter(reply => reply._id !== data.commentId);
             return { ...comment, replies };
           }
@@ -168,7 +168,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         });
       });
     } else {
-      // Handle deleted direct comment
+
       setComments(prevComments => prevComments.filter(comment => comment._id !== data.commentId));
     }
   };
@@ -186,7 +186,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         setComments(prev => [...prev, ...response.comments]);
       }
       
-      // Initialize comment state with fetched comments for optimistic updates
+
       if (user) {
         initializeCommentState(response.comments, user._id);
       }
@@ -194,7 +194,6 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
       setPage(response.page);
       setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Error loading comments:', error);
     } finally {
       setIsLoading(false);
     }
@@ -204,30 +203,28 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     if (!post || !user) return;
     
     try {
-      // Use context to update state optimistically
+
       toggleLike(post._id, likes, user._id);
       
-      // Make API call in the background
+
       await likePost(post._id);
       
-      // No need to manually update likes state since we're using the context
-      // The context will handle the UI updates
+
+
         
       if (onRefresh) {
         onRefresh();
       }
     } catch (error) {
-      console.error('Error liking post:', error);
-      // Revert the toggle if there's an error
       toggleLike(post._id, likes, user._id);
     }
   };
 
-  // Function to handle poll votes
+
   const handleVote = async (optionIndex: number) => {
     if (!post || !user) return;
     
-    // Check if user has already voted
+
     const hasVoted = post.poll?.voters?.includes(user._id);
     if (hasVoted) return;
 
@@ -235,7 +232,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
       setPollVoting(true);
       const response = await voteOnPoll(post._id, optionIndex);
       
-      // Update local poll state with new votes
+
       if (response.voted && post.poll) {
         const newVotes = {...pollVotes};
         response.results.forEach((result, idx) => {
@@ -243,7 +240,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         });
         setPollVotes(newVotes);
         
-        // Update voters to include current user
+
         if (post.poll.voters) {
           post.poll.voters = [...post.poll.voters, user._id];
         } else {
@@ -255,7 +252,6 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
         onRefresh();
       }
     } catch (error) {
-      console.error('Error voting on poll:', error);
     } finally {
       setPollVoting(false);
     }
@@ -280,28 +276,26 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
   const isPostLikedByUser = !!(user && likes.includes(user._id));
   const hasVotedOnPoll = !!user && !!post?.poll?.voters?.includes(user._id);
 
-  // Function to handle comment likes with optimistic updates
+
   const handleLikeComment = async (commentId: string) => {
     if (!user) return;
     
     try {
-      // API call is made in the background
-      // The UI update happens in the CommentItem component via context
+
+
       await likeComment(commentId);
     } catch (error) {
-      console.error('Error liking comment:', error);
     }
   };
 
-  // Function to handle comment deletion with socket integration
+
   const handleDeleteComment = async (commentId: string) => {
     try {
       await deleteComment(commentId);
-      // No need to update the state manually here since we're now listening for 'commentDeleted' event
+
       setShowActionMenu(null);
       if (onRefresh) onRefresh();
     } catch (error) {
-      console.error('Error deleting comment:', error);
     }
   };
 
@@ -402,16 +396,16 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
           setReplyToId={setReplyToId}
           setReplyToName={setReplyToName}
           onSubmitSuccess={() => {
-            // We no longer need to refresh comments after submitting one
-            // The socket will handle updating the UI
-            // But we should still clear the form
+
+
+
             setCommentText('');
             setImageFile(null);
             setYoutubeLink('');
             setReplyToId(null);
             setReplyToName('');
             
-            // Still call onRefresh to update any other UI elements (like comment count)
+
             if (onRefresh) onRefresh();
           }}
         />
@@ -420,7 +414,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
   );
 }
 
-// Wrapper component that provides the CommentStateProvider
+
 export default function PostDetailView(props: PostDetailViewProps) {
   return (
     <CommentStateProvider>

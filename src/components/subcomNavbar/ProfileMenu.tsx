@@ -1,5 +1,5 @@
 
-// components/NavBar/ProfileMenu.tsx
+
 import { memo, useCallback, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut } from 'lucide-react';
@@ -41,7 +41,6 @@ const ProfileMenu = memo(({
       onMenuClose();
       router.push('/');
     } catch (error) {
-      console.error("Error logging out:", error);
     }
   }, [onLogout, onMenuClose, router]);
 

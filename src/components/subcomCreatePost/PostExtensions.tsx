@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
-// Lazy load emoji picker
+
 const EmojiPicker = lazy(() => import('emoji-picker-react'));
 
 interface YouTubeVideoInfo {
@@ -33,16 +33,16 @@ interface PostExtensionsProps {
 const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmojiSelect }: PostExtensionsProps) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
 
-  // Remove the useEffect and anchorElEmoji state since we're using the passed anchor
 
-  // Extract YouTube video ID from URL
+
+
   const extractYouTubeVideoId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  // Handle YouTube link submission
+
   const handleYouTubeSubmit = () => {
     if (youtubeUrl) {
       const videoId = extractYouTubeVideoId(youtubeUrl);
@@ -58,13 +58,13 @@ const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmoji
     }
   };
 
-  // Handle emoji selection - don't close modal automatically
+
   const handleEmojiSelect = (emojiData: any) => {
     onEmojiSelect(emojiData.emoji);
-    // Keep the emoji picker open for multiple selections
+
   };
 
-  // Handle emoji popover close
+
   const handleEmojiClose = () => {
     onClose();
   };

@@ -48,7 +48,6 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
       setIsCreatingSection(false);
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error(err.message);
       alert(`Failed to create section: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -62,7 +61,6 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
      await courseService.deleteSection(sectionId);
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error(err.message);
       alert(`Failed to delete section: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -98,7 +96,6 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
       setIsCreatingSectionLesson(null);
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error(err.message);
       alert(`Failed to create lesson: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -112,14 +109,13 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
       await courseService.deleteLesson(lessonId)
       await handleSelectCourse(selectedCourse._id);
     } catch (err: any) {
-      console.error(err.message);
       alert(`Failed to delete lesson: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Sort sections by order
+
   const sortedSections  = [...selectedCourse.sections]
     .filter(section => section._id !== 'direct')
     .sort((a, b) => (('order' in a ? a.order : 0) || 0) - (('order' in b ? b.order : 0) || 0))
@@ -197,7 +193,6 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
                       setEditData({});
                       await handleSelectCourse(selectedCourse._id);
                     } catch (err: any) {
-                      console.error(err.message);
                       alert(`Failed to update section: ${err.message}`);
                     } finally {
                       setIsLoading(false);
@@ -253,7 +248,7 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
               
               <div className="pl-4 space-y-2">
                 {'lessons' in section && section.lessons && section.lessons.length > 0 ? (
-                  // Sort lessons by order
+
                   [...(section.lessons || [])]
                     .sort((a, b) => (a.order || 0) - (b.order || 0))
                     .map((lesson) => (
@@ -314,7 +309,6 @@ export default function SectionsList({ selectedCourse, handleSelectCourse }: Sec
                                 setEditData({});
                                 await handleSelectCourse(selectedCourse._id);
                               } catch (err: any) {
-                                console.error(err.message);
                                 alert(`Failed to update lesson: ${err.message}`);
                               } finally {
                                 setIsLoading(false);

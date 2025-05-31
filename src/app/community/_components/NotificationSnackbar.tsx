@@ -1,4 +1,4 @@
-// src/app/community/_components/NotificationSnackbar.tsx
+
 
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";

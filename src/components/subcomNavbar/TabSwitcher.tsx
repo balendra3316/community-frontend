@@ -1,5 +1,5 @@
 
-// components/NavBar/TabSwitcher.tsx
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo } from 'react';

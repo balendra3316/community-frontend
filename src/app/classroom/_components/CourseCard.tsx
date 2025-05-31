@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-//import Image from 'next/image';
+
 import Link from 'next/link';
 import { Course } from '../../../services/courseService';
 
@@ -9,7 +9,7 @@ interface CourseCardProps {
   }
   
   const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
-    // Default progress to 0% 
+
     const progress = course.progress?.completionPercentage || 0
     
     return (
@@ -21,7 +21,7 @@ interface CourseCardProps {
           {/* Course Image */}
           <div className="relative w-full h-48 bg-gray-200">
             {course.coverImage ? (
-              // Using img tag instead of Next.js Image to avoid domain configuration issues
+
               <img 
                 src={course.coverImage}
                 alt={course.title}

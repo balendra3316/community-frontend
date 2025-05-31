@@ -1,11 +1,11 @@
-// src/app/community/_components/OptimizedPostsList.tsx
+
 
 import React, { memo, useCallback, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { PostSkeleton } from "./PostSkeleton";
 import { Post as PostType } from "../../../services/postService";
 
-// Lazy load the Post component
+
 const Post = React.lazy(() => import("../../../components/Post"));
 
 interface OptimizedPostsListProps {
@@ -23,7 +23,7 @@ interface OptimizedPostsListProps {
   onCreatePost: () => void;
 }
 
-// Memoized Post Item to prevent unnecessary re-renders
+
 const PostItem = memo(({ 
   post, 
   onPostClick, 
@@ -58,7 +58,7 @@ const PostItem = memo(({
 
 PostItem.displayName = 'PostItem';
 
-// Loading skeletons component
+
 const LoadingSkeletons = memo(() => (
   <>
     <PostSkeleton />
@@ -69,7 +69,7 @@ const LoadingSkeletons = memo(() => (
 
 LoadingSkeletons.displayName = 'LoadingSkeletons';
 
-// Error component
+
 const ErrorState = memo(({ error, onRetry }: { error: string; onRetry: () => void }) => (
   <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700">
     {error}
@@ -81,7 +81,7 @@ const ErrorState = memo(({ error, onRetry }: { error: string; onRetry: () => voi
 
 ErrorState.displayName = 'ErrorState';
 
-// Empty state component
+
 const EmptyState = memo(({ onCreatePost }: { onCreatePost: () => void }) => (
   <div className="bg-white rounded-lg shadow p-6 text-center">
     <h3 className="text-lg font-medium text-gray-700 mb-2">
@@ -101,7 +101,7 @@ const EmptyState = memo(({ onCreatePost }: { onCreatePost: () => void }) => (
 
 EmptyState.displayName = 'EmptyState';
 
-// Load more button component
+
 const LoadMoreButton = memo(({ 
   onLoadMore, 
   loadingMore 
@@ -140,7 +140,7 @@ export default memo(function OptimizedPostsList({
   onRetry,
   onCreatePost,
 }: OptimizedPostsListProps) {
-  // Memoize the posts list to prevent unnecessary re-renders
+
   const postsList = useMemo(() => 
     posts.map((post) => (
       <PostItem
@@ -154,22 +154,22 @@ export default memo(function OptimizedPostsList({
     [posts, onPostClick, onPostUpdate, onPostDelete]
   );
 
-  // Loading State
+
   if (loading) {
     return <LoadingSkeletons />;
   }
 
-  // Error State
+
   if (error) {
     return <ErrorState error={error} onRetry={onRetry} />;
   }
 
-  // Empty State
+
   if (posts.length === 0) {
     return <EmptyState onCreatePost={onCreatePost} />;
   }
 
-  // Posts List
+
   return (
     <div className="space-y-6">
       {postsList}
