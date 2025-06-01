@@ -150,21 +150,21 @@ export default function Leaderboards() {
             <Box sx={{ width: '100%' }}>
               <TabPanel value={activeTab} index={0}>
                 <LeaderboardCard 
-                  title="Leaderboard (7-day)" 
+                  title="Leaderboard (Last 7-days)" 
                   users={leaderboards.weekly.data?.leaderboard || []} 
                   loading={leaderboards.weekly.loading} 
                 />
               </TabPanel>
               <TabPanel value={activeTab} index={1}>
                 <LeaderboardCard 
-                  title="Leaderboard (30-day)" 
+                  title="Leaderboard (Last 30-days)" 
                   users={leaderboards.monthly.data?.leaderboard || []} 
                   loading={leaderboards.monthly.loading} 
                 />
               </TabPanel>
               <TabPanel value={activeTab} index={2}>
                 <LeaderboardCard 
-                  title="Leaderboard (all-time)" 
+                  title="Leaderboard (All-time)" 
                   users={leaderboards.allTime.data?.leaderboard || []} 
                   loading={leaderboards.allTime.loading} 
                 />

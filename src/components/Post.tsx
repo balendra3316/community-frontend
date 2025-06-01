@@ -1,613 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
 import {
   MessageSquare,
@@ -643,15 +33,11 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
   const { likedPosts, likeCounts } = usePostState();
   const { setLikedPosts, setLikeCounts, toggleLike } = usePostStateDispatch();
 
-
   const isOwnPost = user && post.author._id === user._id;
-
 
   useEffect(() => {
     if (user && post) {
-
       if (likedPosts[post._id] === undefined) {
-
         const isLikedFromServer = post.likes.includes(user._id);
 
         setLikedPosts((prev) => ({ ...prev, [post._id]: isLikedFromServer }));
@@ -659,7 +45,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
       }
     }
   }, [post._id, user, post.likes]);
-
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -675,11 +60,9 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     };
   }, [showMenu]);
 
-
   const isLiked =
     likedPosts[post._id] ?? (user ? post.likes.includes(user._id) : false);
   const currentLikeCount = likeCounts[post._id] ?? post.likes.length;
-
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -716,7 +99,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     }
   };
 
-
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user || isLiking) return;
@@ -724,15 +106,11 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     try {
       setIsLiking(true);
 
-
       const isCurrentlyLikedFromServer = post.likes.includes(user._id);
-
 
       toggleLike(post._id, post.likes, user._id);
 
-
       await likePost(post._id);
-
 
       if (onRefresh) {
         onRefresh();
@@ -752,11 +130,9 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     const commentDate = new Date(lastCommentDate);
     const now = new Date();
 
-
     const diffTime = now.getTime() - commentDate.getTime();
     const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
 
     if (diffDays < 3) {
       if (diffHours < 1) {
@@ -766,13 +142,9 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
       } else {
         return `New comment ${diffDays}d ago`;
       }
-    }
-
-    else {
-
+    } else {
       const month = commentDate.toLocaleString("en-US", { month: "short" });
       const day = commentDate.getDate();
-
 
       if (commentDate.getFullYear() !== now.getFullYear()) {
         return `Last comment ${day} ${month} ${commentDate.getFullYear()}`;
@@ -782,7 +154,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     }
   };
 
-
   const handleDeletePost = async () => {
     if (isDeleting) return;
 
@@ -791,11 +162,9 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
       await deletePost(post._id);
       setShowDeleteModal(false);
 
-
       if (onDelete) {
         onDelete(post._id);
       }
-
 
       if (onRefresh) {
         onRefresh();
@@ -806,27 +175,23 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     }
   };
 
-
   const toggleMenu = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowMenu((prev) => !prev);
   };
 
-
   const getYoutubeId = (url: string): string => {
     if (!url) return "";
-    
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : "";
-  };
 
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : "";
+  };
 
   const getYoutubeThumbnail = (url: string): string => {
     const videoId = getYoutubeId(url);
-    return videoId
-      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-      : "";
+    return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "";
   };
 
   const openYoutubeModal = (e: React.MouseEvent) => {
@@ -841,15 +206,11 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     setShowYoutubeModal(false);
   };
 
-
   const hasYoutubeLink = post.youtubeLink && getYoutubeId(post.youtubeLink);
-
 
   const hasMedia = post.image || hasYoutubeLink;
 
-
   const lastCommentTimeFormatted = formatLastCommentTime(post.lastComment);
-
 
   const cardStyle = post.isPinned
     ? {
@@ -951,7 +312,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
           {/* Mobile View: Title and Content FIRST */}
           <div className="sm:hidden w-full">
             {/* Title with truncation for mobile */}
-            <h3
+            {/* <h3
               className="font-bold mb-2 text-ellipsis overflow-hidden"
               style={{
                 fontFamily: "Roboto, Helvetica, Arial, sans-serif",
@@ -964,7 +325,21 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
               }}
             >
               {post.title}
+            </h3> */}
+            <h3
+             className="text-gray-700 overflow-hidden mb-3"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: "3",
+                WebkitBoxOrient: "vertical",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {post.title}
             </h3>
+
+
+   
 
             {/* Content with truncation for mobile */}
             <p
@@ -1199,214 +574,3 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

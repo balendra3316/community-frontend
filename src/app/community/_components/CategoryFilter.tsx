@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { Filter } from "lucide-react";
 import Menu from "@mui/material/Menu";
@@ -52,7 +50,7 @@ export default function CategoryFilter({
 
   return (
     <div className="mb-6">
-      <div className="flex items-center">
+      <div className="flex items-start">
         {/* Scrollable categories */}
         <div
           className="flex-1 overflow-x-auto pr-4"
@@ -62,7 +60,7 @@ export default function CategoryFilter({
           }}
         >
           <div
-            className="flex items-center gap-2 pb-2"
+            className="flex items-center gap-2 py-2"
             style={{ minWidth: "max-content" }}
           >
             <button
@@ -92,8 +90,8 @@ export default function CategoryFilter({
           </div>
         </div>
 
-        {/* Filter button */}
-        <div className="ml-2">
+        {/* Filter button - aligned with category buttons */}
+        <div className="flex-shrink-0 pt-1">
           <button
             className="rounded-full p-3 bg-gray-200 hover:bg-gray-300 flex items-center gap-1"
             onClick={handleFilterMenuOpen}

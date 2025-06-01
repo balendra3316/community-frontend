@@ -18,8 +18,8 @@ const LeaderboardTabs: React.FC<LeaderboardTabsProps> = ({ value, onChange }) =>
         textColor="primary"
         variant="fullWidth"
       >
-        <Tab label="Weekly (7-day)" id="leaderboard-tab-0" aria-controls="leaderboard-tabpanel-0" />
-        <Tab label="Monthly (30-day)" id="leaderboard-tab-1" aria-controls="leaderboard-tabpanel-1" />
+        <Tab label="Weekly" id="leaderboard-tab-0" aria-controls="leaderboard-tabpanel-0" />
+        <Tab label="Monthly" id="leaderboard-tab-1" aria-controls="leaderboard-tabpanel-1" />
         <Tab label="All-time" id="leaderboard-tab-2" aria-controls="leaderboard-tabpanel-2" />
       </Tabs>
     </Box>

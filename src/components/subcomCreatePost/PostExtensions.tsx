@@ -1,4 +1,7 @@
-import { memo, useState, lazy, Suspense, useEffect } from 'react';
+
+
+
+import { memo, useState, lazy, Suspense } from 'react';
 import { 
   Button, 
   IconButton, 
@@ -8,11 +11,9 @@ import {
   DialogActions, 
   DialogContent, 
   DialogTitle,
-  CircularProgress,
-  Popover
+  CircularProgress
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-
 
 const EmojiPicker = lazy(() => import('emoji-picker-react'));
 
@@ -24,24 +25,26 @@ interface YouTubeVideoInfo {
 
 interface PostExtensionsProps {
   type: 'youtube' | 'emoji' | null;
-  emojiAnchor?: HTMLElement | null;
+  emojiTarget?: 'title' | 'content';
   onClose: () => void;
   onYoutubeAdd: (video: YouTubeVideoInfo) => void;
   onEmojiSelect: (emoji: string) => void;
 }
 
-const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmojiSelect }: PostExtensionsProps) => {
+const PostExtensions = memo(({ 
+  type, 
+  emojiTarget = 'content',
+  onClose, 
+  onYoutubeAdd, 
+  onEmojiSelect 
+}: PostExtensionsProps) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
-
-
-
 
   const extractYouTubeVideoId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : null;
   };
-
 
   const handleYouTubeSubmit = () => {
     if (youtubeUrl) {
@@ -58,12 +61,10 @@ const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmoji
     }
   };
 
-
   const handleEmojiSelect = (emojiData: any) => {
     onEmojiSelect(emojiData.emoji);
-
+    // Don't close here - let parent handle it
   };
-
 
   const handleEmojiClose = () => {
     onClose();
@@ -113,54 +114,51 @@ const PostExtensions = memo(({ type, emojiAnchor, onClose, onYoutubeAdd, onEmoji
         </Dialog>
       )}
 
-      {/* Emoji Picker Popover */}
+      {/* Emoji Picker Modal - Centered and Mobile Optimized */}
       {type === 'emoji' && (
-        <Popover
-          open={Boolean(emojiAnchor)}
-          anchorEl={emojiAnchor}
-          onClose={handleEmojiClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
+        <div 
+          className="fixed inset-0 z-[60] bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center p-4"
+          onClick={handleEmojiClose}
           style={{ zIndex: 1400 }}
-          PaperProps={{
-            style: {
-              maxHeight: '400px',
-              maxWidth: '350px',
-              overflow: 'hidden',
-              zIndex: 1400
-            }
-          }}
         >
-          <div className="relative">
-            {/* Close button for emoji picker */}
-            <div className="flex justify-between items-center p-2 border-b">
-              <Typography variant="subtitle2">Choose Emoji</Typography>
+          <div 
+            className="bg-white rounded-lg shadow-xl w-full max-w-sm max-h-[80vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+            style={{ zIndex: 1401 }}
+          >
+            {/* Header with close button */}
+            <div className="flex justify-between items-center p-3 border-b border-gray-200 flex-shrink-0">
+              <Typography variant="subtitle2" className="font-medium">
+                Choose Emoji for {emojiTarget === 'title' ? 'Title' : 'Content'}
+              </Typography>
               <IconButton size="small" onClick={handleEmojiClose}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             </div>
             
-            <div className="p-2">
+            {/* Emoji picker content */}
+            <div className="flex-1 overflow-hidden">
               <Suspense fallback={
                 <div className="flex justify-center items-center p-8">
                   <CircularProgress size={24} />
                 </div>
               }>
-                <EmojiPicker 
-                  onEmojiClick={handleEmojiSelect}
-                  width={300}
-                  height={300}
-                />
+                <div className="h-full">
+                  <EmojiPicker 
+                    onEmojiClick={handleEmojiSelect}
+                    width="100%"
+                    height={400}
+                    searchDisabled={false}
+                    skinTonesDisabled={false}
+                    previewConfig={{
+                      showPreview: false
+                    }}
+                  />
+                </div>
               </Suspense>
             </div>
           </div>
-        </Popover>
+        </div>
       )}
     </>
   );
