@@ -113,7 +113,7 @@ const PostFormFields = memo(({
           <IconButton 
             size="small" 
             onClick={() => {
-              console.log("Title emoji button clicked"); // Debug log
+              
               onTitleEmojiClick();
             }}
             className="ml-2 text-gray-500 hover:text-blue-500"
@@ -151,7 +151,7 @@ const PostFormFields = memo(({
           <IconButton 
             size="small" 
             onClick={() => {
-              console.log("Content emoji button clicked"); // Debug log
+              
               onContentEmojiClick();
             }}
             className="ml-2 text-gray-500 hover:text-blue-500 mt-1"

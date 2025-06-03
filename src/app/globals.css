@@ -28,6 +28,66 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+
+/* 
+
+
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  
+  color-scheme: light only;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+}
+
+
+* {
+  color-scheme: light only;
+}
+
+
+h1, h2, h3, h4, h5, h6, p, span, div, a, li, td, th {
+  color: var(--foreground) !important;
+}
+
+
+.dark {
+  color-scheme: light only !important;
+} */
+
+
+
+
+
+
+
+
+
 @import "tailwindcss";
 
 :root {
@@ -44,16 +104,6 @@ body {
   --font-mono: var(--font-geist-mono);
 }
 
-/* Remove this entire block - it's overriding your light-only setting */
-/* 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-*/
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -65,12 +115,54 @@ body {
   color-scheme: light only;
 }
 
-/* Ensure all text elements use your defined foreground color */
-h1, h2, h3, h4, h5, h6, p, span, div, a, li, td, th {
-  color: var(--foreground) !important;
+/* Force light mode background and prevent dark mode activation */
+html, body {
+  background-color: var(--background) !important;
+  color-scheme: light only !important;
 }
 
-/* Override any Tailwind dark mode classes that might be applied */
-.dark {
+/* Override dark mode media query */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    color-scheme: light only;
+  }
+  
+  html, body {
+    background-color: #ffffff !important;
+    color: #171717 !important;
+  }
+}
+
+/* Override Tailwind's dark mode classes */
+.dark,
+html.dark,
+html.dark *,
+[data-theme="dark"],
+[data-theme="dark"] * {
+  background-color: var(--background) !important;
   color-scheme: light only !important;
+}
+
+/* Remove the problematic universal text color rule */
+/* This was preventing Tailwind colors from working */
+/* h1, h2, h3, h4, h5, h6, p, span, div, a, li, td, th {
+  color: var(--foreground) !important;
+} */
+
+/* Instead, only target elements that don't have Tailwind color classes */
+h1:not([class*="text-"]), 
+h2:not([class*="text-"]), 
+h3:not([class*="text-"]), 
+h4:not([class*="text-"]), 
+h5:not([class*="text-"]), 
+h6:not([class*="text-"]),
+p:not([class*="text-"]),
+span:not([class*="text-"]),
+div:not([class*="text-"]),
+li:not([class*="text-"]),
+td:not([class*="text-"]),
+th:not([class*="text-"]) {
+  color: var(--foreground);
 }

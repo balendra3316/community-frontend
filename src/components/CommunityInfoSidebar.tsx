@@ -1,85 +1,142 @@
 
+
+
 import { FC } from 'react';
 import Link from 'next/link';
+import { CalendarToday, People, Shop } from '@mui/icons-material';
 
 const CommunityInfoSidebar: FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden mb-4 animate-fadeIn">
-      {/* Community banner with overlay effect */}
-      <div className="relative h-40 bg-gray-200 overflow-hidden">
+      {/* Community banner with overlay effect - Responsive height */}
+      <div className="relative h-24 sm:h-32 md:h-40 bg-gray-200 overflow-hidden">
         <img
           src="community-info.jpg"
           alt="Dance Academy"
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
       </div>
       
       {/* Community details */}
-      <div className="p-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-2 animate-slideInLeft">
-          AnyOne Can Dance
+      <div className="p-3 sm:p-4">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 animate-slideInLeft">
+          Anyone Can Dance
         </h2>
-        <Link href="https://anyonecandance.in/">
-          <p className="text-sm text-blue-600 hover:text-blue-800 mb-4 transition-colors duration-200">
+        <Link href="https://anyonecandance.in/" target="_blank" rel="noopener noreferrer">
+          <p className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 mb-3 sm:mb-4 transition-colors duration-200 break-words">
             www.anyonecandance.in
           </p>
         </Link>
-        <p className="text-sm text-gray-700 mb-4 animate-slideInRight">
-          We aim to be the most up-to-date dance life for you. You can join us Acd 
+        <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 animate-slideInRight">
+          Because everybody was born to dance
         </p>
         
-        {/* Community links with hover animations */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center text-gray-600 transform transition-all duration-200 hover:translate-x-2 hover:text-yellow-600">
-            <Link href="https://learn.anyonecandance.in/acd" className="text-sm relative group">
-              <span className="relative z-10">5 Day free workshop</span>
-              <span className="absolute inset-0 bg-yellow-100 rounded transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></span>
+        {/* Community links with icons and enhanced styling */}
+        <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
+          <div className="flex items-center transform transition-all duration-200 hover:translate-x-2 group">
+            <CalendarToday 
+              sx={{ 
+                fontSize: { xs: 16, sm: 18 }, 
+                color: '#008894', 
+                marginRight: 1,
+                transition: 'transform 0.2s ease',
+                '&:hover': { transform: 'scale(1.1)' }
+              }} 
+            />
+            <Link href="https://learn.anyonecandance.in/acd" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+              <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
+                5 Day free workshop
+              </span>
             </Link>
           </div>
-          <div className="flex items-center text-gray-600 transform transition-all duration-200 hover:translate-x-2 hover:text-yellow-600">
-            <Link href="https://acdwithsameer.com/" className="text-sm relative group">
-              <span className="relative z-10">Refer & Earn</span>
-              <span className="absolute inset-0 bg-yellow-100 rounded transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></span>
+          
+          <div className="flex items-center transform transition-all duration-200 hover:translate-x-2 group">
+            <People 
+              sx={{ 
+                fontSize: { xs: 16, sm: 18 }, 
+                color: '#008894', 
+                marginRight: 1,
+                transition: 'transform 0.2s ease',
+                '&:hover': { transform: 'scale(1.1)' }
+              }} 
+            />
+            <Link href="https://acdwithsameer.com/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+              <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
+                Refer & Earn
+              </span>
             </Link>
           </div>
-          <div className="flex items-center text-gray-600 transform transition-all duration-200 hover:translate-x-2 hover:text-yellow-600">
-            <Link href="https://anyonecandance.in" className="text-sm relative group">
-              <span className="relative z-10">Shop</span>
-              <span className="absolute inset-0 bg-yellow-100 rounded transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></span>
+          
+          <div className="flex items-center transform transition-all duration-200 hover:translate-x-2 group">
+            <Shop 
+              sx={{ 
+                fontSize: { xs: 16, sm: 18 }, 
+                color: '#008894', 
+                marginRight: 1,
+                transition: 'transform 0.2s ease',
+                '&:hover': { transform: 'scale(1.1)' }
+              }} 
+            />
+            <Link href="https://anyonecandance.in" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+              <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
+                Shop
+              </span>
             </Link>
           </div>
         </div>
         
-        {/* Community stats with animation */}
-        <div className="flex justify-between text-center border-t border-gray-200 pt-4">
-          <div className="animate-bounce-subtle">
-            <div className="text-xl font-bold text-blue-600">25k+</div>
-            <div className="text-xs text-gray-500">Star Members</div>
+        {/* Community stats with animation - Responsive layout */}
+        <div className="flex justify-between text-center border-t border-gray-200 pt-3 sm:pt-4">
+          <div className="animate-bounce-subtle flex-1">
+            <div className="text-base sm:text-xl font-bold text-blue-600">2.5k+</div>
+            <div className="text-xs text-gray-500 leading-tight">Star Club Members</div>
           </div>
-          <div className="animate-bounce-subtle" style={{animationDelay: '0.1s'}}>
-            <div className="text-xl font-bold text-green-600">100K+</div>
-            <div className="text-xs text-gray-500">Dancer Member</div>
+          <div className="animate-bounce-subtle flex-1" style={{animationDelay: '0.1s'}}>
+            <div className="text-base sm:text-xl font-bold text-green-600">100K+</div>
+            <div className="text-xs text-gray-500 leading-tight">Dancer Member</div>
           </div>
-          <div className="animate-bounce-subtle" style={{animationDelay: '0.2s'}}>
-            <div className="text-xl font-bold text-purple-600">1</div>
-            <div className="text-xs text-gray-500">Coach</div>
+          <div className="animate-bounce-subtle flex-1" style={{animationDelay: '0.2s'}}>
+            <div className="text-base sm:text-xl font-bold text-purple-600">1</div>
+            <div className="text-xs text-gray-500 leading-tight">Coach</div>
           </div>
-        </div>
-      </div>
-      
-      {/* Animated Invite button */}
-      <div className="px-4 pb-4">
-        <div className="animated-border-button">
-          <Link href="https://acdwithsameer.com">
-          <button className="invite-button">
-            <span className="button-text">INVITE PEOPLE</span>
-          </button>
-          </Link>
         </div>
       </div>
 
       <style jsx>{`
+        :global(.text-primary-color) {
+          color: #008894 !important;
+        }
+        
+        :global(.text-primary-dark) {
+          color: #006b75 !important;
+        }
+
+        :global(.link-with-underline) {
+          position: relative;
+          text-decoration: none;
+          word-break: break-word;
+        }
+
+        :global(.link-with-underline::after) {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 2px;
+          bottom: -2px;
+          left: 0;
+          background: linear-gradient(90deg, #008894, #00a8b8);
+          transition: width 0.3s ease;
+        }
+
+        :global(.link-with-underline:hover::after) {
+          width: 100%;
+        }
+
+        :global(.group:hover .link-with-underline) {
+          transform: translateY(-1px);
+        }
+
         @keyframes moveGradient {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
@@ -132,11 +189,11 @@ const CommunityInfoSidebar: FC = () => {
           border-radius: 8px;
           background: conic-gradient(
             from 0deg at 50% 50%,
-            #e5463a 0deg,
-            #e9b457 72deg,
+            #008894 0deg,
+            #00a8b8 72deg,
             #50b7f2 144deg,
-            #e5463a 216deg,
-            #e9b457 288deg,
+            #008894 216deg,
+            #00a8b8 288deg,
             #50b7f2 360deg
           );
           background-size: 200% 200%;
@@ -146,7 +203,7 @@ const CommunityInfoSidebar: FC = () => {
 
         .animated-border-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 8px 25px rgba(0, 136, 148, 0.2);
         }
 
         .invite-button {
@@ -178,12 +235,12 @@ const CommunityInfoSidebar: FC = () => {
           font-size: 14px;
           letter-spacing: 1px;
           text-transform: uppercase;
-          color: #666;
+          color: #008894;
           transition: color 0.3s ease;
         }
 
         .invite-button:hover .button-text {
-          color: #333;
+          color: #006b75;
         }
 
         .invite-button::before {
@@ -196,7 +253,7 @@ const CommunityInfoSidebar: FC = () => {
           background: linear-gradient(
             90deg,
             transparent,
-            rgba(255, 255, 255, 0.6),
+            rgba(0, 136, 148, 0.1),
             transparent
           );
           transition: left 0.5s ease;
@@ -223,6 +280,17 @@ const CommunityInfoSidebar: FC = () => {
 
         .stat-number {
           animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+          .animate-bounce-subtle {
+            animation-duration: 3s;
+          }
+          
+          :global(.link-with-underline) {
+            line-height: 1.4;
+          }
         }
       `}</style>
     </div>

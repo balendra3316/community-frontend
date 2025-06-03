@@ -128,7 +128,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
-        {/* Favicon and apple touch icons */}
+        {/* and apple touch icons */}
         <link rel="icon" type="image/png" href="/logo acd.png" />
         <link rel="apple-touch-icon" href="/logo acd.png" />
         

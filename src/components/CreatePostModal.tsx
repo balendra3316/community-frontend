@@ -78,7 +78,9 @@ const CreatePostModal = ({
     return filterInstance;
   });
 
-  const categories = ["DanceTips", "SelfLove", "Events"];
+  // const categories = ["DanceTips", "SelfLove", "Events"];
+
+  const categories=["Practice Videos", "Challenge Submissions", "Q&A", "Key Information"]
 
   const containsBadWords = (text: string) => {
     try {
@@ -120,7 +122,7 @@ const CreatePostModal = ({
   };
 
   const handleOpenEmoji = (target: "title" | "content" = "content") => {
-    console.log("Opening emoji picker for:", target); // Debug log
+   
     setEmojiTarget(target);
     setExtensionType("emoji");
     setShowExtensions(true);
@@ -132,7 +134,7 @@ const CreatePostModal = ({
   };
 
   const handleEmojiSelect = (emoji: string) => {
-    console.log("Emoji selected:", emoji, "for target:", emojiTarget); // Debug log
+    
     if (emojiTarget === "title") {
       setTitle((prev) => prev + emoji);
     } else {

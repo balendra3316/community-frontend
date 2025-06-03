@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
@@ -31,7 +29,39 @@ export default function NotificationSnackbar({
       onClose={onClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <Alert onClose={onClose} severity={severity}>
+      <Alert 
+        onClose={onClose} 
+        severity={severity}
+        sx={{
+          width: '100%',
+          color: 'white !important',
+          '& .MuiAlert-message': {
+            color: 'white !important',
+            fontWeight: 500
+          },
+          '& .MuiAlert-icon': {
+            color: 'white !important'
+          },
+          '& .MuiAlert-action': {
+            color: 'white !important',
+            '& .MuiIconButton-root': {
+              color: 'white !important',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          },
+          // Ensure proper background colors
+          '&.MuiAlert-filledSuccess': {
+            backgroundColor: '#2e7d32', // Dark green for better contrast
+            color: 'white !important'
+          },
+          '&.MuiAlert-filledError': {
+            backgroundColor: '#d32f2f', // Dark red for better contrast
+            color: 'white !important'
+          }
+        }}
+      >
         {message}
       </Alert>
     </Snackbar>
