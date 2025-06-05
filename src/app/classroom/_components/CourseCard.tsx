@@ -7,7 +7,9 @@ import {
   Chip,
   Box,
   IconButton,
-  Tooltip
+  Tooltip,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { 
@@ -29,6 +31,12 @@ declare global {
 interface CourseCardProps {
   course: Course;
   onPurchaseSuccess?: () => void;
+}
+
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error' | 'warning' | 'info';
 }
 
 // Styled Material-UI Button with yellow variants
@@ -120,7 +128,30 @@ const FreeChip = styled(Chip)(({ theme }) => ({
 const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'info'
+  });
+
   const progress = course.progress?.completionPercentage || 0;
+
+  // Function to show snackbar
+  const showSnackbar = (message: string, severity: SnackbarState['severity'] = 'info') => {
+    setSnackbar({
+      open: true,
+      message,
+      severity
+    });
+  };
+
+  // Function to close snackbar
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   // Load Razorpay script dynamically
   useEffect(() => {
@@ -170,7 +201,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     
     // Check if Razorpay is loaded
     if (!isRazorpayLoaded || !window.Razorpay) {
-      alert('Payment system is still loading. Please try again in a moment.');
+      showSnackbar('Payment system is still loading. Please try again in a moment.', 'warning');
       return;
     }
     
@@ -206,13 +237,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
             console.log('Purchase response:', purchaseResponse); // Debug log
 
             // Show success message
-            alert('Course purchased successfully!');
+            showSnackbar('Course purchased successfully! 🎉', 'success');
             
             // Refresh the course list
             if (onPurchaseSuccess) {
               onPurchaseSuccess();
             }
-          } catch (error:any) {
+          } catch (error: any) {
             console.error('Payment verification failed:', error);
             
             // More detailed error handling
@@ -224,9 +255,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
             try {
               const errorResponse = await error.response?.json?.();
               console.error('Server error response:', errorResponse);
-              alert(`Payment verification failed: ${errorResponse?.message || 'Please contact support.'}`);
+              showSnackbar(`Payment verification failed: ${errorResponse?.message || 'Please contact support.'}`, 'error');
             } catch {
-              alert('Payment verification failed. Please contact support.');
+              showSnackbar('Payment verification failed. Please contact support.', 'error');
             }
           } finally {
             setIsProcessingPayment(false);
@@ -255,152 +286,171 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
       rzp.open();
     } catch (error) {
       console.error('Payment initiation failed:', error);
-      alert('Failed to initiate payment. Please try again.');
+      showSnackbar('Failed to initiate payment. Please try again.', 'error');
       setIsProcessingPayment(false);
     }
   };
 
   const CardContent = () => (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100"
-     style={{
-      boxShadow: "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px",
-      border: "1px solid rgb(228, 228, 228)"
-    }}>
-      {/* Course Image */}
-      <div className="relative w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100">
-        {course.coverImage ? (
-          <img 
-            src={course.coverImage}
-            alt={course.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-100 to-yellow-200">
-            <span className="text-amber-800 text-lg font-semibold text-center px-4">{course.title}</span>
-          </div>
-        )}
-        
-        {/* Price/Free Badge */}
-        <Box className="absolute top-3 right-3">
-          {course.isPaid ? (
-            <PriceChip 
-              icon={<Star />} 
-              label={`₹${course.price}`} 
-              size="small"
+    <>
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100"
+       style={{
+        boxShadow: "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px",
+        border: "1px solid rgb(228, 228, 228)"
+      }}>
+        {/* Course Image */}
+        <div className="relative w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100">
+          {course.coverImage ? (
+            <img 
+              src={course.coverImage}
+              alt={course.title}
+              className="w-full h-full object-cover"
             />
           ) : (
-            <FreeChip 
-              label="FREE" 
-              size="small"
-            />
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-100 to-yellow-200">
+              <span className="text-amber-800 text-lg font-semibold text-center px-4">{course.title}</span>
+            </div>
           )}
-        </Box>
-
-        {/* Course Status Indicator */}
-        {course.isAccessible && (
-          <Box className="absolute top-3 left-3">
-            <Tooltip title={course.isPaid ? "Purchased Course" : "Free Course"}>
-              <IconButton 
-                size="small" 
-                sx={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' }
-                }}
-              >
-                <PlayArrow sx={{ color: '#10B981', fontSize: '1.2rem' }} />
-              </IconButton>
-            </Tooltip>
+          
+          {/* Price/Free Badge */}
+          <Box className="absolute top-3 right-3">
+            {course.isPaid ? (
+              <PriceChip 
+                icon={<Star />} 
+                label={`₹${course.price}`} 
+                size="small"
+              />
+            ) : (
+              <FreeChip 
+                label="FREE" 
+                size="small"
+              />
+            )}
           </Box>
+
+          {/* Course Status Indicator */}
+          {course.isAccessible && (
+            <Box className="absolute top-3 left-3">
+              <Tooltip title={course.isPaid ? "Purchased Course" : "Free Course"}>
+                <IconButton 
+                  size="small" 
+                  sx={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' }
+                  }}
+                >
+                  <PlayArrow sx={{ color: '#10B981', fontSize: '1.2rem' }} />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
+        </div>
+        
+        {/* Course Content */}
+        <div className="p-5 flex-grow flex flex-col">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{course.title}</h3>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">{course.description}</p>
+          
+          {/* Action Buttons */}
+          <Box className="mt-auto">
+            {course.needsPayment && (
+              <YellowButton
+                variant="contained"
+                fullWidth
+                onClick={handlePayment}
+                disabled={isProcessingPayment || !isRazorpayLoaded}
+                startIcon={
+                  isProcessingPayment ? (
+                    <CircularProgress size={18} sx={{ color: '#92400E' }} />
+                  ) : (
+                    <ShoppingCart />
+                  )
+                }
+                sx={{ mb: 1 }}
+              >
+                {isProcessingPayment 
+                  ? 'Processing Payment...' 
+                  : !isRazorpayLoaded 
+                    ? 'Loading Payment...' 
+                    : `Purchase for ₹${course.price}`
+                }
+              </YellowButton>
+            )}
+
+            {course.isAccessible && (
+              <AccessButton
+                variant="contained"
+                fullWidth
+                startIcon={<PlayArrow />}
+                sx={{ mb: 1 }}
+              >
+                {course.isPaid ? 'Continue Learning' : 'Start Free Course'}
+              </AccessButton>
+            )}
+          </Box>
+        </div>
+        
+        {/* Progress Bar - only show for accessible courses */}
+        {course.isAccessible && (
+          <div className="px-5 pb-4">
+            <div className="flex items-center justify-between mb-2">
+              <Box display="flex" alignItems="center" gap={1}>
+                <AccessTime sx={{ fontSize: '0.875rem', color: '#6B7280' }} />
+                <span className="text-xs font-semibold text-gray-700">{progress}% Complete</span>
+              </Box>
+              <Chip 
+                label={course.isPaid ? 'Purchased' : 'Free'} 
+                size="small"
+                sx={{
+                  backgroundColor: course.isPaid ? '#FEF3C7' : '#DBEAFE',
+                  color: course.isPaid ? '#92400E' : '#1E40AF',
+                  fontSize: '0.75rem',
+                  height: '20px'
+                }}
+              />
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 h-2 rounded-full transition-all duration-500 ease-out" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Locked indicator for non-accessible courses */}
+        {!course.isAccessible && course.needsPayment && (
+          <div className="px-5 pb-4">
+            <Box 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center" 
+              className="text-gray-500 text-sm bg-gray-50 rounded-lg py-3"
+            >
+              <Lock sx={{ fontSize: '1rem', marginRight: '0.5rem' }} />
+              <span className="font-medium">Course Locked</span>
+            </Box>
+          </div>
         )}
       </div>
-      
-      {/* Course Content */}
-      <div className="p-5 flex-grow flex flex-col">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{course.title}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">{course.description}</p>
-        
-        {/* Action Buttons */}
-        <Box className="mt-auto">
-          {course.needsPayment && (
-            <YellowButton
-              variant="contained"
-              fullWidth
-              onClick={handlePayment}
-              disabled={isProcessingPayment || !isRazorpayLoaded}
-              startIcon={
-                isProcessingPayment ? (
-                  <CircularProgress size={18} sx={{ color: '#92400E' }} />
-                ) : (
-                  <ShoppingCart />
-                )
-              }
-              sx={{ mb: 1 }}
-            >
-              {isProcessingPayment 
-                ? 'Processing Payment...' 
-                : !isRazorpayLoaded 
-                  ? 'Loading Payment...' 
-                  : `Purchase for ₹${course.price}`
-              }
-            </YellowButton>
-          )}
 
-          {course.isAccessible && (
-            <AccessButton
-              variant="contained"
-              fullWidth
-              startIcon={<PlayArrow />}
-              sx={{ mb: 1 }}
-            >
-              {course.isPaid ? 'Continue Learning' : 'Start Free Course'}
-            </AccessButton>
-          )}
-        </Box>
-      </div>
-      
-      {/* Progress Bar - only show for accessible courses */}
-      {course.isAccessible && (
-        <div className="px-5 pb-4">
-          <div className="flex items-center justify-between mb-2">
-            <Box display="flex" alignItems="center" gap={1}>
-              <AccessTime sx={{ fontSize: '0.875rem', color: '#6B7280' }} />
-              <span className="text-xs font-semibold text-gray-700">{progress}% Complete</span>
-            </Box>
-            <Chip 
-              label={course.isPaid ? 'Purchased' : 'Free'} 
-              size="small"
-              sx={{
-                backgroundColor: course.isPaid ? '#FEF3C7' : '#DBEAFE',
-                color: course.isPaid ? '#92400E' : '#1E40AF',
-                fontSize: '0.75rem',
-                height: '20px'
-              }}
-            />
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-yellow-400 to-amber-500 h-2 rounded-full transition-all duration-500 ease-out" 
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-        </div>
-      )}
-      
-      {/* Locked indicator for non-accessible courses */}
-      {!course.isAccessible && course.needsPayment && (
-        <div className="px-5 pb-4">
-          <Box 
-            display="flex" 
-            alignItems="center" 
-            justifyContent="center" 
-            className="text-gray-500 text-sm bg-gray-50 rounded-lg py-3"
-          >
-            <Lock sx={{ fontSize: '1rem', marginRight: '0.5rem' }} />
-            <span className="font-medium">Course Locked</span>
-          </Box>
-        </div>
-      )}
-    </div>
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 
   // If course is accessible, wrap with Link
