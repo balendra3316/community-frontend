@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -7,7 +6,7 @@ import { useAdminAuth } from './AdminAuthContext';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
-export default function AdminSidebar({ isOpen, setIsOpen }:any) {
+export default function AdminSidebar({ isOpen, setIsOpen }: any) {
   const { admin, logout } = useAdminAuth();
   const pathname = usePathname();
 
@@ -19,7 +18,6 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
   const isActive = (path: string) => {
     return pathname === path;
   };
-
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -41,7 +39,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
       {/* Sidebar overlay - only visible on mobile when sidebar is open */}
       {isOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-white bg-opacity-50 z-10"
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-10"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -56,9 +54,9 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
         transition-transform duration-300 ease-in-out
       `}>
         <div className="p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold">Admin Dashboard</h2>
+          <h2 className="text-xl font-bold text-white">Admin Dashboard</h2>
           {admin && (
-            <p className="text-sm text-gray-400 mt-1">{admin.name}</p>
+            <p className="text-sm text-gray-300 mt-1">{admin.name}</p>
           )}
         </div>
         
@@ -69,7 +67,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className={`block px-4 py-3 hover:bg-gray-700 transition-colors ${
+                    className={`block px-4 py-3 text-white hover:bg-gray-700 transition-colors ${
                       isActive(item.path) ? 'bg-gray-700 border-l-4 border-blue-500' : ''
                     }`}
                   >
@@ -81,7 +79,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }:any) {
             <div className="px-4 mt-6">
               <button
                 onClick={logout}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-colors"
               >
                 Log Out
               </button>

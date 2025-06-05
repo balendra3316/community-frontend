@@ -225,10 +225,10 @@ export default function CourseDetailPage() {
       <NavBar />
 
       {/* Mobile sidebar toggle */}
-      <div className="fixed top-29 left-4 z-50 lg:hidden">
+      <div className="fixed top-31 left-4 z-50 lg:hidden">
         <button
           onClick={toggleSidebar}
-          className="p-2 bg-white rounded-full shadow-md text-gray-700"
+          className="p-2 bg-yellow-500 rounded-full shadow-md text-gray-700"
           aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         >
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -252,7 +252,7 @@ export default function CourseDetailPage() {
             />
           )}
 
-          <div className="relative h-full w-80 max-w-full shadow-xl lg:shadow-none">
+          <div className="relative h-full w-80 max-w-full shadow-xl lg:shadow-none top-2">
             <Suspense fallback={<ComponentFallback />}>
               <CourseSidebar
                 title={course.title}

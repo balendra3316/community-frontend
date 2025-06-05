@@ -144,7 +144,7 @@ export default function CommentItem({
 
           <p className="text-sm my-2">{comment.content}</p>
 
-          {comment.image && (
+          {/* {comment.image && (
             <div className="mt-2 mb-3 rounded-lg overflow-hidden">
               <img
                 src={comment.image}
@@ -154,7 +154,7 @@ export default function CommentItem({
             </div>
           )}
 
-          {comment.youtubeLink && renderYoutubeEmbed(comment.youtubeLink)}
+          {comment.youtubeLink && renderYoutubeEmbed(comment.youtubeLink)} */}
 
           <div className="flex items-center text-xs text-gray-500 mt-2">
             <button

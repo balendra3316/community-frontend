@@ -1,264 +1,11 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-
-
-
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-            
-
-
-
-              
-
-
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-
-
-
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import { useState } from 'react';
-import { CourseDetails, courseService } from '../_components/courseManagementService';
-import DirectLessonsSection from './DirectLessonsSection';
-import SectionsList from './SectionList';
-import { CourseForm } from './Forms';
+import { useState } from "react";
+import {
+  CourseDetails,
+  courseService,
+} from "../_components/courseManagementService";
+import DirectLessonsSection from "./DirectLessonsSection";
+import SectionsList from "./SectionList";
+import { CourseForm } from "./Forms";
 
 interface CourseDetailViewProps {
   selectedCourse: CourseDetails;
@@ -271,9 +18,12 @@ export default function CourseDetailView({
   selectedCourse,
   setSelectedCourse,
   fetchCourses,
-  handleSelectCourse
+  handleSelectCourse,
 }: CourseDetailViewProps) {
-  const [isEditing, setIsEditing] = useState<{ type: 'course' | 'section' | 'lesson', id: string } | null>(null);
+  const [isEditing, setIsEditing] = useState<{
+    type: "course" | "section" | "lesson";
+    id: string;
+  } | null>(null);
   const [editData, setEditData] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -288,19 +38,23 @@ export default function CourseDetailView({
             </span>
           )}
           <h2 className="text-xl font-semibold">
-            {isEditing?.type === 'course' ? 'Edit Course' : selectedCourse.title}
+            {isEditing?.type === "course"
+              ? "Edit Course"
+              : selectedCourse.title}
           </h2>
         </div>
         <div className="flex space-x-2">
-          {isEditing?.type !== 'course' && (
+          {isEditing?.type !== "course" && (
             <button
               onClick={() => {
-                setIsEditing({ type: 'course', id: selectedCourse._id });
+                setIsEditing({ type: "course", id: selectedCourse._id });
                 setEditData({
                   title: selectedCourse.title,
                   description: selectedCourse.description,
                   coverImage: selectedCourse.coverImage,
-                  order: selectedCourse.order || 0
+                  order: selectedCourse.order || 0,
+                  isPaid: selectedCourse.isPaid || false,
+    price: selectedCourse.price || 0,
                 });
               }}
               className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-3 py-1 rounded text-sm"
@@ -316,10 +70,12 @@ export default function CourseDetailView({
           </button>
         </div>
       </div>
-      
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
 
-      {isEditing?.type === 'course' ? (
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+      )}
+
+      {isEditing?.type === "course" ? (
         <CourseForm
           type="course"
           data={editData}
@@ -327,20 +83,23 @@ export default function CourseDetailView({
           onSubmit={async (e) => {
             e.preventDefault();
             if (isSubmitting) return;
-            
+
             try {
               setIsSubmitting(true);
               setError(null);
-              
 
               const { coverImageFile, ...courseData } = editData;
-              
-              await courseService.updateCourse(selectedCourse._id, courseData, coverImageFile);
+
+              await courseService.updateCourse(
+                selectedCourse._id,
+                courseData,
+                coverImageFile
+              );
               setIsEditing(null);
               setEditData({});
               handleSelectCourse(selectedCourse._id);
             } catch (err: any) {
-              setError(err.message || 'Failed to update course');
+              setError(err.message || "Failed to update course");
             } finally {
               setIsSubmitting(false);
             }
@@ -357,21 +116,21 @@ export default function CourseDetailView({
             <p className="text-gray-600">{selectedCourse.description}</p>
             {selectedCourse.coverImage && (
               <div className="mt-2">
-                <img 
-                  src={selectedCourse.coverImage} 
-                  alt={selectedCourse.title} 
+                <img
+                  src={selectedCourse.coverImage}
+                  alt={selectedCourse.title}
                   className="h-40 object-cover rounded"
                 />
               </div>
             )}
           </div>
-          
-          <DirectLessonsSection 
+
+          <DirectLessonsSection
             selectedCourse={selectedCourse}
             handleSelectCourse={handleSelectCourse}
           />
-          
-          <SectionsList 
+
+          <SectionsList
             selectedCourse={selectedCourse}
             handleSelectCourse={handleSelectCourse}
           />

@@ -269,9 +269,23 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     });
   };
 
-  const formatRelativeTime = (timestamp: string) => {
-    return dayjs(timestamp).fromNow();
-  };
+ 
+
+const formatRelativeTime = (timestamp: string) => {
+  const now = dayjs();
+  const target = dayjs(timestamp);
+  const diffInSeconds = Math.abs(now.diff(target, 'second'));
+  
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}s`;
+  } else if (diffInSeconds < 3600) {
+    return `${Math.floor(diffInSeconds / 60)}m`;
+  } else if (diffInSeconds < 86400) {
+    return `${Math.floor(diffInSeconds / 3600)}h`;
+  } else {
+    return `${Math.floor(diffInSeconds / 86400)}d`;
+  }
+};
 
   const isPostLikedByUser = !!(user && likes.includes(user._id));
   const hasVotedOnPoll = !!user && !!post?.poll?.voters?.includes(user._id);

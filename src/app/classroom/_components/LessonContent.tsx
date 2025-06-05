@@ -28,14 +28,12 @@ const LessonContent: React.FC<LessonContentProps> = ({
   onLessonCompletionToggle,
   isCompleted,
 }) => {
-
   const getYouTubeVideoId = (url: string): string | null => {
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
-
 
   const videoId = lesson.videoUrl ? getYouTubeVideoId(lesson.videoUrl) : null;
 
@@ -65,35 +63,22 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
   const handleToggleCompletion = async () => {
     try {
-
       const newCompletionStatus = !isCompleted;
       onLessonCompletionToggle(lesson._id, newCompletionStatus);
 
-
       await CourseService.toggleLessonCompletion(courseId, lesson._id);
-
-
-
     } catch (error) {
       onLessonCompletionToggle(lesson._id, isCompleted);
-
     }
   };
 
-
   const getViewableCloudinaryUrl = (rawUrl: string): string => {
-
-
-
     return rawUrl.replace("/raw/upload/", "/image/upload/");
   };
 
-
   const getDownloadUrl = (rawUrl: string): string => {
-
     return rawUrl.replace("/upload/", "/upload/fl_attachment/");
   };
-
 
   const handleFileAction = (
     fileUrl: string,
@@ -104,22 +89,16 @@ const LessonContent: React.FC<LessonContentProps> = ({
     try {
       if (action === "view") {
         if (fileType.toLowerCase() === "pdf") {
-
           const viewableUrl = getViewableCloudinaryUrl(fileUrl);
-
 
           const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
             fileUrl
           )}&embedded=true`;
           window.open(googleViewerUrl, "_blank");
-
-
-
         } else {
           window.open(fileUrl, "_blank");
         }
       } else {
-
         const downloadUrl = getDownloadUrl(fileUrl);
         const link = document.createElement("a");
         link.href = downloadUrl;
@@ -146,64 +125,70 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
   return (
     <div className="px-4 py-6 md:px-6 lg:px-8 max-w-4xl mx-auto pt-[50px]">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">{lesson.title}</h1>
-
-        {/* Mark as Complete/Incomplete Button */}
-        <button
-          onClick={handleToggleCompletion}
-          className={`
-          group relative flex items-center justify-center
-          px-6 py-3 sm:px-8 sm:py-4
-          rounded-full font-medium text-sm sm:text-base
-          transition-all duration-300 ease-in-out
-          transform hover:scale-105 active:scale-95
-          shadow-lg hover:shadow-xl
-          min-w-[180px] sm:min-w-[180px]
-          ${
-            isCompleted
-              ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700"
-              : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-300"
-          }
-        `}
-        >
-          {/* Circular Icon Container */}
-          <div
+      {/* Header Section with Button Above Title */}
+      <div className="mb-6">
+        {/* Mark as Complete/Incomplete Button - Positioned at top right */}
+        <div className="flex justify-end mb-3">
+          <button
+            onClick={handleToggleCompletion}
             className={`
-            flex items-center justify-center
-            w-6 h-6 sm:w-7 sm:h-7
-            rounded-full mr-3
-            transition-all duration-300
-            ${
-              isCompleted
-                ? "bg-white/20 backdrop-blur-sm"
-                : "bg-gray-100 group-hover:bg-gray-200"
-            }
-          `}
+              group relative flex items-center justify-center
+              px-3 py-2 sm:px-4 sm:py-2
+              rounded-lg font-medium text-xs sm:text-sm
+              transition-all duration-300 ease-in-out
+              transform hover:scale-105 active:scale-95
+              shadow-md hover:shadow-lg
+              w-auto max-w-[140px] sm:max-w-[160px]
+              ${
+                isCompleted
+                  ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700"
+                  : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-300"
+              }
+            `}
           >
-            {isCompleted ? (
-              <CheckCircle
-                size={16}
-                className="text-white drop-shadow-sm sm:w-[18px] sm:h-[18px]"
-              />
-            ) : (
-              <Circle
-                size={16}
-                className="text-gray-500 group-hover:text-gray-600 sm:w-[18px] sm:h-[18px]"
-              />
+            {/* Circular Icon Container */}
+            <div
+              className={`
+                flex items-center justify-center
+                w-4 h-4 sm:w-5 sm:h-5
+                rounded-full mr-2
+                transition-all duration-300
+                ${
+                  isCompleted
+                    ? "bg-white/20 backdrop-blur-sm"
+                    : "bg-gray-100 group-hover:bg-gray-200"
+                }
+              `}
+            >
+              {isCompleted ? (
+                <CheckCircle
+                  size={12}
+                  className="text-white drop-shadow-sm sm:w-[14px] sm:h-[14px]"
+                />
+              ) : (
+                <Circle
+                  size={12}
+                  className="text-gray-500 group-hover:text-gray-600 sm:w-[14px] sm:h-[14px]"
+                />
+              )}
+            </div>
+
+            {/* Button Text */}
+            <span className="font-semibold tracking-wide truncate">
+              {isCompleted ? "Incomplete" : "Complete"}
+            </span>
+
+            {/* Subtle shine effect for completed state */}
+            {isCompleted && (
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             )}
-          </div>
+          </button>
+        </div>
 
-          {/* Button Text */}
-          <span className="font-semibold tracking-wide">
-            {isCompleted ? "Mark as Incomplete" : "Mark as Complete"}
-          </span>
-
-          {/* Subtle shine effect for completed state */}
-          {isCompleted && (
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-          )}
-        </button>
+        {/* Title - Now has full width without interference */}
+        <h1 className="text-2xl font-semibold text-gray-900 leading-relaxed">
+          {lesson.title}
+        </h1>
       </div>
 
       {/* Video Section - Only show if there's a valid video URL and video ID */}

@@ -1,6 +1,7 @@
 
+
 import axios from 'axios';
-import {  CourseDetail } from '../types/course.types';
+import { CourseDetail } from '../types/course.types';
 
 export interface Progress {
   completionPercentage: number;
@@ -13,18 +14,38 @@ export interface Course {
   description: string;
   coverImage: string;
   order: number;
+  totalLessons: number;
+  isPaid: boolean;
+  price: number;
   createdAt: string;
   updatedAt: string;
   progress?: Progress;
+  isAccessible: boolean;
+  needsPayment: boolean;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+export interface PurchaseCoursePayload {
+  courseId: string;
+  paymentAmount: number;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+}
+
+export interface PurchaseCourseResponse {
+  message: string;
+  courseId: string;
+  paymentId: string;
+  accessGranted: boolean;
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const CourseService = {
   getAllCourses: async (): Promise<Course[]> => {
     try {
       const response = await axios.get<Course[]>(`${API_URL}/courses`, {
-        withCredentials: true, // ← This is necessary
+        withCredentials: true,
       });
       return response.data;
     } catch (error) {
@@ -34,12 +55,41 @@ export const CourseService = {
   
   getCourseById: async (courseId: string): Promise<CourseDetail | null> => {
     try {
-      const response = await axios.get<CourseDetail>(`${API_URL}/courses/${courseId}`,{
-        withCredentials:true,
+      const response = await axios.get<CourseDetail>(`${API_URL}/courses/${courseId}`, {
+        withCredentials: true,
       });
       return response.data;
     } catch (error) {
       return null;
+    }
+  },
+
+  purchaseCourse: async (payload: PurchaseCoursePayload): Promise<PurchaseCourseResponse> => {
+    try {
+      const response = await axios.post<PurchaseCourseResponse>(
+        `${API_URL}/courses/purchase`,
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to purchase course');
+      }
+      throw new Error('Failed to purchase course');
+    }
+  },
+
+  getUserPurchasedCourses: async (): Promise<Course[]> => {
+    try {
+      const response = await axios.get(`${API_URL}/courses/purchased`, {
+        withCredentials: true,
+      });
+      return response.data.purchasedCourses;
+    } catch (error) {
+      return [];
     }
   },
 
@@ -73,9 +123,6 @@ export const CourseService = {
       throw error;
     }
   }
-
-
-
 };
 
 export default CourseService;

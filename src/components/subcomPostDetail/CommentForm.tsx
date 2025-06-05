@@ -8,6 +8,7 @@ import { User } from "../../context/AuthContext";
 
 
 import { Filter } from "bad-words";
+import { Avatar } from "@mui/material";
 
 interface CommentFormProps {
   user: User | null;
@@ -199,7 +200,7 @@ export default function CommentForm({
         </div>
       )}
 
-      {imageFile && (
+      {/* {imageFile && (
         <div className="mb-2 relative">
           <div className="relative rounded-lg overflow-hidden">
             <img
@@ -216,7 +217,7 @@ export default function CommentForm({
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       {hasError && (
         <div className="mb-2 text-red-500 text-sm flex items-center">
@@ -225,13 +226,15 @@ export default function CommentForm({
         </div>
       )}
 
-      <div className="flex items-center">
-        <div className="h-8 w-8 rounded-full bg-gray-300 overflow-hidden mr-2">
-          <img
-            src={user?.avatar || "/api/placeholder/40/40"}
-            alt="Your avatar"
-            className="h-full w-full object-cover"
-          />
+      <div className="flex items-start">
+        <div className="h-8 w-8 rounded-full bg-gray-300 overflow-hidden mr-2 mt-1">
+          <Avatar
+        src={user?.avatar}
+        alt={user?.name?.charAt(0).toUpperCase()}
+        className="object-cover"
+        sx={{ width: 34, height: 34 }}
+        
+      />
         </div>
         <div className="flex-1 relative">
           <div className="flex flex-col w-full">

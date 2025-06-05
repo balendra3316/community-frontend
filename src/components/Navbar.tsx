@@ -241,12 +241,12 @@ const NavBar = () => {
                 <Logo />
               </div>
 
-              {/* Spacer */}
+            
               <div className="hidden md:flex flex-1 mx-8"></div>
 
-              {/* Right icons */}
+            
               <div className="flex items-center space-x-4">
-                {/* Notifications button with dropdown */}
+              
                 {user && (
                   <div className="relative">
                     <NotificationButton
@@ -255,14 +255,14 @@ const NavBar = () => {
                       onClick={handleNotificationToggle}
                     />
 
-                    {/* Notifications dropdown with proper positioning */}
+                    
                     {showNotifications && (
                       <div className="absolute right-0 top-full mt-2 z-50 w-80">
-                        {/* Mobile overlay (only on small screens) */}
+                      
                         <div className="md:hidden fixed inset-0 bg-opacity-50 -z-10" 
                              onClick={handleNotificationClose} />
                         
-                        {/* Dropdown content (position differs on mobile vs desktop) */}
+                       
                         <div className="md:relative fixed md:fixed-0 right-0 md:right-auto top-16 md:top-full w-full md:w-80 bg-white rounded-lg shadow-lg border border-gray-200">
                           <Suspense fallback={<NotificationLoading />}>
                             <NotificationDropdown

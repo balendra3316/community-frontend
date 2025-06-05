@@ -1,130 +1,6 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-      
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-      
-
-
-
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import { useState } from 'react';
-import { courseService, Course } from '../_components/courseManagementService';
-import { CourseForm } from './Forms';
+import { useState } from "react";
+import { courseService, Course } from "../_components/courseManagementService";
+import { CourseForm } from "./Forms";
 
 interface CourseListProps {
   courses: Course[];
@@ -133,42 +9,54 @@ interface CourseListProps {
   handleSelectCourse: (courseId: string) => Promise<void>;
 }
 
-export default function CourseList({ courses, loading, fetchCourses, handleSelectCourse }: CourseListProps) {
+export default function CourseList({
+  courses,
+  loading,
+  fetchCourses,
+  handleSelectCourse,
+}: CourseListProps) {
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
-  const [newCourse, setNewCourse] = useState({ title: '', description: '', coverImage: '', order: 0 });
+  const [newCourse, setNewCourse] = useState({
+    title: "",
+    description: "",
+    coverImage: "",
+    order: 0,
+    isPaid: false,
+  price: 0,
+  });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCreateCourse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
     try {
       setIsSubmitting(true);
       setError(null);
-      
 
       const { coverImageFile, ...courseData } = newCourse as any;
-      
+
       await courseService.createCourse(courseData, coverImageFile);
-      setNewCourse({ title: '', description: '', coverImage: '', order: 0 });
+      setNewCourse({ title: "", description: "", coverImage: "", order: 0, isPaid: false,
+  price: 0, });
       setIsCreatingCourse(false);
       fetchCourses();
     } catch (err: any) {
-      setError(err.message || 'Failed to create course');
+      setError(err.message || "Failed to create course");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    if (!window.confirm('Are you sure you want to delete this course?')) return;
-    
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+
     try {
       await courseService.deleteCourse(courseId);
       fetchCourses();
     } catch (err: any) {
-      setError(err.message || 'Failed to delete course');
+      setError(err.message || "Failed to delete course");
     }
   };
 
@@ -183,9 +71,11 @@ export default function CourseList({ courses, loading, fetchCourses, handleSelec
           Add Course
         </button>
       </div>
-      
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
-      
+
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+      )}
+
       {isCreatingCourse && (
         <CourseForm
           type="course"
@@ -196,13 +86,18 @@ export default function CourseList({ courses, loading, fetchCourses, handleSelec
           isLoading={isSubmitting}
         />
       )}
-      
+
       {courses.length === 0 && !loading ? (
-        <p className="text-gray-500">No courses found. Create one to get started.</p>
+        <p className="text-gray-500">
+          No courses found. Create one to get started.
+        </p>
       ) : (
         <div className="space-y-4">
           {courses.map((course) => (
-            <div key={course._id} className="border p-4 rounded-lg hover:bg-gray-50">
+            <div
+              key={course._id}
+              className="border p-4 rounded-lg hover:bg-gray-50"
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <div className="flex items-center space-x-2">
@@ -211,7 +106,9 @@ export default function CourseList({ courses, loading, fetchCourses, handleSelec
                     </span>
                     <h3 className="font-medium">{course.title}</h3>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">{course.description}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {course.description}
+                  </p>
                 </div>
                 <div className="flex space-x-2">
                   <button

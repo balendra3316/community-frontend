@@ -46,7 +46,7 @@ const ProfileMenu = memo(({
 
   const handleMenuClose = useCallback(() => {
     onMenuClose();
-  }, [onMenuClose]);
+  }, [onMenuClose])
 
   return (
     <div>

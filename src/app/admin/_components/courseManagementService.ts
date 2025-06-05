@@ -1,9 +1,6 @@
-
 "use client";
 
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export interface Course {
   _id: string;
@@ -14,6 +11,8 @@ export interface Course {
   createdAt?: string;
   updatedAt?: string;
   createdBy?: string;
+    isPaid:boolean;
+  price:number;
 }
 
 export interface Section {
@@ -61,21 +60,21 @@ export interface Lesson {
 }
 
 export interface CourseDetails extends Course {
-  sections: (Section | {
-    _id: 'direct';
-    title: string;
-    lessons: Lesson[];
-  })[];
+  sections: (
+    | Section
+    | {
+        _id: "direct";
+        title: string;
+        lessons: Lesson[];
+      }
+  )[];
+    isPaid:boolean;
+  price:number;
 }
-
-
-
-
 
 const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
   const formData = new FormData();
   const { images = [], resources = [], ...otherData } = lessonData;
-
 
   Object.entries(otherData).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -83,208 +82,163 @@ const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
     }
   });
 
-
   images.forEach((img, index) => {
     if (img.url) {
-
       formData.append(`images[${index}][url]`, img.url);
-      if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
-      if (img.altText) formData.append(`images[${index}][altText]`, img.altText);
+      if (img.caption)
+        formData.append(`images[${index}][caption]`, img.caption);
+      if (img.altText)
+        formData.append(`images[${index}][altText]`, img.altText);
     } else if (img.file) {
-
       formData.append(`imageFiles[${index}]`, img.file);
-      if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
-      if (img.altText) formData.append(`images[${index}][altText]`, img.altText || img.file.name);
+      if (img.caption)
+        formData.append(`images[${index}][caption]`, img.caption);
+      if (img.altText)
+        formData.append(
+          `images[${index}][altText]`,
+          img.altText || img.file.name
+        );
     }
   });
 
-
   resources.forEach((res, index) => {
     if (res.fileUrl) {
-
-      formData.append(`resources[${index}][title]`, res.title || '');
+      formData.append(`resources[${index}][title]`, res.title || "");
       formData.append(`resources[${index}][fileUrl]`, res.fileUrl);
-      if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
+      if (res.fileType)
+        formData.append(`resources[${index}][fileType]`, res.fileType);
     } else if (res.file) {
-
       formData.append(`resourceFiles[${index}]`, res.file);
       formData.append(`resources[${index}][title]`, res.title || res.file.name);
-      if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
+      if (res.fileType)
+        formData.append(`resources[${index}][fileType]`, res.fileType);
     }
   });
 
   return formData;
-}
-
-
-
-
-
-
-
-
-
-
+};
 
 export const courseService = {
-
   async getAllCourses(): Promise<Course[]> {
     const response = await fetch(`${API_URL}/admin/courses`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch courses');
+      throw new Error("Failed to fetch courses");
     }
 
     return response.json();
   },
-
 
   async getCourseDetails(courseId: string): Promise<CourseDetails> {
     const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch course details');
+      throw new Error("Failed to fetch course details");
     }
 
     return response.json();
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-async createCourse(courseData: Partial<Course>, coverImageFile?: File): Promise<Course> {
+// Updated createCourse method
+async createCourse(
+  courseData: Partial<Course>,
+  coverImageFile?: File
+): Promise<Course> {
   const formData = new FormData();
-  
 
-  formData.append('title', courseData.title || '');
-  if (courseData.description) formData.append('description', courseData.description);
-  
+  formData.append("title", courseData.title || "");
+  if (courseData.description)
+    formData.append("description", courseData.description);
 
-  formData.append('order', (courseData.order !== undefined ? courseData.order : 0).toString());
-  
+  formData.append(
+    "order",
+    (courseData.order !== undefined ? courseData.order : 0).toString()
+  );
+
+  // Add isPaid field
+  formData.append("isPaid", (courseData.isPaid || false).toString());
+
+  // Add price field (only if isPaid is true)
+  if (courseData.isPaid && courseData.price !== undefined) {
+    formData.append("price", courseData.price.toString());
+  }
 
   if (coverImageFile) {
-    formData.append('coverImage', coverImageFile);
-  } 
-
-  else if (courseData.coverImage && !coverImageFile) {
-    formData.append('coverImageUrl', courseData.coverImage);
+    formData.append("coverImage", coverImageFile);
+  } else if (courseData.coverImage && !coverImageFile) {
+    formData.append("coverImageUrl", courseData.coverImage);
   }
 
   const response = await fetch(`${API_URL}/admin/courses`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: formData,
   });
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Failed to create course');
+    throw new Error(error.message || "Failed to create course");
   }
 
   return response.json();
 },
 
-
-async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile?: File): Promise<Course> {
+// Updated updateCourse method
+async updateCourse(
+  courseId: string,
+  courseData: Partial<Course>,
+  coverImageFile?: File
+): Promise<Course> {
   const formData = new FormData();
-  
 
-  if (courseData.title) formData.append('title', courseData.title);
-  if (courseData.description !== undefined) formData.append('description', courseData.description);
-  
+  if (courseData.title) formData.append("title", courseData.title);
+  if (courseData.description !== undefined)
+    formData.append("description", courseData.description);
 
   if (courseData.order !== undefined) {
-    formData.append('order', courseData.order.toString());
+    formData.append("order", courseData.order.toString());
   }
-  
+
+  // Add isPaid field
+  if (courseData.isPaid !== undefined) {
+    formData.append("isPaid", courseData.isPaid.toString());
+  }
+
+  // Add price field (only if isPaid is true)
+  if (courseData.isPaid && courseData.price !== undefined) {
+    formData.append("price", courseData.price.toString());
+  }
 
   if (coverImageFile) {
-    formData.append('coverImage', coverImageFile);
-  } 
-
-  else if (courseData.coverImage && !coverImageFile) {
-    formData.append('coverImageUrl', courseData.coverImage);
+    formData.append("coverImage", coverImageFile);
+  } else if (courseData.coverImage && !coverImageFile) {
+    formData.append("coverImageUrl", courseData.coverImage);
   }
 
   const response = await fetch(`${API_URL}/admin/courses/${courseId}`, {
-    method: 'PUT',
-    credentials: 'include',
+    method: "PUT",
+    credentials: "include",
     body: formData,
   });
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Failed to update course');
+    throw new Error(error.message || "Failed to update course");
   }
 
   return response.json();
 },
-
-
-
-
-
 
 
   async deleteCourse(courseId: string): Promise<{ message: string }> {
@@ -304,142 +258,148 @@ async updateCourse(courseId: string, courseData: Partial<Course>, coverImageFile
     return response.json();
   },
 
-
-  async createSection(courseId: string, sectionData: Partial<Section>): Promise<Section> {
-    const response = await fetch(`${API_URL}/admin/courses/${courseId}/sections`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(sectionData),
-    });
+  async createSection(
+    courseId: string,
+    sectionData: Partial<Section>
+  ): Promise<Section> {
+    const response = await fetch(
+      `${API_URL}/admin/courses/${courseId}/sections`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(sectionData),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to create section');
+      throw new Error(error.message || "Failed to create section");
     }
 
     return response.json();
   },
 
-
-  async updateSection(sectionId: string, sectionData: Partial<Section>): Promise<Section> {
+  async updateSection(
+    sectionId: string,
+    sectionData: Partial<Section>
+  ): Promise<Section> {
     const response = await fetch(`${API_URL}/admin/sections/${sectionId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
       body: JSON.stringify(sectionData),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to update section');
+      throw new Error(error.message || "Failed to update section");
     }
 
     return response.json();
   },
-
 
   async deleteSection(sectionId: string): Promise<{ message: string }> {
     const response = await fetch(`${API_URL}/admin/sections/${sectionId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to delete section');
+      throw new Error(error.message || "Failed to delete section");
     }
 
     return response.json();
   },
 
+  async createLessonInCourse(
+    courseId: string,
+    lessonData: Partial<Lesson>
+  ): Promise<Lesson> {
+    const formData = prepareLessonFormData(lessonData);
 
+    const response = await fetch(
+      `${API_URL}/admin/courses/${courseId}/lessons`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData, // No Content-Type header needed for FormData
+      }
+    );
 
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create lesson");
+    }
 
+    return response.json();
+  },
 
+  async createLessonInSection(
+    sectionId: string,
+    lessonData: Partial<Lesson>
+  ): Promise<Lesson> {
+    const formData = prepareLessonFormData(lessonData);
 
+    const response = await fetch(
+      `${API_URL}/admin/sections/${sectionId}/lessons`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      }
+    );
 
-async createLessonInCourse(courseId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
-  const formData = prepareLessonFormData(lessonData);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create lesson in section");
+    }
 
-  const response = await fetch(`${API_URL}/admin/courses/${courseId}/lessons`, {
-    method: 'POST',
-    credentials: 'include',
-    body: formData, // No Content-Type header needed for FormData
-  });
+    return response.json();
+  },
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create lesson');
-  }
+  async updateLesson(
+    lessonId: string,
+    lessonData: Partial<Lesson>
+  ): Promise<Lesson> {
+    const formData = prepareLessonFormData(lessonData);
 
-  return response.json();
-},
-
-
-async createLessonInSection(sectionId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
-  const formData = prepareLessonFormData(lessonData);
-
-  const response = await fetch(`${API_URL}/admin/sections/${sectionId}/lessons`, {
-    method: 'POST',
-    credentials: 'include',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create lesson in section');
-  }
-
-  return response.json();
-},
-
-
-async updateLesson(lessonId: string, lessonData: Partial<Lesson>): Promise<Lesson> {
-  const formData = prepareLessonFormData(lessonData);
-
-  const response = await fetch(`${API_URL}/admin/lessons/${lessonId}`, {
-    method: 'PUT',
-    credentials: 'include',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to update lesson');
-  }
-
-  return response.json();
-},
-
-
-
-
-
-
-
-
-  async deleteLesson(lessonId: string): Promise<{ message: string }> {
     const response = await fetch(`${API_URL}/admin/lessons/${lessonId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
+      method: "PUT",
+      credentials: "include",
+      body: formData,
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to delete lesson');
+      throw new Error(error.message || "Failed to update lesson");
     }
 
     return response.json();
-  }
+  },
+
+  async deleteLesson(lessonId: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_URL}/admin/lessons/${lessonId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete lesson");
+    }
+
+    return response.json();
+  },
 };

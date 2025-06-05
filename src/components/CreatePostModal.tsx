@@ -4,7 +4,7 @@
 
 import { useState, lazy, Suspense } from "react";
 import { Filter } from "bad-words";
-import { Button, IconButton,  Typography, CircularProgress,} from "@mui/material";
+import { Button, IconButton,  Typography, CircularProgress, Avatar,} from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { createPost } from "../services/postService";
 import { useAuth } from "../context/AuthContext";
@@ -192,28 +192,50 @@ const CreatePostModal = ({
       <div className="relative bg-white max-w-lg w-full mx-4 max-h-[90vh] rounded-lg shadow-xl flex flex-col">
         {/* Header - Fixed */}
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center gap-1">
-            <div className="h-8 w-8 rounded-full bg-gray-300 overflow-hidden">
-              <img
-                src={user?.avatar || "/api/placeholder/32/32"}
-                alt="User Profile"
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <Typography variant="body1" className="ml-2">
-              {user?.name || "User"}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" className="ml-3">
-              posting in
-            </Typography>
-            <Typography
-              variant="body2"
-              color="primary"
-              className="ml-1 font-medium"
-            >
-              Acd
-            </Typography>
-          </div>
+         <div className="flex items-center gap-1">
+  <div className="h-8 w-8 rounded-full bg-gray-300 overflow-hidden">
+    <Avatar
+      src={user?.avatar}
+      alt={user?.name?.charAt(0).toUpperCase()}
+      className="cursor-pointer transition-transform duration-200 hover:scale-105"
+      sx={{ width: 34, height: 34 }}
+    />
+  </div>
+  
+  {/* Mobile View - First name only + compact text */}
+  <div className="flex items-center gap-1 sm:hidden">
+    <Typography variant="body1" className="ml-2 text-sm font-medium">
+      {user?.name?.split(' ')[0] || "User"}
+    </Typography>
+    <Typography variant="body2" color="textSecondary" className="text-xs whitespace-nowrap">
+      posting in
+    </Typography>
+    <Typography
+      variant="body2"
+      color="primary"
+      className="font-medium text-xs"
+    >
+      Acd
+    </Typography>
+  </div>
+
+  {/* Desktop View - Full name + normal spacing */}
+  <div className="hidden sm:flex sm:items-center sm:gap-1">
+    <Typography variant="body1" className="ml-2">
+      {user?.name || "User"}
+    </Typography>
+    <Typography variant="body2" color="textSecondary" className="ml-3">
+      posting in
+    </Typography>
+    <Typography
+      variant="body2"
+      color="primary"
+      className="ml-1 font-medium"
+    >
+      Acd
+    </Typography>
+  </div>
+</div>
           <IconButton size="small" onClick={onClose}>
             <CloseIcon fontSize="small" />
           </IconButton>
