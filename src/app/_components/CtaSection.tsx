@@ -75,7 +75,7 @@ export default function CtaSection({ onJoinClick }: CtaSectionProps) {
               color: '#555'
             }}
           >
-            Join our community today and discover the joy of dance with thousands of enthusiasts just like you
+            Join our community today and experience the joy of dance with thousands of enthusiasts just like you
           </Typography>
           
           <Button 

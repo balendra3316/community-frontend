@@ -354,7 +354,7 @@ export default function Footer() {
                   fontSize: '0.875rem',
                   lineHeight: 1.5
                 }}>
-                  Flat No 301, TVH Vista Heights, Tower 6, Trichy Rd, Kallimadai, Coimbatore, Tamil Nadu 641048
+                  Flat No 301, TVH Vista Heights, Tower 6 Trichy Rd, Kallimadai <br/> Coimbatore, Tamil Nadu 641048
                 </Typography>
               </Box>
             </Box>

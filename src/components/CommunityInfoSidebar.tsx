@@ -46,7 +46,7 @@ const CommunityInfoSidebar: FC = () => {
             />
             <Link href="https://learn.anyonecandance.in/acd" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
               <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
-                5 Day free workshop
+               ACD 5 days Workshop
               </span>
             </Link>
           </div>

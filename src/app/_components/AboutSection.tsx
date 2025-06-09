@@ -50,15 +50,15 @@ export default function AboutSection() {
             </Typography>
             
             <Typography variant="body1" sx={{ mb: 3, color: '#555' }}>
-             Anyone Can Dance is India’s leading online dance training platform, helping 1 Lakh+ people transform from hesitant beginners to confident dancers.
+            Anyone Can Dance is India’s leading online dance training platform, helping over 1 lakh people transform from hesitant beginners into confident dancers.
             </Typography>
             
             <Typography variant="body1" sx={{ mb: 3, color: '#555' }}>
-           I am Tiru Sameer – a Dance Coach, Choreo Specialist, Dance Therapist, Nutrition Consultant, and most importantly, a devoted husband to my amazing wife, Sandhya Venigalla and a proud father to my wonderful daughter, Gamya.
+          I’m Tiru Sameer – a Dance Coach, Choreo Specialist, Dance Therapist, and Nutrition Consultant. Above all, I’m a devoted husband to my amazing wife, Sandhya Venigalla, and a proud father to our wonderful daughter, Gamya.
             </Typography>
             
             <Typography variant="body1" sx={{ color: '#555' }}>
-              Through our community-driven approach, we've helped thousands of people discover the joy of dance, overcome their inhibitions.The stage is set. The music is calling. Are you ready to dance your way to joy?
+             Through our community-driven approach, we’ve helped thousands rediscover the joy of dance and overcome their inhibitions. The stage is set. The music is calling. Are you ready to dance your way to joy?
             </Typography>
           </Box>
         </Box>

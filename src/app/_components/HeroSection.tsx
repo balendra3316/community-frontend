@@ -44,7 +44,8 @@ export default function HeroSection({ onJoinClick }: HeroSectionProps) {
           color: '#666'
         }}
       >
-        Join thousands of Dance enthusiasts, share automations, and learn together in our vibrant community
+        Join thousands of Dance enthusiasts, share your journey, and grow together in our vibrant and inspiring community.
+
       </Typography>
       
       <Button 

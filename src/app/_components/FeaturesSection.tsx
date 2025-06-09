@@ -19,12 +19,13 @@ export default function FeaturesSection() {
     {
       icon: <GroupsIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
       title: 'Community Support',
-      description: 'Connect with fellow dancers, share experiences, and grow together'
+      description: 'Connect with fellow dancers, share your journey, and grow together'
     },
     {
       icon: <SchoolIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
       title: 'Expert Tutorials',
-      description: 'Learn from professional dancer Sameer ACD Coach with detailed Live classes'
+      description: 'Learn from professional ACD coach Sameer through detailed live classes'
+
     },
     {
       icon: <EmojiEventsIcon sx={{ fontSize: 40, color: '#FFD700' }} />,

@@ -1,7 +1,4 @@
 
-
-
-
 "use client";
 import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
 import dynamic from "next/dynamic";
@@ -11,14 +8,12 @@ import { fetchPosts, Post as PostType } from "../../services/postService";
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { initializeSocket, getSocket } from "../../services/socket.service";
 
-
 import NavBar from "../../components/Navbar";
 import CreatePostSection from "./_components/CreatePostSection";
 import CategoryFilter from "./_components/CategoryFilter";
 import PostsList from "./_components/PostsList";
 import LoadingIndicator from "./_components/LoadingIndicator";
 import NotificationSnackbar from "./_components/NotificationSnackbar";
-
 
 const CreatePostModal = dynamic(() => import("../../components/CreatePostModal"), {
   loading: () => <div className="animate-pulse">Loading...</div>,
@@ -35,6 +30,20 @@ const CommunityInfoSidebar = dynamic(() => import("../../components/CommunityInf
   ssr: false
 });
 
+// Custom hook to manage body scroll
+function useBodyScroll() {
+  const lockScroll = useCallback(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px'; // Prevent layout shift
+  }, []);
+
+  const unlockScroll = useCallback(() => {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }, []);
+
+  return { lockScroll, unlockScroll };
+}
 
 function usePosts(currentFilter: string) {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -114,7 +123,8 @@ export default function Community() {
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
   const [showPostDetail, setShowPostDetail] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("default");
-
+  
+  const { lockScroll, unlockScroll } = useBodyScroll();
 
   const { 
     posts, 
@@ -137,51 +147,53 @@ export default function Community() {
     showNotification
   } = useNotifications();
 
+  // Handle scroll lock/unlock for modals
+  useEffect(() => {
+    if (showModal || showPostDetail) {
+      lockScroll();
+    } else {
+      unlockScroll();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      unlockScroll();
+    };
+  }, [showModal, showPostDetail, lockScroll, unlockScroll]);
 
   useEffect(() => {
     if (user?._id) {
       try {
         const socket = initializeSocket(user._id);
 
-
         const handleUserPostCreated = (data: { post: PostType; message: string }) => {
           setPosts(prevPosts => [data.post, ...prevPosts]);
-          
-
           showNotification(data.message, "success");
-          
-
           setIsCreatingPost(false);
         };
 
-
         const handlePostDeleted = (data: { postId: string; message: string }) => {
           setPosts(prevPosts => prevPosts.filter(post => post._id !== data.postId));
-          
-
           showNotification(data.message, "success");
           
-
           if (selectedPost && selectedPost._id === data.postId) {
             setShowPostDetail(false);
             setSelectedPost(null);
           }
         };
 
-
         socket.on('userPostCreated', handleUserPostCreated);
         socket.on('postDeleted', handlePostDeleted);
-
 
         return () => {
           socket.off('userPostCreated', handleUserPostCreated);
           socket.off('postDeleted', handlePostDeleted);
         };
       } catch (error) {
+        // Handle error silently
       }
     }
   }, [user?._id, setPosts, showNotification, selectedPost, setIsCreatingPost]);
-
 
   const filteredPosts = useMemo(() => {
     return selectedCategory === "All" 
@@ -189,10 +201,7 @@ export default function Community() {
       : posts.filter(post => post.tags && post.tags.includes(selectedCategory));
   }, [posts, selectedCategory]);
 
-
   const handlePostCreated = useCallback(() => {
-
-
     setShowModal(false);
     setIsCreatingPost(false);
   }, []);
@@ -215,8 +224,6 @@ export default function Community() {
   }, [setPosts]);
 
   const handlePostDelete = useCallback((deletedPostId: string) => {
-
-
     setPosts(prevPosts => prevPosts.filter((p) => p._id !== deletedPostId));
   }, [setPosts]);
 
@@ -225,6 +232,14 @@ export default function Community() {
       loadPosts(page + 1, false);
     }
   }, [page, totalPages, loadPosts]);
+
+  const handleCloseModal = useCallback(() => {
+    setShowModal(false);
+  }, []);
+
+  const handleClosePostDetail = useCallback(() => {
+    setShowPostDetail(false);
+  }, []);
 
   return (
     <ProtectedRoute>
@@ -284,11 +299,11 @@ export default function Community() {
 
           {/* Modals - Lazy loaded */}
           {showModal && (
-            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
             </div>}>
               <CreatePostModal
-                onClose={() => setShowModal(false)}
+                onClose={handleCloseModal}
                 onPostCreated={handlePostCreated}
                 onPostError={handlePostError}
                 onPostStart={() => setIsCreatingPost(true)}
@@ -297,13 +312,13 @@ export default function Community() {
           )}
 
           {showPostDetail && selectedPost && (
-            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
             </div>}>
               <PostDetailView
                 post={selectedPost}
                 isOpen={showPostDetail}
-                onClose={() => setShowPostDetail(false)}
+                onClose={handleClosePostDetail}
               />
             </Suspense>
           )}
