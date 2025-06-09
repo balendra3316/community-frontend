@@ -24,6 +24,7 @@ export interface Resource {
     videoDuration: number;
     resources: Resource[];
     images: Image[];
+    urls?: Array<{ title: string; url: string;}>;
     order: number;
     isPublished: boolean;
     createdAt: string;

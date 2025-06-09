@@ -21,177 +21,6 @@ interface FormProps {
   isLoading?: boolean;
 }
 
-// export const CourseForm = ({
-//   data,
-//   setData,
-//   onSubmit,
-//   onCancel,
-//   isLoading = false,
-// }: FormProps) => {
-//   const fileInputRef = React.useRef<HTMLInputElement>(null);
-//   const [previewUrl, setPreviewUrl] = React.useState<string | null>(
-//     data.coverImage || null
-//   );
-
-//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = e.target.files?.[0];
-//     if (file) {
-
-//       setData({ ...data, coverImageFile: file });
-
-
-//       const objectUrl = URL.createObjectURL(file);
-//       setPreviewUrl(objectUrl);
-
-
-//       return () => URL.revokeObjectURL(objectUrl);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-gray-100 p-4 rounded mb-4">
-//       <h3 className="text-lg font-medium mb-2">
-//         {data._id ? "Edit Course" : "Create New Course"}
-//       </h3>
-//       <form onSubmit={onSubmit}>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">
-//             Title
-//           </label>
-//           <input
-//             type="text"
-//             value={data.title}
-//             onChange={(e) => setData({ ...data, title: e.target.value })}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             required
-//           />
-//         </div>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">
-//             Description
-//           </label>
-//           <textarea
-//             value={data.description}
-//             onChange={(e) => setData({ ...data, description: e.target.value })}
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             rows={3}
-//           />
-//         </div>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">
-//             Order
-//           </label>
-//           <input
-//             type="number"
-//             value={data.order || 0}
-//             onChange={(e) =>
-//               setData({ ...data, order: parseInt(e.target.value) })
-//             }
-//             className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//             min="0"
-//           />
-//           <p className="text-sm text-gray-500 mt-1">
-//             The order in which this course will appear in the list (lower
-//             numbers appear first)
-//           </p>
-//         </div>
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium text-gray-700">
-//             Cover Image
-//           </label>
-
-//           {/* Image Preview */}
-//           {previewUrl && (
-//             <div className="mt-2 mb-2">
-//               <img
-//                 src={previewUrl}
-//                 alt="Course cover preview"
-//                 className="h-40 object-cover rounded"
-//               />
-//             </div>
-//           )}
-
-//           {/* File Input */}
-//           <input
-//             ref={fileInputRef}
-//             type="file"
-//             accept="image/*"
-//             onChange={handleFileChange}
-//             className="mt-1 block w-full text-sm"
-//           />
-
-//           {/* Legacy URL Input (Optional) */}
-//           <div className="mt-2">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Or enter image URL
-//             </label>
-//             <input
-//               type="text"
-//               value={data.coverImage || ""}
-//               onChange={(e) => {
-//                 setData({ ...data, coverImage: e.target.value });
-//                 if (e.target.value) {
-//                   setPreviewUrl(e.target.value);
-//                 }
-//               }}
-//               className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2"
-//               placeholder="https://"
-//             />
-//           </div>
-//         </div>
-//         <div className="flex justify-end space-x-2">
-//           <button
-//             type="button"
-//             onClick={onCancel}
-//             className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
-//             disabled={isLoading}
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             type="submit"
-//             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center min-w-[100px]"
-//             disabled={isLoading}
-//           >
-//             {isLoading ? (
-//               <>
-//                 <svg
-//                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-//                   xmlns="http://www.w3.org/2000/svg"
-//                   fill="none"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <circle
-//                     className="opacity-25"
-//                     cx="12"
-//                     cy="12"
-//                     r="10"
-//                     stroke="currentColor"
-//                     strokeWidth="4"
-//                   ></circle>
-//                   <path
-//                     className="opacity-75"
-//                     fill="currentColor"
-//                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-//                   ></path>
-//                 </svg>
-//                 {data._id ? "Updating..." : "Creating..."}
-//               </>
-//             ) : data._id ? (
-//               "Update"
-//             ) : (
-//               "Create"
-//             )}
-//           </button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-
-
-
 
 export const CourseForm = ({
   data,
@@ -468,6 +297,17 @@ export const SectionForm = ({
   </div>
 );
 
+
+
+
+
+
+
+
+
+
+
+
 export const LessonForm = ({
   data,
   setData,
@@ -481,6 +321,7 @@ export const LessonForm = ({
     ...data,
     images: data.images || [],
     resources: data.resources || [],
+    urls: data.urls || [],
   };
 
   const handleImageUpload = (
@@ -579,6 +420,25 @@ export const LessonForm = ({
     newResources.splice(index, 1);
     setData({ ...data, resources: newResources });
   };
+
+
+  const addNewUrlField = () => {
+  setData({
+    ...data,
+    urls: [...safeData.urls, { title: "", url: "" }],
+  });
+};
+
+const handleRemoveUrl = (index: number) => {
+  const newUrls = [...safeData.urls];
+  newUrls.splice(index, 1);
+  setData({ ...data, urls: newUrls });
+};
+
+
+
+
+
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -919,6 +779,90 @@ export const LessonForm = ({
             </p>
           )}
         </div>
+
+
+
+
+{/* URLs Section */}
+<div className="mb-5 border-t border-gray-200 pt-4">
+  <div className="flex justify-between items-center mb-2">
+    <label className="block text-sm font-medium text-gray-700">
+      URLs
+    </label>
+    <button
+      type="button"
+      onClick={addNewUrlField}
+      className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
+    >
+      Add URL
+    </button>
+  </div>
+
+  {safeData.urls.map((urlItem : any, index:number) => (
+    <div
+      key={`url-${index}`}
+      className="mb-3 p-3 bg-white rounded shadow-sm"
+    >
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-sm font-medium">URL {index + 1}</span>
+        <button
+          type="button"
+          onClick={() => handleRemoveUrl(index)}
+          className="bg-red-100 hover:bg-red-200 text-red-600 px-2 py-1 rounded text-xs"
+        >
+          Remove
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
+          <label className="block text-xs text-gray-600">Title</label>
+          <input
+            type="text"
+            value={urlItem.title || ""}
+            onChange={(e) => {
+              const newUrls = [...safeData.urls];
+              newUrls[index] = {
+                ...newUrls[index],
+                title: e.target.value,
+              };
+              setData({ ...data, urls: newUrls });
+            }}
+            className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
+            placeholder="URL title"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs text-gray-600">URL</label>
+          <input
+            type="url"
+            value={urlItem.url || ""}
+            onChange={(e) => {
+              const newUrls = [...safeData.urls];
+              newUrls[index] = {
+                ...newUrls[index],
+                url: e.target.value,
+              };
+              setData({ ...data, urls: newUrls });
+            }}
+            className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 text-xs"
+            placeholder="https://example.com"
+          />
+        </div>
+      </div>
+    </div>
+  ))}
+
+  {safeData.urls.length === 0 && (
+    <p className="text-gray-500 text-xs italic">No URLs added yet.</p>
+  )}
+</div>
+
+
+
+
+
 
         <div className="flex justify-end space-x-2">
           <button

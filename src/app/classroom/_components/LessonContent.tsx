@@ -1,14 +1,15 @@
+
+
 "use client";
 
 import React from "react";
-import Image from "next/image";
+
 import { Lesson } from "../../../types/course.types";
 import {
   FileText,
   Link as LinkIcon,
   Download,
   CheckCircle,
-  XCircle,
   ExternalLink,
   Circle,
 } from "lucide-react";
@@ -72,56 +73,35 @@ const LessonContent: React.FC<LessonContentProps> = ({
     }
   };
 
-  const getViewableCloudinaryUrl = (rawUrl: string): string => {
-    return rawUrl.replace("/raw/upload/", "/image/upload/");
-  };
-
   const getDownloadUrl = (rawUrl: string): string => {
     return rawUrl.replace("/upload/", "/upload/fl_attachment/");
   };
 
-  const handleFileAction = (
-    fileUrl: string,
-    fileName: string,
-    fileType: string,
-    action: "download" | "view"
-  ) => {
+  const handleFileDownload = (fileUrl: string, fileName: string) => {
     try {
-      if (action === "view") {
-        if (fileType.toLowerCase() === "pdf") {
-          const viewableUrl = getViewableCloudinaryUrl(fileUrl);
+      const downloadUrl = getDownloadUrl(fileUrl);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      link.target = "_blank";
 
-          const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
-            fileUrl
-          )}&embedded=true`;
-          window.open(googleViewerUrl, "_blank");
-        } else {
-          window.open(fileUrl, "_blank");
-        }
-      } else {
-        const downloadUrl = getDownloadUrl(fileUrl);
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = fileName;
-        link.target = "_blank";
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
-      if (fileType.toLowerCase() === "pdf") {
-        const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
-          fileUrl
-        )}&embedded=true`;
-        window.open(googleViewerUrl, "_blank");
-      } else {
-        window.open(fileUrl, "_blank");
-      }
+      // Fallback to direct URL if download URL fails
+      window.open(fileUrl, "_blank");
     }
   };
 
-  const isPDF = (fileType: string) => fileType.toLowerCase() === "pdf";
+  const handleUrlClick = (url: string) => {
+    window.open(url, "_blank");
+  };
+
+  const truncateUrl = (url: string, maxLength: number = 40) => {
+    if (url.length <= maxLength) return url;
+    return url.substring(0, maxLength) + "...";
+  };
 
   return (
     <div className="px-4 py-6 md:px-6 lg:px-8 max-w-4xl mx-auto pt-[50px]">
@@ -231,7 +211,45 @@ const LessonContent: React.FC<LessonContentProps> = ({
         </div>
       )}
 
-      {/* Resources Section - UPDATED */}
+      {/* URLs Section */}
+      {lesson.urls && lesson.urls.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Links</h2>
+          <div className="space-y-3">
+            {lesson.urls.map((urlItem, index) => (
+              <div
+                key={index}
+                className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer"
+                onClick={() => handleUrlClick(urlItem.url)}
+              >
+                <div className="mr-3">
+                  <div className="bg-blue-500 p-2 rounded-md">
+                    <LinkIcon size={16} className="text-white" />
+                  </div>
+                </div>
+                <div className="flex-grow min-w-0">
+                  <h3 className="font-medium text-gray-900 truncate">
+                    {urlItem.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 truncate">
+                    <span className="hidden sm:inline">
+                      {truncateUrl(urlItem.url, 60)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(urlItem.url, 30)}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex-shrink-0 ml-2">
+                  <ExternalLink size={16} className="text-gray-400" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Resources Section - Simplified with only Download button */}
       {lesson.resources && lesson.resources.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-4">Resources</h2>
@@ -242,96 +260,31 @@ const LessonContent: React.FC<LessonContentProps> = ({
                 className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
               >
                 <div className="mr-3">{getFileIcon(resource.fileType)}</div>
-                <div className="flex-grow">
-                  <h3 className="font-medium text-gray-900">
+                <div className="flex-grow min-w-0">
+                  <h3 className="font-medium text-gray-900 truncate">
                     {resource.title}
                   </h3>
                   <p className="text-sm text-gray-500">
                     {resource.fileType.toUpperCase()}
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  {/* View/Open Button */}
+                <div className="flex-shrink-0">
+                  {/* Download Button Only */}
                   <button
                     onClick={() =>
-                      handleFileAction(
-                        resource.fileUrl,
-                        resource.title,
-                        resource.fileType,
-                        "view"
-                      )
-                    }
-                    className="flex items-center px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                    title={isPDF(resource.fileType) ? "Open PDF" : "View File"}
-                  >
-                    <ExternalLink size={14} className="mr-1" />
-                    {isPDF(resource.fileType) ? "View PDF" : "Open"}
-                  </button>
-
-                  {/* Download Button */}
-                  <button
-                    onClick={() =>
-                      handleFileAction(
-                        resource.fileUrl,
-                        resource.title,
-                        resource.fileType,
-                        "download"
-                      )
+                      handleFileDownload(resource.fileUrl, resource.title)
                     }
                     className="flex items-center px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                     title="Download File"
                   >
                     <Download size={14} className="mr-1" />
-                    Download
+                    <span className="hidden sm:inline">Download</span>
+                    <span className="sm:hidden">DL</span>
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* PDF Viewer Section (Optional - for inline viewing) */}
-      {lesson.resources && lesson.resources.some((r) => isPDF(r.fileType)) && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">PDF Documents</h2>
-          {lesson.resources
-            .filter((resource) => isPDF(resource.fileType))
-            .map((resource) => (
-              <div
-                key={`pdf-${resource._id}`}
-                className="mb-6 border rounded-lg overflow-hidden"
-              >
-                <div className="bg-gray-50 p-3 flex items-center justify-between">
-                  <h3 className="font-medium">{resource.title}</h3>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        handleFileAction(
-                          resource.fileUrl,
-                          resource.title,
-                          resource.fileType,
-                          "view"
-                        )
-                      }
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      Open in New Tab
-                    </button>
-                  </div>
-                </div>
-                {/* Inline PDF Viewer with Google Docs */}
-                <div className="relative w-full h-96">
-                  <iframe
-                    src={`https://docs.google.com/viewer?url=${encodeURIComponent(
-                      resource.fileUrl
-                    )}&embedded=true`}
-                    className="w-full h-full border-0"
-                    title={resource.title}
-                  />
-                </div>
-              </div>
-            ))}
         </div>
       )}
     </div>

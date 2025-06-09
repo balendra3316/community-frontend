@@ -22,6 +22,7 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
     videoDuration: 0,
     images: [],
     resources: [],
+    urls: [],
     order: 0,
     isPublished: false
   });
@@ -54,6 +55,7 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
         videoDuration: 0,
         images: [],
         resources: [],
+        urls: [],
         order: 0,
         isPublished: false
       });
@@ -150,6 +152,8 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
                       {lesson.videoUrl && <span>📺 Video</span>}
                       {lesson.images?.length > 0 && <span>🖼️ {lesson.images.length} image(s)</span>}
                       {lesson.resources?.length > 0 && <span>📄 {lesson.resources.length} resource(s)</span>}
+                      {lesson.urls && lesson.urls.length > 0 && <span>🔗 {lesson.urls.length} link(s)</span>}
+                      
                     </div>
                   </div>
                 </div>
@@ -164,6 +168,7 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
                         videoUrl: lesson.videoUrl || '',
                         images: lesson.images || [],
                         resources: lesson.resources || [],
+                        urls: lesson.urls || [],
                         order: lesson.order,
                         isPublished: lesson.isPublished || false
                       });

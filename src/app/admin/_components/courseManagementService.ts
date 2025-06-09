@@ -53,6 +53,7 @@ export interface Lesson {
   resources: Resource[];
   images: Image[];
   order: number;
+  urls?: Array<{ title: string; url: string;}>;
   isPublished: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -115,7 +116,27 @@ const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
     }
   });
 
-  return formData;
+
+
+
+
+if (lessonData.urls && lessonData.urls.length > 0) {
+  lessonData.urls.forEach((urlItem, index) => {
+    if (urlItem.title) {
+      formData.append(`urls[${index}][title]`, urlItem.title);
+    }
+    if (urlItem.url) {
+      formData.append(`urls[${index}][url]`, urlItem.url);
+    }
+  });
+}
+
+
+
+
+
+
+  return formData
 };
 
 export const courseService = {
