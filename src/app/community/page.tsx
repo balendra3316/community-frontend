@@ -30,7 +30,7 @@ const CommunityInfoSidebar = dynamic(() => import("../../components/CommunityInf
   ssr: false
 });
 
-// Custom hook to manage body scroll
+
 function useBodyScroll() {
   const lockScroll = useCallback(() => {
     document.body.style.overflow = 'hidden';
@@ -147,7 +147,7 @@ export default function Community() {
     showNotification
   } = useNotifications();
 
-  // Handle scroll lock/unlock for modals
+
   useEffect(() => {
     if (showModal || showPostDetail) {
       lockScroll();
@@ -155,7 +155,7 @@ export default function Community() {
       unlockScroll();
     }
 
-    // Cleanup on unmount
+
     return () => {
       unlockScroll();
     };
@@ -190,7 +190,7 @@ export default function Community() {
           socket.off('postDeleted', handlePostDeleted);
         };
       } catch (error) {
-        // Handle error silently
+
       }
     }
   }, [user?._id, setPosts, showNotification, selectedPost, setIsCreatingPost]);

@@ -16,7 +16,7 @@ interface PostToolbarProps {
   onImageUpload: (file: File, preview: string) => void;
   onYoutubeClick: () => void;
   onPollClick: () => void;
-  // Removed emoji-related props
+
 }
 
 const PostToolbar = memo(
@@ -27,7 +27,7 @@ const PostToolbar = memo(
     onImageUpload,
     onYoutubeClick,
     onPollClick,
-    // Removed emoji props
+
   }: PostToolbarProps) => {
     const [anchorElCategory, setAnchorElCategory] =
       useState<null | HTMLElement>(null);

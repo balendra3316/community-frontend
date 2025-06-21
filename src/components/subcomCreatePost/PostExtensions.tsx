@@ -63,7 +63,7 @@ const PostExtensions = memo(({
 
   const handleEmojiSelect = (emojiData: any) => {
     onEmojiSelect(emojiData.emoji);
-    // Don't close here - let parent handle it
+
   };
 
   const handleEmojiClose = () => {

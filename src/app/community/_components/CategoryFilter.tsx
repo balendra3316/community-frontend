@@ -13,8 +13,8 @@ interface CategoryFilterProps {
   onFilterChange: (filter: string) => void;
 }
 
-// const CATEGORIES = ["DanceTips", "SelfLove", "Events"];
- const CATEGORIES =["Practice Videos", "Challenge Submissions", "Q&A", "Key Information"]
+
+ const CATEGORIES =["Practice Videos", "IndiaMoves20x30", "Challenge Submissions", "Q&A", "Key Information"]
 
 export default function CategoryFilter({
   selectedCategory,

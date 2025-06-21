@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   
-  // Hide sidebar on login page
+
   const shouldHideSidebar = pathname === '/admin/login';
 
   return (

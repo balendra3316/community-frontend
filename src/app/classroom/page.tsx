@@ -10,7 +10,7 @@ const CourseGrid = lazy(() => import('./_components/CourseGrid'));
 
 const COURSES_PER_PAGE = 6;
 
-// Styled Material-UI Button with yellow variants
+
 const StyledButton = styled(Button)(({ theme, variant }) => ({
   minWidth: '100px',
   fontWeight: 600,
@@ -50,7 +50,7 @@ export default function Classroom() {
       const data = await CourseService.getAllCourses();
       setCourses(data);
     } catch (error) {
-      console.error('Failed to fetch courses:', error);
+     
     } finally {
       setLoading(false);
     }
@@ -60,10 +60,10 @@ export default function Classroom() {
     fetchCourses();
   }, [fetchCourses]);
 
-  // Handle successful purchase - refresh courses
+
   const handlePurchaseSuccess = useCallback(() => {
     fetchCourses();
-    // Reset to first page to show updated courses
+
     setCurrentPage(1);
   }, [fetchCourses]);
 
@@ -93,7 +93,7 @@ export default function Classroom() {
     [paginationData.totalPages]
   );
 
-  // Separate courses for better UX
+
   const { freeCourses, paidAccessibleCourses, paidLockedCourses } = useMemo(() => {
     const free: Course[] = [];
     const paidAccessible: Course[] = [];

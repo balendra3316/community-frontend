@@ -51,7 +51,7 @@ export default function NotificationSnackbar({
               }
             }
           },
-          // Ensure proper background colors
+
           '&.MuiAlert-filledSuccess': {
             backgroundColor: '#2e7d32', // Dark green for better contrast
             color: 'white !important'

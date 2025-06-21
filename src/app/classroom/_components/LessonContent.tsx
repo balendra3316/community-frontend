@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React from "react";
@@ -89,7 +88,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      // Fallback to direct URL if download URL fails
+
       window.open(fileUrl, "_blank");
     }
   };

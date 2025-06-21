@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { Course, CourseService } from '../../../services/courseService';
 
-// Declare Razorpay interface
+
 declare global {
   interface Window {
     Razorpay: any;
@@ -39,7 +39,7 @@ interface SnackbarState {
   severity: 'success' | 'error' | 'warning' | 'info';
 }
 
-// Styled Material-UI Button with yellow variants
+
 const YellowButton = styled(Button)(({ theme, variant }) => ({
   fontWeight: 600,
   textTransform: 'none',
@@ -136,7 +136,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
 
   const progress = course.progress?.completionPercentage || 0;
 
-  // Function to show snackbar
+
   const showSnackbar = (message: string, severity: SnackbarState['severity'] = 'info') => {
     setSnackbar({
       open: true,
@@ -145,7 +145,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     });
   };
 
-  // Function to close snackbar
+
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -153,18 +153,18 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Load Razorpay script dynamically
+
   useEffect(() => {
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
-        // Check if Razorpay is already loaded
+
         if (window.Razorpay) {
           setIsRazorpayLoaded(true);
           resolve(true);
           return;
         }
 
-        // Check if script is already in the document
+
         const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
         if (existingScript) {
           existingScript.addEventListener('load', () => {
@@ -174,7 +174,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
           return;
         }
 
-        // Create and load the script
+
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
@@ -183,7 +183,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
           resolve(true);
         };
         script.onerror = () => {
-          console.error('Failed to load Razorpay script');
+          
           resolve(false);
         };
         document.head.appendChild(script);
@@ -199,7 +199,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     
     if (isProcessingPayment) return;
     
-    // Check if Razorpay is loaded
+
     if (!isRazorpayLoaded || !window.Razorpay) {
       showSnackbar('Payment system is still loading. Please try again in a moment.', 'warning');
       return;
@@ -208,7 +208,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     setIsProcessingPayment(true);
 
     try {
-      // Create Razorpay options
+
       const options = {
         key: "rzp_live_Dj70XqJ0PkPgJY", // Your Razorpay key
         amount: course.price * 100, // Amount in paisa
@@ -218,9 +218,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
         image: course.coverImage || '/logo.png',
         handler: async function (response: any) {
           try {
-            console.log('Razorpay response:', response); // Debug log
+
             
-            // Prepare payment data - ensure all required fields are present
+
             const paymentData = {
               courseId: course._id,
               paymentAmount: course.price, // Make sure this matches exactly
@@ -229,32 +229,32 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
               razorpaySignature: response.razorpay_signature || 'temp_signature'
             };
 
-            console.log('Sending payment data:', paymentData); // Debug log
 
-            // Call your backend API to verify payment and grant access
+
+
             const purchaseResponse = await CourseService.purchaseCourse(paymentData);
             
-            console.log('Purchase response:', purchaseResponse); // Debug log
 
-            // Show success message
+
+
             showSnackbar('Course purchased successfully! 🎉', 'success');
             
-            // Refresh the course list
+
             if (onPurchaseSuccess) {
               onPurchaseSuccess();
             }
           } catch (error: any) {
-            console.error('Payment verification failed:', error);
             
-            // More detailed error handling
+            
+
             if (error instanceof Error) {
-              console.error('Error message:', error.message);
+              
             }
             
-            // Try to parse the error response for more details
+
             try {
               const errorResponse = await error.response?.json?.();
-              console.error('Server error response:', errorResponse);
+              
               showSnackbar(`Payment verification failed: ${errorResponse?.message || 'Please contact support.'}`, 'error');
             } catch {
               showSnackbar('Payment verification failed. Please contact support.', 'error');
@@ -285,7 +285,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error('Payment initiation failed:', error);
+      
       showSnackbar('Failed to initiate payment. Please try again.', 'error');
       setIsProcessingPayment(false);
     }
@@ -453,7 +453,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     </>
   );
 
-  // If course is accessible, wrap with Link
+
   if (course.isAccessible) {
     return (
       <Link href={`/classroom/${course._id}`} className="block h-full">
@@ -462,7 +462,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
     );
   }
 
-  // If course is not accessible, don't wrap with Link
+
   return <CardContent />;
 };
 

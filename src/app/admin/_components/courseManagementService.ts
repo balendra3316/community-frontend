@@ -171,7 +171,12 @@ export const courseService = {
 
     return response.json();
   },
-// Updated createCourse method
+
+
+
+
+
+
 async createCourse(
   courseData: Partial<Course>,
   coverImageFile?: File
@@ -186,11 +191,14 @@ async createCourse(
     "order",
     (courseData.order !== undefined ? courseData.order : 0).toString()
   );
+  
+  if (courseData.isPaid === true) {
+    formData.append("isPaid", "true");
+  }
+  
 
-  // Add isPaid field
-  formData.append("isPaid", (courseData.isPaid || false).toString());
 
-  // Add price field (only if isPaid is true)
+  
   if (courseData.isPaid && courseData.price !== undefined) {
     formData.append("price", courseData.price.toString());
   }
@@ -215,7 +223,12 @@ async createCourse(
   return response.json();
 },
 
-// Updated updateCourse method
+
+
+
+
+
+
 async updateCourse(
   courseId: string,
   courseData: Partial<Course>,
@@ -231,12 +244,12 @@ async updateCourse(
     formData.append("order", courseData.order.toString());
   }
 
-  // Add isPaid field
+
   if (courseData.isPaid !== undefined) {
     formData.append("isPaid", courseData.isPaid.toString());
   }
 
-  // Add price field (only if isPaid is true)
+
   if (courseData.isPaid && courseData.price !== undefined) {
     formData.append("price", courseData.price.toString());
   }

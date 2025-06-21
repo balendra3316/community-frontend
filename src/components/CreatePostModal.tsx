@@ -1,4 +1,4 @@
-
+                           
 
 
 
@@ -78,9 +78,9 @@ const CreatePostModal = ({
     return filterInstance;
   });
 
-  // const categories = ["DanceTips", "SelfLove", "Events"];
 
-  const categories=["Practice Videos", "Challenge Submissions", "Q&A", "Key Information"]
+
+  const categories=["Practice Videos","IndiaMoves20x30", "Challenge Submissions", "Q&A", "Key Information"]
 
   const containsBadWords = (text: string) => {
     try {
@@ -140,7 +140,7 @@ const CreatePostModal = ({
     } else {
       setContent((prev) => prev + emoji);
     }
-    // Close the extensions after emoji selection
+
     setShowExtensions(false);
     setExtensionType(null);
   };

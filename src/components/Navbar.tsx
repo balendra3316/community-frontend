@@ -44,7 +44,7 @@ const NotificationLoading = () => (
   </div>
 );
 
-// Mobile Sidebar Component
+
 const MobileSidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const theme = useTheme();
   

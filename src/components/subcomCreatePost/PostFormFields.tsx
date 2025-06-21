@@ -87,7 +87,7 @@ const PostFormFields = memo(({
   };
 
   const handlePollOptionChange = (index: number, value: string) => {
-    // Limit to 30 characters
+
     if (value.length <= 30) {
       onPollOptionUpdate(index, value);
     }
