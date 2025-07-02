@@ -12,6 +12,7 @@ import UserRankCard from './_components/UserRankCard';
 import LeaderboardTabs, { TabPanel } from './_components/LeaderboardTabs';
 import LeaderboardService, { LeaderboardResponse } from '../../services/leaderboard.service';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ChatBot from '@/components/ChatBot';
 
 type LeaderboardType = 'weekly' | 'monthly' | 'allTime';
 
@@ -177,6 +178,7 @@ export default function Leaderboards() {
                 rank={userData.rank}
                 loading={currentState.loading}
               />
+               <ChatBot/>
             </Box>
           </Grid>
         </Container>

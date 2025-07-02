@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/context/AuthContext";
 import { Box } from "@mui/material";
+import ChatBot from "../components/ChatBot"
 
 
 import Navbar from "./_components/Navbar";
@@ -199,6 +200,8 @@ export default function LandingPage({}: LandingPageProps) {
         <Box component="footer" role="contentinfo">
           <Footer />
         </Box>
+
+        <ChatBot/>
 
         {/* Auth Modal - Lazy loaded and only rendered when needed */}
         {openModal && (

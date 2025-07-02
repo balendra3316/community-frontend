@@ -1,6 +1,8 @@
+
+
 "use client";
 import { useRef, useEffect, useState } from "react";
-import { ThumbsUp, MessageSquare, BarChart2, User } from "lucide-react";
+import { ThumbsUp, MessageSquare, BarChart2 } from "lucide-react";
 import { Post } from "../../services/postService";
 import { useAuth } from "../../context/AuthContext";
 import { usePostState } from "../../types/PostStateContext";
@@ -28,13 +30,12 @@ export default function PostContent({
   likes,
 }: PostContentProps) {
   const { user } = useAuth();
-  const { likedPosts, likeCounts } = usePostState(); // Use the context
+  const { likedPosts, likeCounts } = usePostState();
   const [showFullContent, setShowFullContent] = useState(false);
   const contentRef = useRef<HTMLParagraphElement>(null);
   const [contentOverflows, setContentOverflows] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState(1);
-
 
   const isLiked = likedPosts[post._id] ?? isPostLikedByUser;
   const currentLikeCount = likeCounts[post._id] ?? likes.length;
@@ -50,7 +51,6 @@ export default function PostContent({
     }
   }, [post.content]);
 
-
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.target as HTMLImageElement;
     setImageAspectRatio(img.naturalWidth / img.naturalHeight);
@@ -61,7 +61,6 @@ export default function PostContent({
     setShowFullContent(!showFullContent);
   };
 
-
   const calculateTotalVotes = () => {
     if (!post.poll?.options) return 0;
     return post.poll.options.reduce(
@@ -69,7 +68,6 @@ export default function PostContent({
       0
     );
   };
-
 
   const calculatePercentage = (optionIndex: number) => {
     if (!post.poll?.options) return 0;
@@ -79,16 +77,18 @@ export default function PostContent({
   };
 
   const renderYoutubeEmbed = (link: string) => {
+    // FIX: Updated the regex to include the 'shorts' path.
     const youtubeRegex =
-      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = link.match(youtubeRegex);
 
     if (match && match[1]) {
       const videoId = match[1];
       return (
-        <div className="w-full h-[400px] rounded-lg overflow-hidden mb-4">
+        <div className="w-full h-auto aspect-video rounded-lg overflow-hidden mb-4">
           <iframe
             src={`https://www.youtube.com/embed/${videoId}`}
+            title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full"
@@ -99,7 +99,6 @@ export default function PostContent({
 
     return null;
   };
-
 
   const renderPoll = () => {
     if (!post.poll?.options || post.poll.options.length === 0) return null;
@@ -120,12 +119,11 @@ export default function PostContent({
           {post.poll.options.map((option, index) => {
             const percentage = calculatePercentage(index);
             const isVoted =
-              hasVotedOnPoll && option.votes?.includes(post.author._id || "");
+              hasVotedOnPoll && user && option.votes?.includes(user._id);
 
             return (
               <div key={index} className="relative">
                 {hasVotedOnPoll ? (
-
                   <div className="relative bg-gray-100 rounded-md overflow-hidden">
                     <div
                       className={`absolute top-0 left-0 h-full ${
@@ -146,7 +144,6 @@ export default function PostContent({
                     </div>
                   </div>
                 ) : (
-
                   <button
                     className="w-full px-4 py-3 bg-white hover:bg-gray-50 border rounded-md flex justify-between items-center disabled:opacity-70"
                     onClick={() => handleVote(index)}
@@ -188,7 +185,7 @@ export default function PostContent({
             {post.tags && post.tags.length > 0 && (
               <>
                 <span className="mx-1">•</span>
-                <span className="text-blue-600">#{post.tags[0]}</span>
+                <span className="text-yellow-900">{post.tags[0]}</span>
               </>
             )}
           </div>
@@ -220,7 +217,7 @@ export default function PostContent({
         <div className="mb-4 rounded-lg overflow-hidden max-w-full">
           <img
             src={post.image}
-            alt="Post image"
+            alt="Post"
             className="w-full max-h-96 object-contain"
             onLoad={handleImageLoad}
             style={{
@@ -233,7 +230,6 @@ export default function PostContent({
 
       {post.youtubeLink && renderYoutubeEmbed(post.youtubeLink)}
 
-      {/* Render Poll if post has one */}
       {post.poll && renderPoll()}
 
       <div className="flex items-center text-gray-500 text-sm mt-2 pt-2 border-t">

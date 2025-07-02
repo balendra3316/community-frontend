@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from "react";
 import {
   MessageSquare,
@@ -6,7 +8,6 @@ import {
   MoreVertical,
   Trash,
   Clock,
-  User,
 } from "lucide-react";
 import {
   Post as PostType,
@@ -39,12 +40,11 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     if (user && post) {
       if (likedPosts[post._id] === undefined) {
         const isLikedFromServer = post.likes.includes(user._id);
-
         setLikedPosts((prev) => ({ ...prev, [post._id]: isLikedFromServer }));
         setLikeCounts((prev) => ({ ...prev, [post._id]: post.likes.length }));
       }
     }
-  }, [post._id, user, post.likes]);
+  }, [post._id, user, post.likes, likedPosts, setLikedPosts, setLikeCounts]);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -105,17 +105,14 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
 
     try {
       setIsLiking(true);
-
-      const isCurrentlyLikedFromServer = post.likes.includes(user._id);
-
       toggleLike(post._id, post.likes, user._id);
-
       await likePost(post._id);
 
       if (onRefresh) {
         onRefresh();
       }
     } catch (error) {
+      // Revert the state on error
       toggleLike(post._id, post.likes, user._id);
     } finally {
       setIsLiking(false);
@@ -170,6 +167,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
         onRefresh();
       }
     } catch (error) {
+      // Handle error, e.g., show a notification
     } finally {
       setIsDeleting(false);
     }
@@ -180,12 +178,17 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
     setShowMenu((prev) => !prev);
   };
 
+  /**
+   * FIX: Updated the regular expression to include the `/shorts/` URL pattern.
+   * This now correctly extracts the video ID from both standard YouTube links and Shorts links.
+   */
   const getYoutubeId = (url: string): string => {
     if (!url) return "";
 
     const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\/shorts\/)([^#&?]*).*/;
     const match = url.match(regExp);
+
     return match && match[2].length === 11 ? match[2] : "";
   };
 
@@ -207,9 +210,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
   };
 
   const hasYoutubeLink = post.youtubeLink && getYoutubeId(post.youtubeLink);
-
   const hasMedia = post.image || hasYoutubeLink;
-
   const lastCommentTimeFormatted = formatLastCommentTime(post.lastComment);
 
   const cardStyle = post.isPinned
@@ -239,13 +240,11 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
       <div className="p-4">
         <div className="flex items-center mb-3">
           <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
-            <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
-              <Avatar
-                src={post.author.avatar}
-                alt={post.author.name?.charAt(0).toUpperCase()}
-                className="h-full w-full bg-gray-300"
-              />
-            </div>
+            <Avatar
+              src={post.author.avatar}
+              alt={post.author.name?.charAt(0).toUpperCase()}
+              className="h-full w-full bg-gray-300"
+            />
           </div>
           <div className="ml-3 flex-1">
             <div className="flex items-center justify-between">
@@ -273,7 +272,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                 </div>
               </div>
 
-              {/* Show 3-dot menu only for the post owner */}
               {isOwnPost && (
                 <div className="relative">
                   <button
@@ -282,8 +280,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                   >
                     <MoreVertical size={18} className="text-gray-500" />
                   </button>
-
-                  {/* Dropdown Menu */}
                   {showMenu && (
                     <div
                       className="absolute right-0 top-8 w-36 bg-white shadow-lg rounded-md border border-gray-200 z-10"
@@ -307,27 +303,12 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
           </div>
         </div>
 
-        {/* Content Layout with Media - Mobile First Approach */}
+        {/* Content Layout */}
         <div className="flex flex-col gap-4">
-          {/* Mobile View: Title and Content FIRST */}
+          {/* Mobile View: Text above media */}
           <div className="sm:hidden w-full">
-            {/* Title with truncation for mobile */}
-            {/* <h3
-              className="font-bold mb-2 text-ellipsis overflow-hidden"
-              style={{
-                fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                fontSize: "18px",
-                lineHeight: "1.4",
-                display: "-webkit-box",
-                WebkitLineClamp: "2",
-                WebkitBoxOrient: "vertical",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {post.title}
-            </h3> */}
             <h3
-             className="text-gray-700 overflow-hidden mb-3"
+              className="text-gray-700 overflow-hidden mb-3"
               style={{
                 display: "-webkit-box",
                 WebkitLineClamp: "3",
@@ -337,11 +318,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
             >
               {post.title}
             </h3>
-
-
-   
-
-            {/* Content with truncation for mobile */}
             <p
               className="text-gray-700 overflow-hidden mb-3"
               style={{
@@ -355,7 +331,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
             </p>
           </div>
 
-          {/* Mobile View: Media appears AFTER title and content */}
+          {/* Mobile View: Media */}
           {hasMedia && (
             <div className="sm:hidden w-full flex justify-center">
               {hasYoutubeLink ? (
@@ -371,7 +347,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                   />
                   <div className="absolute inset-0 bg-opacity-20 flex items-center justify-center">
                     <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-                      <div className="w-0 h-0 border-t-4 border-t-transparent border-l-6 border-l-white border-b-4 border-b-transparent ml-1"></div>
+                      <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
                     </div>
                   </div>
                 </div>
@@ -379,7 +355,7 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                 <div className="w-full" style={{ maxHeight: "300px" }}>
                   <img
                     src={post.image}
-                    alt="Post image"
+                    alt="Post"
                     className="rounded-lg w-full h-full object-cover"
                   />
                 </div>
@@ -387,18 +363,16 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
             </div>
           )}
 
-          {/* Desktop Layout */}
+          {/* Desktop Layout: Text and media side-by-side */}
           <div
             className="hidden sm:flex sm:flex-row gap-4"
             style={{ minHeight: "80px", maxHeight: "120px" }}
           >
-            {/* Post Title & Content with consistent truncation */}
             <div
               className={`flex-1 ${
                 hasMedia ? "sm:max-w-[68%]" : "w-full"
               } overflow-hidden`}
             >
-              {/* Title with consistent max width and truncation */}
               <h3
                 className="font-bold mb-2 text-ellipsis overflow-hidden"
                 style={{
@@ -408,13 +382,10 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                   display: "-webkit-box",
                   WebkitLineClamp: "1",
                   WebkitBoxOrient: "vertical",
-                  textOverflow: "ellipsis",
                 }}
               >
                 {post.title}
               </h3>
-
-              {/* Content with consistent height and truncation */}
               <p
                 className="text-gray-700 overflow-hidden"
                 style={{
@@ -429,7 +400,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
               </p>
             </div>
 
-            {/* Media (Image or YouTube) with consistent positioning - Desktop */}
             {hasMedia && (
               <div className="flex-shrink-0 w-32 h-28 overflow-hidden">
                 {hasYoutubeLink ? (
@@ -444,14 +414,14 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
                     />
                     <div className="absolute inset-0  bg-opacity-20 flex items-center justify-center">
                       <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
-                        <div className="w-0 h-0 border-t-4 border-t-transparent border-l-6 border-l-white border-b-4 border-b-transparent ml-1"></div>
+                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[11px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
                       </div>
                     </div>
                   </div>
                 ) : post.image ? (
                   <img
                     src={post.image}
-                    alt="Post image"
+                    alt="Post"
                     className="rounded-lg w-full h-full object-cover"
                   />
                 ) : null}
@@ -459,83 +429,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
             )}
           </div>
         </div>
-
-        {/* YouTube Modal - Fixed z-index and improved structure */}
-        {showYoutubeModal && hasYoutubeLink && (
-          <div
-            className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50"
-            onClick={closeYoutubeModal}
-            style={{ zIndex: 9999 }}
-          >
-            <div
-              className="relative w-full max-w-3xl mx-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="absolute -top-10 right-0 text-black hover:text-gray-300"
-                onClick={closeYoutubeModal}
-              >
-                <X size={24} />
-              </button>
-              <div
-                className="relative w-full"
-                style={{ paddingBottom: "56.25%" }}
-              >
-                <iframe
-                  src={`https://www.youtube.com/embed/${getYoutubeId(
-                    post.youtubeLink || ""
-                  )}?autoplay=1`}
-                  title="YouTube video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute top-0 left-0 w-full h-full"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Delete Confirmation Modal */}
-        {showDeleteModal && (
-          <div
-            className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setShowDeleteModal(false)}
-          >
-            <div
-              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-xl font-bold mb-4">Delete Post</h3>
-              <p className="text-gray-700 mb-6">
-                Are you sure you want to delete this post? This action cannot be
-                undone.
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                  onClick={() => setShowDeleteModal(false)}
-                  disabled={isDeleting}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
-                  onClick={handleDeletePost}
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? (
-                    <>
-                      <span className="mr-2">Deleting</span>
-                      <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    </>
-                  ) : (
-                    "Delete"
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Post Footer */}
         <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100">
@@ -559,7 +452,6 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
               <span>{post.totalComments || 0}</span>
             </div>
 
-            {/* Last Comment Time Display - Added to the footer */}
             {lastCommentTimeFormatted && (
               <div className="flex items-center text-blue-950 ">
                 <Clock size={16} className="mr-1" />
@@ -571,6 +463,83 @@ export default function Post({ post, onRefresh, onDelete }: PostProps) {
           </div>
         </div>
       </div>
+
+      {/* YouTube Modal */}
+      {showYoutubeModal && hasYoutubeLink && (
+        <div
+          className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50"
+          onClick={closeYoutubeModal}
+          style={{ zIndex: 9999 }}
+        >
+          <div
+            className="relative w-full max-w-3xl mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute -top-10 right-0 text-black hover:text-gray-300"
+              onClick={closeYoutubeModal}
+            >
+              <X size={24} />
+            </button>
+            <div
+              className="relative w-full"
+              style={{ paddingBottom: "56.25%" }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${getYoutubeId(
+                  post.youtubeLink || ""
+                )}?autoplay=1`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 bg-[rgba(144,144,144,0.6)]  bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold mb-4">Delete Post</h3>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this post? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
+                onClick={handleDeletePost}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <span className="mr-2 text-white">Deleting</span>
+                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

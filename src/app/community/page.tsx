@@ -14,6 +14,7 @@ import CategoryFilter from "./_components/CategoryFilter";
 import PostsList from "./_components/PostsList";
 import LoadingIndicator from "./_components/LoadingIndicator";
 import NotificationSnackbar from "./_components/NotificationSnackbar";
+import ChatBot from "@/components/ChatBot";
 
 const CreatePostModal = dynamic(() => import("../../components/CreatePostModal"), {
   loading: () => <div className="animate-pulse">Loading...</div>,
@@ -294,6 +295,7 @@ export default function Community() {
                   <CommunityInfoSidebar />
                 </Suspense>
               </div>
+               <ChatBot/>
             </div>
           </div>
 

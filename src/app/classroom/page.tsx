@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import NavBar from '../../components/Navbar';
 import { CourseService, Course } from '../../services/courseService';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ChatBot from '@/components/ChatBot';
 
 const CourseGrid = lazy(() => import('./_components/CourseGrid'));
 
@@ -193,6 +194,8 @@ export default function Classroom() {
             </Suspense>
           </div>
           
+
+           <ChatBot/>
           {/* Enhanced Pagination with Material-UI */}
           {paginationData.totalPages > 1 && (
             <div className="flex justify-center mt-8">
