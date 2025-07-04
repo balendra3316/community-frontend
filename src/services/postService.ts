@@ -26,6 +26,7 @@ export interface Post {
   title: string;
   content: string;
   image?: string;
+  links?:string[]
   youtubeLink?: string;
   totalComments?: number;
   tags: string[];

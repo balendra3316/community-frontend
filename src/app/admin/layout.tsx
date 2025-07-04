@@ -21,7 +21,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         )}
         <div className={`flex-1 ${shouldHideSidebar ? 'w-full' : ''}`}>
           <AdminProtectedRoute>
-            {/* Add top padding on mobile to accommodate the toggle button, but not on login page */}
             <main className={`p-6 ${!shouldHideSidebar ? 'pt-16 md:pt-6' : ''}`}>
               {children}
             </main>

@@ -1,8 +1,7 @@
 
-
 "use client";
 import { useRef, useEffect, useState } from "react";
-import { ThumbsUp, MessageSquare, BarChart2 } from "lucide-react";
+import { ThumbsUp, MessageSquare, BarChart2, Link } from "lucide-react"; // Import Link icon
 import { Post } from "../../services/postService";
 import { useAuth } from "../../context/AuthContext";
 import { usePostState } from "../../types/PostStateContext";
@@ -77,7 +76,6 @@ export default function PostContent({
   };
 
   const renderYoutubeEmbed = (link: string) => {
-    // FIX: Updated the regex to include the 'shorts' path.
     const youtubeRegex =
       /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = link.match(youtubeRegex);
@@ -102,7 +100,6 @@ export default function PostContent({
 
   const renderPoll = () => {
     if (!post.poll?.options || post.poll.options.length === 0) return null;
-
     const totalVotes = calculateTotalVotes();
 
     return (
@@ -114,7 +111,6 @@ export default function PostContent({
             {totalVotes} votes
           </span>
         </div>
-
         <div className="space-y-3">
           {post.poll.options.map((option, index) => {
             const percentage = calculatePercentage(index);
@@ -197,7 +193,7 @@ export default function PostContent({
       <div className="mb-4 relative">
         <p
           ref={contentRef}
-          className={`${
+          className={`whitespace-pre-wrap ${
             !showFullContent && contentOverflows ? "line-clamp-4" : ""
           }`}
         >
@@ -212,6 +208,26 @@ export default function PostContent({
           </button>
         )}
       </div>
+
+      {/* RENDER ATTACHED LINKS */}
+      {post.links && post.links.length > 0 && (
+        <div className="my-4 space-y-2">
+          {post.links.map((link, index) => (
+            <a
+              key={index}
+              href={!/^https?:\/\//i.test(link) ? `https://${link}` : link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg border transition-colors duration-200 group"
+            >
+              <Link size={16} className="mr-3 text-gray-400 group-hover:text-gray-600 flex-shrink-0" />
+              <span className="text-blue-600 group-hover:text-blue-700 truncate font-medium text-sm">
+                {link}
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
 
       {post.image && (
         <div className="mb-4 rounded-lg overflow-hidden max-w-full">

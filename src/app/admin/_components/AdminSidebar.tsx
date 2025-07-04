@@ -11,8 +11,9 @@ export default function AdminSidebar({ isOpen, setIsOpen }: any) {
   const pathname = usePathname();
 
   const menuItems = [
-    { name: 'Dashboard', path: '/admin' },
-    { name: 'Graph', path: '/admin/graph' },
+    { name: 'Courses', path: '/admin' },
+    { name: 'Graph', path: '/admin/usersdata' },
+    {name:'Posts', path:'/admin/allposts' },
   ];
 
   const isActive = (path: string) => {

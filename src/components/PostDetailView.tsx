@@ -316,7 +316,7 @@ const formatRelativeTime = (timestamp: string) => {
   if (!isOpen || !post) return null;
 
   return (
-    <div className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-50 z-50 flex items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-50 z-60 flex items-center justify-center p-0 sm:p-4">
       <div className="bg-white rounded-lg shadow-xl w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-3xl flex flex-col">
         {/* Header */}
         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
