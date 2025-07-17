@@ -1,60 +1,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { AuthProvider } from '@/context/AuthContext';
 import './globals.css';
 import { PostStateProvider } from '../types/PostStateContext';
@@ -149,3 +95,8 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
+
+

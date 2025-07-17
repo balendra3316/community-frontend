@@ -1,120 +1,15 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export interface User {
   _id: string;
@@ -151,12 +46,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   const checkAuth = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/auth/me`, { 
-        withCredentials: true 
+      const response = await axios.get(`${API_URL}/auth/me`, {
+        withCredentials: true,
       });
       if (response.data && response.data._id) {
         setUser(response.data);
@@ -180,7 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data } = await axios.get(`${API_URL}/auth/google/url`);
       window.location.href = data.url; // This will redirect to Google auth
     } catch (err) {
-      setError('Failed to get Google auth URL');
+      setError("Failed to get Google auth URL");
       setLoading(false);
     }
   };
@@ -191,49 +85,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
       setUser(null);
     } catch (err) {
-      setError('Failed to logout');
+      setError("Failed to logout");
     } finally {
       setLoading(false);
     }
   };
 
-
-  const updateProfile = async (data: ProfileUpdateData): Promise<User | null> => {
+  const updateProfile = async (
+    data: ProfileUpdateData
+  ): Promise<User | null> => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const formData = new FormData();
-      
 
       if (data.name) {
-        formData.append('name', data.name);
+        formData.append("name", data.name);
       }
-      
 
       if (data.avatar) {
-        formData.append('avatar', data.avatar);
+        formData.append("avatar", data.avatar);
       }
-      
-      const response = await axios.put(
-        `${API_URL}/auth/profile`, 
-        formData, 
-        { 
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        }
-      );
-      
+
+      const response = await axios.put(`${API_URL}/auth/profile`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.data) {
         setUser(response.data);
         return response.data;
       }
-      
+
       return null;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to update profile';
+      const errorMessage =
+        err.response?.data?.message || "Failed to update profile";
       setError(errorMessage);
       return null;
     } finally {
@@ -243,18 +133,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     checkAuth();
-  }, [])
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      error, 
-      loginWithGoogle, 
-      logout, 
-      checkAuth,
-      updateProfile
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        error,
+        loginWithGoogle,
+        logout,
+        checkAuth,
+        updateProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -263,19 +155,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-
-
-
-
-
 export const getToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('token');
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("token");
   }
   return null;
 };
+
+
+
+

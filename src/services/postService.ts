@@ -55,14 +55,30 @@ export const fetchPosts = async (page = 1, limit = 10, filter = 'default') => {
     throw error;
   }
 };
-export const fetchPostById = async (id: string) => {
+
+
+
+
+export const fetchPostById = async (postId: string): Promise<Post> => {
   try {
-    const response = await axios.get<{ post: Post; comments: any[] }>(`${API_URL}/posts/${id}`);
+    // Correct the expected type here from <{ post: Post; ... }> to just <Post>
+    // This now matches what your backend actually sends.
+    const response = await axios.get<Post>(`${API_URL}/posts/${postId}/details`);
     return response.data;
   } catch (error) {
+   
+    // Re-throw the error so the component can catch it and show a message
     throw error;
   }
 };
+
+
+
+
+
+
+
+
 
 export const createPost = async (formData: FormData) => {
   try {
@@ -114,6 +130,19 @@ export const deletePost = async (postId: string) => {
 };
 
 
+export const updatePost = async (postId: string, formData: FormData): Promise<Post> => {
+  try {
+    const response = await axios.put<Post>(`${API_URL}/posts/${postId}`, formData, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 export const fetchUserPosts = async (page = 1, limit = 10) => {
