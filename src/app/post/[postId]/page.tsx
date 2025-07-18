@@ -204,11 +204,10 @@
 
 
 
-
-
 "use client";
 
-import React, { useState, useEffect } from "react"; // Import React
+// Import 'use' from React to resolve the params promise
+import { useState, useEffect, use } from "react"; 
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext"; 
 import { Post, fetchPostById } from "../../../services/postService";
@@ -217,16 +216,17 @@ import PostDetailView from "../../../components/PostDetailView";
 import PublicPostView from "../../../components/PublicPostView"; 
 import NavBar from "../../../components/Navbar";
 
-// Define the props interface as before
+// Define the props interface where `params` is now a Promise
 interface PostPageProps {
-  params: {
+  params: Promise<{
     postId: string;
-  };
+  }>;
 }
 
-// Define the component using the React.FC (Functional Component) type.
-// This is a more explicit way to type a component and can resolve build issues.
-const SharedPostPage: React.FC<PostPageProps> = ({ params }) => {
+export default function SharedPostPage({ params }: PostPageProps) {
+  // Use the `use` hook to resolve the promise. This is the correct way for Client Components.
+  const resolvedParams = use(params);
+  
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -235,12 +235,14 @@ const SharedPostPage: React.FC<PostPageProps> = ({ params }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!params.postId) return;
+    // Use the resolved postId
+    const postId = resolvedParams.postId;
+    if (!postId) return;
 
     const loadPost = async () => {
       try {
         setLoadingPost(true);
-        const postData = await fetchPostById(params.postId);
+        const postData = await fetchPostById(postId);
         setPost(postData);
         setError(null);
       } catch (err) {
@@ -251,7 +253,7 @@ const SharedPostPage: React.FC<PostPageProps> = ({ params }) => {
     };
 
     loadPost();
-  }, [params.postId]);
+  }, [resolvedParams.postId]); // The dependency is the resolved value
 
   const handleClose = () => {
     router.push("/community");
@@ -297,6 +299,4 @@ const SharedPostPage: React.FC<PostPageProps> = ({ params }) => {
       </main>
     </PostStateProvider>
   );
-};
-
-export default SharedPostPage;
+}
