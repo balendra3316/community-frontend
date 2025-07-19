@@ -459,51 +459,70 @@ export default function Community() {
     return () => unlockScroll();
   }, [showModal, showPostDetail, lockScroll, unlockScroll]);
 
-  // --- MODIFIED: Consolidated and corrected socket listeners ---
+
+
+
+
+// --- THE FIX: Simplified Socket Listeners ---
   useEffect(() => {
     if (user?._id) {
       const socket = initializeSocket(user._id);
 
-      const handleNewPost = (newPost: PostType) => {
-        // Add new post to the top only if the current filter is 'default' (latest)
+      // Handles post creation event for THIS user
+      const handlePostCreated = (data: { post: PostType; message: string }) => {
+        // Add the new post to the list
         if (currentFilter === 'default') {
-            setPosts(prevPosts => [newPost, ...prevPosts]);
+          setPosts(prevPosts => [data.post, ...prevPosts]);
         }
-        showNotification("A new post has been created!", "success");
+        // Show the success notification
+        showNotification(data.message, "success");
       };
 
+      // Handles post update event for THIS user
+      const handlePostUpdated = (data: { post: PostType; message: string }) => {
+        // Update the post in the list
+        setPosts(prevPosts =>
+          prevPosts.map(p => (p._id === data.post._id ? data.post : p))
+        );
+        // Update the detailed view if it's open
+        if (selectedPost?._id === data.post._id) {
+          setSelectedPost(data.post);
+        }
+        // Show the success notification
+        showNotification(data.message, "success");
+      };
+
+      // Handles post deletion event for THIS user (matches your existing logic)
       const handlePostDeleted = (data: { postId: string; message: string }) => {
         setPosts(prevPosts => prevPosts.filter(post => post._id !== data.postId));
-        showNotification(data.message || "Post deleted successfully", "success");
-        if (selectedPost && selectedPost._id === data.postId) {
+        showNotification(data.message, "success");
+        if (selectedPost?._id === data.postId) {
           setShowPostDetail(false);
           setSelectedPost(null);
         }
       };
 
-      const handlePostUpdated = (updatedPost: PostType) => {
-        setPosts(prevPosts =>
-          prevPosts.map(p => (p._id === updatedPost._id ? updatedPost : p))
-        );
-        showNotification("Post updated successfully!", "success");
-        if (selectedPost && selectedPost._id === updatedPost._id) {
-          setSelectedPost(updatedPost);
-        }
-      };
-      
-      // Note: your backend emits 'newPost' to everyone. 
-      // 'userPostCreated' is only for the author. We'll listen to the public one.
-      socket.on('newPost', handleNewPost);
-      socket.on('postDeleted', handlePostDeleted);
+      // Listen ONLY to the private events
+      socket.on('postCreated', handlePostCreated);
       socket.on('postUpdated', handlePostUpdated);
+      socket.on('postDeleted', handlePostDeleted);
 
+      // Clean up all listeners
       return () => {
-        socket.off('newPost', handleNewPost);
-        socket.off('postDeleted', handlePostDeleted);
+        socket.off('postCreated', handlePostCreated);
         socket.off('postUpdated', handlePostUpdated);
+        socket.off('postDeleted', handlePostDeleted);
       };
     }
-  }, [user?._id, setPosts, showNotification, selectedPost, currentFilter]);
+  }, [user?._id, setPosts, showNotification, selectedPost, currentFilter]); // Dependencies are correct
+
+
+
+
+
+
+
+
 
   const filteredPosts = useMemo(() => {
     return selectedCategory === "All" 

@@ -519,7 +519,7 @@ const CreatePostModal = ({
   const isPostButtonEnabled =
     !submitting &&
     title.trim() !== "" &&
-    content.trim() !== "" &&
+   // content.trim() !== "" &&
     selectedCategory !== "" &&
     !containsBadWords(title) &&
     !containsBadWords(content) &&
