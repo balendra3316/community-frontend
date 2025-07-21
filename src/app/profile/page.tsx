@@ -708,17 +708,67 @@ const handleDeletePost = async (postId: string) => {
             Back to Community
           </Button>
           <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={3}>
-            <Box sx={{ width: { md: "256px" }, flexShrink: 0 }}>
-              <Paper elevation={2} sx={{ overflow: "hidden" }}>
-                  <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                      {['profile', 'my-posts', 'my-courses'].map((tab) => (
-                          <Button key={tab} fullWidth onClick={() => setActiveTab(tab)} sx={{ justifyContent: 'flex-start', py: 2, px: 3, fontWeight: 500, borderRadius: 0, borderLeft: activeTab === tab ? `4px solid ${themeYellow.primary}` : 'none', bgcolor: activeTab === tab ? themeYellow.primaryLight : 'transparent', color: activeTab === tab ? themeYellow.primary : 'text.secondary', '&:hover': { bgcolor: activeTab === tab ? themeYellow.primaryLight : 'rgba(0,0,0,0.04)' } }}>
-                              {tab.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                          </Button>
-                      ))}
-                  </Box>
-              </Paper>
-            </Box>
+      <Box sx={{ width: { md: "256px" }, flexShrink: 0 }}>
+  <Paper elevation={2} sx={{ overflow: "hidden" }}>
+
+    {/* Mobile Tabs - Add this block back from your old code */}
+    <Box
+      sx={{
+        display: { xs: "flex", md: "none" },
+        overflowX: "auto",
+      }}
+    >
+      {["profile", "my-posts", "my-courses"].map((tab) => (
+        <Button
+          key={tab}
+          onClick={() => setActiveTab(tab)}
+          sx={{
+            flex: 1,
+            py: 2,
+            px: 2,
+            fontWeight: 500,
+            borderRadius: 0,
+            borderBottom: activeTab === tab ? `2px solid ${themeYellow.primary}` : "none",
+            bgcolor: activeTab === tab ? `${themeYellow.primaryLight}` : "transparent",
+            color: activeTab === tab ? themeYellow.text : "black",
+            "&:hover": {
+              bgcolor: activeTab === tab ? themeYellow.primaryLight : "rgba(0, 0, 0, 0.04)",
+            },
+          }}
+        >
+          {tab === "profile" ? "Profile" : tab === "my-posts" ? "My Posts" : "My Courses"}
+        </Button>
+      ))}
+    </Box>
+
+    {/* Desktop Sidebar - This part is already in your new code */}
+    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      {['profile', 'my-posts', 'my-courses'].map((tab) => (
+        <Button
+          key={tab}
+          fullWidth
+          onClick={() => setActiveTab(tab)}
+          sx={{
+            justifyContent: 'flex-start',
+            py: 2,
+            px: 3,
+            fontWeight: 500,
+            borderRadius: 0,
+            borderLeft: activeTab === tab ? `4px solid ${themeYellow.primary}` : 'none',
+            bgcolor: activeTab === tab ? themeYellow.primaryLight : 'transparent',
+            color: activeTab === tab ? themeYellow.primary : 'text.secondary',
+            '&:hover': {
+              bgcolor: activeTab === tab ? themeYellow.primaryLight : 'rgba(0,0,0,0.04)'
+            }
+          }}
+        >
+          {tab.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+        </Button>
+      ))}
+    </Box>
+
+  </Paper>
+</Box>
             <Box sx={{ flex: 1 }}>
               {activeTab === "profile" && <ProfileEditTab user={user} onUpdateStart={handleProfileUpdateStart} onUpdateEnd={handleProfileUpdateEnd} />}
               {activeTab === "my-posts" && (
@@ -735,7 +785,12 @@ const handleDeletePost = async (postId: string) => {
                   onDeletePost={handleDeletePost}
                 />
               )}
-              {/* Other tabs */}
+              {activeTab === "my-courses" && (
+                <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+                  <Typography variant="h5" fontWeight="bold" mb={3}>My Courses</Typography>
+                  <Typography color="text.secondary">We are working on this feature. Stay tuned for updates!</Typography>
+                </Paper>
+              )}
             </Box>
           </Box>
         </Box>
