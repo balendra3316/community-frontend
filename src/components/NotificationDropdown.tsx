@@ -386,7 +386,7 @@ const NotificationDropdown = ({
 
   return (
     <>
-      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden">
+      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-58 max-h-96 overflow-hidden">
         {/* Header */}
         <div className="border-b border-gray-200 py-3 px-4 bg-gray-50">
           <div className="flex justify-between items-center">
@@ -451,6 +451,7 @@ const NotificationDropdown = ({
 
       {/* Render PostDetailView with Suspense */}
       {selectedPost && showPostDetail && (
+       
         <Suspense fallback={<PostDetailLoading />}>
           <PostDetailView
             post={selectedPost}
@@ -458,6 +459,7 @@ const NotificationDropdown = ({
             onClose={handlePostDetailClose}
           />
         </Suspense>
+       
       )}
 
       {/* Backdrop for closing dropdown when clicking outside */}

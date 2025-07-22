@@ -211,7 +211,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white">
+    <div className="fixed top-0 left-0 right-0 z-52 bg-white">
       <div className="flex flex-col w-full">
         {/* Navbar */}
         <div className="border-b border-gray-200">
