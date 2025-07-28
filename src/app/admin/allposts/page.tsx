@@ -97,7 +97,7 @@ export default function AllPostsAdminPage() {
       setOpenMenuId(null);
     } catch (err: any) {
       alert(`Failed to delete post: ${err.message || 'Unknown error'}`);
-      console.error(err);
+     
     }
   };
 

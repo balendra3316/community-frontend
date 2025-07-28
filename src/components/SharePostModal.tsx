@@ -18,7 +18,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl, shareTitle = 'Sh
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(err => {
-      console.error('Failed to copy link:', err);
+     
     });
   };
 

@@ -14,6 +14,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }: any) {
     { name: 'Courses', path: '/admin' },
     { name: 'Graph', path: '/admin/usersdata' },
     {name:'Posts', path:'/admin/allposts' },
+    {name:'Attendace', path:'/admin/attendance'},
   ];
 
   const isActive = (path: string) => {
