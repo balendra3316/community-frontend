@@ -332,7 +332,7 @@ export default function RegisterPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   
   const LOGO_ACD = '/logo acd.png'; 
-  const LOGO_SOULSKOOL ='/Final logo.svg';
+  const LOGO_SOULSKOOL ='/Final Logo.svg';
 
   // --- Logic remains the same ---
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
