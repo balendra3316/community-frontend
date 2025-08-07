@@ -1756,7 +1756,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
                 {page < totalPages && (
                   <button
                     onClick={() => loadComments(page + 1)}
-                    className="w-full py-2 text-blue-600 font-medium text-sm hover:bg-gray-50 rounded-md"
+                    className="w-full py-2 text-orange-600 font-medium text-sm hover:bg-gray-50 rounded-md"
                   >
                     Load more comments
                   </button>

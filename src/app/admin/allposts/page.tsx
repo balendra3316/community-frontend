@@ -106,7 +106,7 @@ export default function AllPostsAdminPage() {
       const updatedPost = await postService.togglePinPost(postId);
       // Ensure the updated post has a valid author object
       if (!updatedPost.author || !updatedPost.author.name) {
-        console.warn('Invalid author data in togglePin response:', updatedPost);
+        //console.warn('Invalid author data in togglePin response:', updatedPost);
         updatedPost.author = updatedPost.author || { _id: '', name: 'Unknown' };
       }
       const updatedPosts = posts.map(p => (p._id === postId ? updatedPost : p));
@@ -115,7 +115,7 @@ export default function AllPostsAdminPage() {
       setOpenMenuId(null);
     } catch (err: any) {
       alert(`Failed to update pin status: ${err.message || 'Unknown error'}`);
-      console.error(err);
+     // console.error(err);
     }
   };
 

@@ -28,6 +28,9 @@ export interface Post {
   image?: string;
   links?:string[]
   youtubeLink?: string;
+  videoUrl?: string;   //new
+  videoThumbnailUrl?: string;
+  videoGuid?: string;
   totalComments?: number;
   tags: string[];
   likes: string[];

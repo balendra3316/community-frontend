@@ -453,12 +453,11 @@ export default function Community() {
   const { posts, setPosts, loading, error, page, totalPages, loadingMore, loadPosts } = usePosts(currentFilter);
   const { isCreatingPost, setIsCreatingPost, snackbarOpen, snackbarMessage, snackbarSeverity, setSnackbarOpen, showNotification } = useNotifications();
 
-  useEffect(() => {
-    if (showModal || showPostDetail) lockScroll();
-    else unlockScroll();
-    return () => unlockScroll();
-  }, [showModal, showPostDetail, lockScroll, unlockScroll]);
-
+ useEffect(() => {
+  if (showPostDetail) lockScroll(); // NOW, it ONLY locks scroll for the detail view
+  else unlockScroll();
+  return () => unlockScroll();
+}, [showModal, showPostDetail, lockScroll, unlockScroll]);
 
 
 

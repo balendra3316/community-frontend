@@ -665,7 +665,7 @@ const handleDeletePost = async (postId: string) => {
     // The 'async' keyword is added here to satisfy the prop type.
     // The function still behaves as "Fire-and-Forget" because we don't 'await' the result.
     deletePost(postId).catch(error => {
-      console.error("Background delete post API call failed:", error);
+      //console.error("Background delete post API call failed:", error);
     });
   };
 
