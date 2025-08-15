@@ -31,6 +31,7 @@ import TabSwitcher from "./subcomNavbar/TabSwitcher";
 import NotificationButton from "./subcomNavbar/NotificationButton";
 import ProfileMenu from "./subcomNavbar/ProfileMenu";
 import CommunityInfoSidebar from "./CommunityInfoSidebar"; // Import your existing component
+import AttendanceButton from "./AttendanceButton";
 
 const NotificationDropdown = lazy(() => import("./NotificationDropdown"));
 
@@ -239,7 +240,14 @@ const NavBar = () => {
                 
                 {/* Logo */}
                 <Logo />
+
+                
+  <AttendanceButton />
+
               </div>
+  
+   
+
 
             
               <div className="hidden md:flex flex-1 mx-8"></div>

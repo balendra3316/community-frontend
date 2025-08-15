@@ -1,5 +1,4 @@
 
-
 // import { memo } from 'react';
 // import { TextField, Typography, IconButton, Button } from '@mui/material';
 // import { Close as CloseIcon, Add as PlusIcon, Delete as DeleteIcon, EmojiEmotions as EmojiIcon } from '@mui/icons-material';
@@ -17,7 +16,9 @@
 //   imagePreview: string | null;
 //   youtubeVideo: YouTubeVideoInfo | null;
 //   links: string[]; // New prop for links
-//   onRemoveLink: (link: string) => void; // New prop for removing links
+//   onRemoveLink: (link: string) => void;
+//   videoPreview: string | null; // New prop for video preview URL
+//   onRemoveVideo: () => void;
 //   showPoll: boolean;
 //   pollOptions: PollOption[];
 //   containsBadWords: (text: string) => boolean;
@@ -39,7 +40,8 @@
 //   selectedImage, imagePreview, youtubeVideo, links, onRemoveLink, showPoll,
 //   pollOptions, onTitleChange, onContentChange, onRemoveImage,
 //   onRemoveYoutube, onPollOptionUpdate, onAddPollOption,
-//   onRemovePollOption, onCancelPoll, onTitleEmojiClick, onContentEmojiClick
+//   onRemovePollOption, onCancelPoll, onTitleEmojiClick, onContentEmojiClick,
+//    videoPreview, onRemoveVideo, containsBadWords
 // }: PostFormFieldsProps) => {
 
 //   const handlePollOptionChange = (index: number, value: string) => {
@@ -59,6 +61,9 @@
 //         <div className={`text-right text-xs ${titleWordCount > 30 ? 'text-red-500' : 'text-gray-500'}`}>{titleWordCount}/30 words</div>
 //       </div>
       
+     
+
+
 //       {/* Content Field */}
 //       <div className="relative mt-2">
 //         <div className="flex items-start">
@@ -96,15 +101,24 @@
 //       )}
 
 //       {/* Selected Image Preview */}
-//       {imagePreview && (
+//      {imagePreview && !videoPreview && !youtubeVideo && (
 //         <div className="relative mt-2 mb-2">
 //           <img src={imagePreview} alt="Selected" className="max-h-40 rounded-md" />
 //           <IconButton size="small" className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white" onClick={onRemoveImage}><CloseIcon fontSize="small" /></IconButton>
 //         </div>
 //       )}
 
+//       {/* Video Preview */}
+//       {videoPreview && !imagePreview && !youtubeVideo && (
+//         <div className="relative mt-2 mb-2">
+//           <video src={videoPreview} controls className="max-h-60 w-full rounded-md bg-black"></video>
+//           <IconButton size="small" className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white" onClick={onRemoveVideo}><CloseIcon fontSize="small" /></IconButton>
+//         </div>
+//       )}
+
+      
 //       {/* YouTube Video Preview */}
-//       {youtubeVideo && (
+//       {youtubeVideo && !imagePreview && !videoPreview && (
 //         <div className="relative mt-2 mb-2 border border-gray-200 rounded-md p-2 overflow-hidden">
 //           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
 //             <div className="flex-shrink-0"><img src={youtubeVideo.thumbnail} alt="YouTube Thumbnail" className="w-full sm:w-32 h-24 rounded object-cover" /></div>
@@ -152,18 +166,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 import { memo } from 'react';
 import { TextField, Typography, IconButton, Button } from '@mui/material';
 import { Close as CloseIcon, Add as PlusIcon, Delete as DeleteIcon, EmojiEmotions as EmojiIcon } from '@mui/icons-material';
@@ -180,9 +182,9 @@ interface PostFormFieldsProps {
   selectedImage: File | null;
   imagePreview: string | null;
   youtubeVideo: YouTubeVideoInfo | null;
-  links: string[]; // New prop for links
+  links: string[];
   onRemoveLink: (link: string) => void;
-  videoPreview: string | null; // New prop for video preview URL
+  videoPreview: string | null;
   onRemoveVideo: () => void;
   showPoll: boolean;
   pollOptions: PollOption[];
@@ -206,7 +208,7 @@ const PostFormFields = memo(({
   pollOptions, onTitleChange, onContentChange, onRemoveImage,
   onRemoveYoutube, onPollOptionUpdate, onAddPollOption,
   onRemovePollOption, onCancelPoll, onTitleEmojiClick, onContentEmojiClick,
-   videoPreview, onRemoveVideo
+  videoPreview, onRemoveVideo, containsBadWords // The fix is here
 }: PostFormFieldsProps) => {
 
   const handlePollOptionChange = (index: number, value: string) => {
@@ -223,6 +225,12 @@ const PostFormFields = memo(({
             <TextField fullWidth placeholder="Title" variant="standard" value={title} onChange={(e) => onTitleChange(e.target.value)} InputProps={{ disableUnderline: true, style: { fontSize: '1.125rem', fontWeight: 500 } }} className="mb-1 flex-1" />
             <IconButton size="small" onClick={onTitleEmojiClick} className="ml-2 text-gray-500 hover:text-blue-500"><EmojiIcon fontSize="small" /></IconButton>
         </div>
+        {/* Bad Word Warning for Title */}
+        {containsBadWords(title) && (
+          <Typography color="error" variant="caption" className="ml-1 text-red-500">
+            Title contains inappropriate language.
+          </Typography>
+        )}
         <div className={`text-right text-xs ${titleWordCount > 30 ? 'text-red-500' : 'text-gray-500'}`}>{titleWordCount}/30 words</div>
       </div>
       
@@ -232,10 +240,16 @@ const PostFormFields = memo(({
             <TextField fullWidth multiline placeholder="Write something..." variant="standard" value={content} onChange={(e) => onContentChange(e.target.value)} InputProps={{ disableUnderline: true, style: { fontSize: '1rem' } }} minRows={4} maxRows={8} className="mb-1 flex-1" />
             <IconButton size="small" onClick={onContentEmojiClick} className="ml-2 text-gray-500 hover:text-blue-500 mt-1"><EmojiIcon fontSize="small" /></IconButton>
         </div>
+        {/* Bad Word Warning for Content */}
+        {containsBadWords(content) && (
+          <Typography color="error" variant="caption" className="ml-1 text-red-500">
+            Content contains inappropriate language.
+          </Typography>
+        )}
         <div className={`text-right text-xs ${contentWordCount > 200 ? 'text-red-500' : 'text-gray-500'}`}>{contentWordCount}/200 words</div>
       </div>
 
-      {/* Error Message */}
+      {/* General Error Message (for video duration, etc.) */}
       {errorMessage && <div className="text-red-500 text-sm mt-2 mb-3">{errorMessage}</div>}
 
       {/* Links Preview */}
@@ -262,8 +276,8 @@ const PostFormFields = memo(({
         </div>
       )}
 
-      {/* Selected Image Preview */}
-     {imagePreview && !videoPreview && !youtubeVideo && (
+      {/* Image Preview */}
+      {imagePreview && !videoPreview && !youtubeVideo && (
         <div className="relative mt-2 mb-2">
           <img src={imagePreview} alt="Selected" className="max-h-40 rounded-md" />
           <IconButton size="small" className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white" onClick={onRemoveImage}><CloseIcon fontSize="small" /></IconButton>

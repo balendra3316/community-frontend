@@ -87,11 +87,17 @@ export default function CommentItem({
   };
 
   return (
+    // <div
+    //   className={`${
+    //     isReply ? "ml-8" : ""
+    //   } bg-gray-50 rounded-lg p-3 relative mb-3`}
+    // >
+
     <div
-      className={`${
-        isReply ? "ml-8" : ""
-      } bg-gray-50 rounded-lg p-3 relative mb-3`}
-    >
+  className="bg-gray-50 rounded-lg p-3 relative" // No more conditional margin
+>
+
+
       <div className="flex items-start">
         <div className="h-8 w-8 rounded-full bg-gray-300 overflow-hidden">
           <img
@@ -178,7 +184,7 @@ export default function CommentItem({
 
             {hasReplies && (
               <button
-                className="flex items-center text-blue-600 hover:text-blue-700"
+                className="flex items-center text-yellow-800 hover:text-orange-700"
                 onClick={() => toggleReplies(comment._id)}
               >
                 {isExpanded ? (
@@ -203,7 +209,7 @@ export default function CommentItem({
           </div>
 
           {hasReplies && isExpanded && (
-            <div className="mt-3 space-y-3">
+          <div className="mt-3 space-y-3 pl-4 border-l-2 border-gray-200">
               {comment.replies?.map((reply) => (
                 <CommentItem
                   key={reply._id}
@@ -222,6 +228,7 @@ export default function CommentItem({
               ))}
             </div>
           )}
+
         </div>
       </div>
     </div>

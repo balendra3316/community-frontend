@@ -22,11 +22,31 @@ export interface User {
   bio: string;
   createdAt: string;
   updatedAt: string;
+
+   dob?: string; // Dates will be strings from JSON
+  city?: string;
+  bloodGroup?: string;
+  whatsappNumber?: string;
+  membershipId?: string;
+  goals?: string;
+  acdStarClubRegisterDate?: string;
+  height?: number;
+  weight?: number;
 }
 
 interface ProfileUpdateData {
   name?: string;
   avatar?: File | null;
+
+  // --- NEW OPTIONAL FIELDS ---
+  dob?: Date | null;
+  city?: string;
+  bloodGroup?: string;
+  whatsappNumber?: string;
+  goals?: string;
+  acdStarClubRegisterDate?: Date | null;
+  height?: number;
+  weight?: number;
 }
 
 interface AuthContextType {
@@ -91,45 +111,89 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateProfile = async (
-    data: ProfileUpdateData
-  ): Promise<User | null> => {
+  // const updateProfile = async (
+  //   data: ProfileUpdateData
+  // ): Promise<User | null> => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     const formData = new FormData();
+
+  //     if (data.name) {
+  //       formData.append("name", data.name);
+  //     }
+
+  //     if (data.avatar) {
+  //       formData.append("avatar", data.avatar);
+  //     }
+
+  //     const response = await axios.put(`${API_URL}/auth/profile`, formData, {
+  //       withCredentials: true,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     if (response.data) {
+  //       setUser(response.data);
+  //       return response.data;
+  //     }
+
+  //     return null;
+  //   } catch (err: any) {
+  //     const errorMessage =
+  //       err.response?.data?.message || "Failed to update profile";
+  //     setError(errorMessage);
+  //     return null;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+ const updateProfile = async (data: ProfileUpdateData): Promise<User | null> => {
     try {
       setLoading(true);
       setError(null);
-
       const formData = new FormData();
 
-      if (data.name) {
-        formData.append("name", data.name);
-      }
-
-      if (data.avatar) {
-        formData.append("avatar", data.avatar);
-      }
-
+      // Append all fields if they exist
+      if (data.name) formData.append("name", data.name);
+      if (data.avatar) formData.append("avatar", data.avatar);
+      if (data.city) formData.append("city", data.city);
+      if (data.bloodGroup) formData.append("bloodGroup", data.bloodGroup);
+      if (data.whatsappNumber) formData.append("whatsappNumber", data.whatsappNumber);
+      if (data.goals) formData.append("goals", data.goals);
+      if (data.height) formData.append("height", data.height.toString());
+      if (data.weight) formData.append("weight", data.weight.toString());
+      if (data.dob) formData.append("dob", data.dob.toISOString());
+      if (data.acdStarClubRegisterDate) formData.append("acdStarClubRegisterDate", data.acdStarClubRegisterDate.toISOString());
+      
       const response = await axios.put(`${API_URL}/auth/profile`, formData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.data) {
         setUser(response.data);
         return response.data;
       }
-
       return null;
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update profile";
+      const errorMessage = err.response?.data?.message || "Failed to update profile";
       setError(errorMessage);
       return null;
     } finally {
       setLoading(false);
     }
   };
+
+
+
+
+
 
   useEffect(() => {
     checkAuth();

@@ -745,8 +745,11 @@ const CreatePostModal = ({
     const filterInstance = new Filter();
     // Add custom words and variations to the filter
     filterInstance.addWords("fuckk", "customword2");
-    const variations = ["fuckk", "fuuuck", "fuuck", "f u c k", "f*ck", "f**k", "fuk"];
+    const variations = ["fuckk", "fuucck", "fuuck", "f u c k", "f*ck", "f**k", "fuk"];
     filterInstance.addWords(...variations);
+
+    //filterInstance.removeWords('god'); 
+    
     return filterInstance;
   });
 
@@ -886,7 +889,7 @@ const CreatePostModal = ({
         .toLowerCase()
         .replace(/\b(\w)\s+(\w)\s+(\w)\s+(\w)\b/g, "$1$2$3$4")
         .replace(/[*_\-\.@#\$%\^&\+\=\[\]\{\}]/g, "")
-        .replace(/([a-z])\1+/g, "$1");
+       // .replace(/([a-z])\1+/g, "$1");
       return filter.isProfane(normalizedText);
     } catch (error) {
       return false;
