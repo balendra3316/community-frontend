@@ -3,6 +3,8 @@
 
 import React from "react";
 
+
+
 import { Lesson } from "../../../types/course.types";
 import {
   FileText,
@@ -28,12 +30,25 @@ const LessonContent: React.FC<LessonContentProps> = ({
   onLessonCompletionToggle,
   isCompleted,
 }) => {
-  const getYouTubeVideoId = (url: string): string | null => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
+  // const getYouTubeVideoId = (url: string): string | null => {
+  //   const regExp =
+  //     /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  //   const match = url.match(regExp);
+  //   return match && match[2].length === 11 ? match[2] : null;
+  // };
+
+
+const getYouTubeVideoId = (url: string): string | null => {
+  if (!url) return null;
+
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+  const match = url.match(regExp);
+
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
+
 
   const videoId = lesson.videoUrl ? getYouTubeVideoId(lesson.videoUrl) : null;
 
@@ -171,16 +186,31 @@ const LessonContent: React.FC<LessonContentProps> = ({
       </div>
 
       {/* Video Section - Only show if there's a valid video URL and video ID */}
-      {lesson.videoUrl && videoId && (
-        <div className="relative w-full aspect-video mb-8 bg-black rounded-lg overflow-hidden">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
-            className="absolute top-0 left-0 w-full h-full"
-            allowFullScreen
-            title={lesson.title}
-          />
-        </div>
-      )}
+     {lesson.videoUrl && videoId && (
+  <div className="relative w-full aspect-video mb-8 bg-black rounded-lg overflow-hidden">
+    <iframe
+      // Corrected and simplified the src URL
+      src={`https://www.youtube.com/embed/${videoId}`}
+      className="absolute top-0 left-0 w-full h-full"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      title={lesson.title}
+    />
+  </div>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       {/* Lesson Content */}
       <div className="prose max-w-none mb-8">
@@ -291,3 +321,22 @@ const LessonContent: React.FC<LessonContentProps> = ({
 };
 
 export default LessonContent;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

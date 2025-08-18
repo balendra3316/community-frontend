@@ -285,12 +285,38 @@ const PostFormFields = memo(({
       )}
 
       {/* Video Preview */}
-      {videoPreview && !imagePreview && !youtubeVideo && (
+      {/* {videoPreview && !imagePreview && !youtubeVideo && (
         <div className="relative mt-2 mb-2">
           <video src={videoPreview} controls className="max-h-60 w-full rounded-md bg-black"></video>
           <IconButton size="small" className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white" onClick={onRemoveVideo}><CloseIcon fontSize="small" /></IconButton>
         </div>
+      )} */}
+
+{videoPreview && !imagePreview && !youtubeVideo && (
+        <div className="relative mt-2 mb-2">
+          {videoPreview.startsWith('blob:') ? (
+            // Case 1: New video selected from device (use <video> tag)
+            <video src={videoPreview} controls className="max-h-60 w-full rounded-md bg-black"></video>
+          ) : (
+            // Case 2: Existing video from Bunny Stream (use <iframe>)
+            <div className="aspect-video w-full rounded-md overflow-hidden bg-black">
+              <iframe
+                src={`${videoPreview}?autoplay=0`}
+                title="Video Preview Player"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              ></iframe>
+            </div>
+          )}
+          {/* This button works for both cases */}
+          <IconButton size="small" className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white" onClick={onRemoveVideo}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </div>
       )}
+
+
 
       
       {/* YouTube Video Preview */}

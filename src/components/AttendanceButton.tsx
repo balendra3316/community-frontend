@@ -84,7 +84,7 @@ export default function AttendanceButton() {
   return (
     <>
       <LightTooltip 
-        title={hasAttended ? "You have checked in for today" : "Mark your attendance for today"}
+        title={hasAttended ? "You have Marked for today" : "Mark your attendance for today"}
       >
         <span>
             <Button
