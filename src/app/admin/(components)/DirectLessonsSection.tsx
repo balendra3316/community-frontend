@@ -208,3 +208,4 @@ export default function DirectLessonsSection({ selectedCourse, handleSelectCours
     </div>
   );
 }
+

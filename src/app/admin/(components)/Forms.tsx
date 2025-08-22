@@ -5,13 +5,6 @@ import { Image, Resource } from "../_components/courseManagementService";
 
 
 
-
-
-
-
-
-
-
 interface FormProps {
   type?: "course" | "section" | "lesson";
   data: any;
@@ -137,6 +130,30 @@ export const CourseForm = ({
             </p>
           </div>
         )}
+
+
+         <div className="mb-3">
+     <label className="flex items-center">
+       <input
+              type="checkbox"
+              // START OF FIX: Simplify the checked logic
+              checked={data.isPublished || false}
+              // END OF FIX
+              onChange={(e) => setData({ ...data, isPublished: e.target.checked })}
+              className="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+            />
+      <span className="ml-2 text-sm font-medium text-gray-700">
+       Published (Visible to users)
+      </span>
+     </label>
+          <p className="text-sm text-gray-500 mt-1">
+            Uncheck this to save the course as a draft.
+          </p>
+    </div>
+
+
+
+
 
         <div className="mb-3">
           <label className="block text-sm font-medium text-gray-700">

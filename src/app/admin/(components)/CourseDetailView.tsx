@@ -55,6 +55,7 @@ export default function CourseDetailView({
                   order: selectedCourse.order || 0,
                   isPaid: selectedCourse.isPaid || false,
     price: selectedCourse.price || 0,
+    isPublished: selectedCourse.isPublished || false,
                 });
               }}
               className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-3 py-1 rounded text-sm"

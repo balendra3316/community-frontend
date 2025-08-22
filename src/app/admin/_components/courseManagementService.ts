@@ -13,6 +13,7 @@ export interface Course {
   createdBy?: string;
     isPaid:boolean;
   price:number;
+  isPublished?: boolean
 }
 
 export interface Section {
@@ -73,71 +74,159 @@ export interface CourseDetails extends Course {
   price:number;
 }
 
+
+
+
+// const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
+//   const formData = new FormData();
+//   const { images = [], resources = [], ...otherData } = lessonData;
+
+//   Object.entries(otherData).forEach(([key, value]) => {
+//     if (value !== undefined) {
+//       formData.append(key, value.toString());
+//     }
+//   });
+
+//   images.forEach((img, index) => {
+//     if (img.url) {
+//       formData.append(`images[${index}][url]`, img.url);
+//       if (img.caption)
+//         formData.append(`images[${index}][caption]`, img.caption);
+//       if (img.altText)
+//         formData.append(`images[${index}][altText]`, img.altText);
+//     } else if (img.file) {
+//       formData.append(`imageFiles[${index}]`, img.file);
+//       if (img.caption)
+//         formData.append(`images[${index}][caption]`, img.caption);
+//       if (img.altText)
+//         formData.append(
+//           `images[${index}][altText]`,
+//           img.altText || img.file.name
+//         );
+//     }
+//   });
+
+//   resources.forEach((res, index) => {
+//     if (res.fileUrl) {
+//       formData.append(`resources[${index}][title]`, res.title || "");
+//       formData.append(`resources[${index}][fileUrl]`, res.fileUrl);
+//       if (res.fileType)
+//         formData.append(`resources[${index}][fileType]`, res.fileType);
+//     } else if (res.file) {
+//       formData.append(`resourceFiles[${index}]`, res.file);
+//       formData.append(`resources[${index}][title]`, res.title || res.file.name);
+//       if (res.fileType)
+//         formData.append(`resources[${index}][fileType]`, res.fileType);
+//     }
+//   });
+
+
+
+
+
+// if (lessonData.urls && lessonData.urls.length > 0) {
+//   lessonData.urls.forEach((urlItem, index) => {
+//     if (urlItem.title) {
+//       formData.append(`urls[${index}][title]`, urlItem.title);
+//     }
+//     if (urlItem.url) {
+//       formData.append(`urls[${index}][url]`, urlItem.url);
+//     }
+//   });
+// }
+
+
+
+
+
+
+//   return formData
+// };
+
+
+
 const prepareLessonFormData = (lessonData: Partial<Lesson>): FormData => {
   const formData = new FormData();
-  const { images = [], resources = [], ...otherData } = lessonData;
+  // IMPORTANT: Destructure urls here as well for consistent handling
+  const { images = [], resources = [], urls = [], ...otherData } = lessonData;
 
   Object.entries(otherData).forEach(([key, value]) => {
-    if (value !== undefined) {
+    if (value !== undefined && value !== null) { // Added null check for safety
       formData.append(key, value.toString());
     }
   });
 
-  images.forEach((img, index) => {
-    if (img.url) {
-      formData.append(`images[${index}][url]`, img.url);
-      if (img.caption)
-        formData.append(`images[${index}][caption]`, img.caption);
-      if (img.altText)
-        formData.append(`images[${index}][altText]`, img.altText);
-    } else if (img.file) {
-      formData.append(`imageFiles[${index}]`, img.file);
-      if (img.caption)
-        formData.append(`images[${index}][caption]`, img.caption);
-      if (img.altText)
-        formData.append(
-          `images[${index}][altText]`,
-          img.altText || img.file.name
-        );
-    }
-  });
+  // FIX START: Logic for Images
+  if (images.length > 0) {
+    images.forEach((img, index) => {
+      // Keep your existing logic for populated arrays
+      if (img.url) {
+        formData.append(`images[${index}][url]`, img.url);
+        if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
+        if (img.altText) formData.append(`images[${index}][altText]`, img.altText);
+      } else if (img.file) {
+        formData.append(`imageFiles[${index}]`, img.file);
+        if (img.caption) formData.append(`images[${index}][caption]`, img.caption);
+        if (img.altText) formData.append(`images[${index}][altText]`, img.altText || img.file.name);
+      }
+    });
+  } else {
+    // This is the crucial part: send an empty array string if the array is empty.
+    formData.append('images', '[]');
+  }
+  // FIX END
 
-  resources.forEach((res, index) => {
-    if (res.fileUrl) {
-      formData.append(`resources[${index}][title]`, res.title || "");
-      formData.append(`resources[${index}][fileUrl]`, res.fileUrl);
-      if (res.fileType)
-        formData.append(`resources[${index}][fileType]`, res.fileType);
-    } else if (res.file) {
-      formData.append(`resourceFiles[${index}]`, res.file);
-      formData.append(`resources[${index}][title]`, res.title || res.file.name);
-      if (res.fileType)
-        formData.append(`resources[${index}][fileType]`, res.fileType);
-    }
-  });
+  // FIX START: Logic for Resources
+  if (resources.length > 0) {
+    resources.forEach((res, index) => {
+      // Keep your existing logic for populated arrays
+      if (res.fileUrl) {
+        formData.append(`resources[${index}][title]`, res.title || "");
+        formData.append(`resources[${index}][fileUrl]`, res.fileUrl);
+        if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
+      } else if (res.file) {
+        formData.append(`resourceFiles[${index}]`, res.file);
+        formData.append(`resources[${index}][title]`, res.title || res.file.name);
+        if (res.fileType) formData.append(`resources[${index}][fileType]`, res.fileType);
+      }
+    });
+  } else {
+    // Crucial part for resources
+    formData.append('resources', '[]');
+  }
+  // FIX END
 
+  // FIX START: Logic for URLs
+  if (urls.length > 0) {
+    urls.forEach((urlItem, index) => {
+      // Keep your existing logic for populated arrays
+      if (urlItem.title) {
+        formData.append(`urls[${index}][title]`, urlItem.title);
+      }
+      if (urlItem.url) {
+        formData.append(`urls[${index}][url]`, urlItem.url);
+      }
+    });
+  } else {
+    // Crucial part for URLs
+    formData.append('urls', '[]');
+  }
+  // FIX END
 
-
-
-
-if (lessonData.urls && lessonData.urls.length > 0) {
-  lessonData.urls.forEach((urlItem, index) => {
-    if (urlItem.title) {
-      formData.append(`urls[${index}][title]`, urlItem.title);
-    }
-    if (urlItem.url) {
-      formData.append(`urls[${index}][url]`, urlItem.url);
-    }
-  });
-}
-
-
-
-
-
-
-  return formData
+  return formData;
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const courseService = {
   async getAllCourses(): Promise<Course[]> {
@@ -196,9 +285,10 @@ async createCourse(
     formData.append("isPaid", "true");
   }
   
+  if (courseData.isPublished !== undefined) {
+    formData.append("isPublished", courseData.isPublished.toString());
+  }
 
-
-  
   if (courseData.isPaid && courseData.price !== undefined) {
     formData.append("price", courseData.price.toString());
   }
@@ -248,6 +338,13 @@ async updateCourse(
   if (courseData.isPaid !== undefined) {
     formData.append("isPaid", courseData.isPaid.toString());
   }
+
+
+ if (courseData.isPublished !== undefined) {
+    formData.append("isPublished", courseData.isPublished.toString());
+  }
+
+
 
 
   if (courseData.isPaid && courseData.price !== undefined) {

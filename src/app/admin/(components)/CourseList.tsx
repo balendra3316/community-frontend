@@ -23,6 +23,7 @@ export default function CourseList({
     order: 0,
     isPaid: false,
   price: 0,
+  isPublished: false
   });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +40,7 @@ export default function CourseList({
 
       await courseService.createCourse(courseData, coverImageFile);
       setNewCourse({ title: "", description: "", coverImage: "", order: 0, isPaid: false,
-  price: 0, });
+  price: 0, isPublished: false});
       setIsCreatingCourse(false);
       fetchCourses();
     } catch (err: any) {

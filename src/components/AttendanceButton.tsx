@@ -84,7 +84,7 @@ export default function AttendanceButton() {
   return (
     <>
       <LightTooltip 
-        title={hasAttended ? "You have Marked for today" : "Mark your attendance for today"}
+        title={hasAttended ? "You have Marked attendance for today" : "Mark your attendance for today"}
       >
         <span>
             <Button
@@ -117,7 +117,7 @@ export default function AttendanceButton() {
             '& .MuiAlert-icon': {
               color: 'white'
             },
-            // --- ADD THIS BLOCK TO STYLE THE CANCEL ICON ---
+           
             '& .MuiAlert-action .MuiIconButton-root': {
               color: 'white'
             },
