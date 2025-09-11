@@ -83,7 +83,7 @@ export default function CourseSharePage() {
     setIsProcessingPayment(true);
     try {
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: "rzp_live_Dj70XqJ0PkPgJY",
         amount: course.price * 100,
         currency: 'INR',
         name: 'Course Purchase',
