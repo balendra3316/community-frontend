@@ -39,6 +39,30 @@ export interface PurchaseCourseResponse {
   accessGranted: boolean;
 }
 
+
+
+
+export interface PublicCourse {
+  _id: string;
+  title: string;
+  description: string;
+  coverImage: string;
+  isPaid: boolean;
+  price: number;
+}
+
+// NEW Interface for the protected access details endpoint
+export interface CourseAccessDetails extends PublicCourse {
+  isPurchased: boolean;
+}
+
+
+
+
+
+
+
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const CourseService = {
@@ -63,6 +87,39 @@ export const CourseService = {
       return null;
     }
   },
+
+
+
+// Addded
+ getPublicCourse: async (courseId: string): Promise<PublicCourse | null> => {
+    try {
+      const response = await axios.get<PublicCourse>(`${API_URL}/courses/public/${courseId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch public course data:", error);
+      return null;
+    }
+  },
+
+  // ADDED: New function for protected data
+  getCourseAccessDetails: async (courseId: string): Promise<CourseAccessDetails | null> => {
+    try {
+      const response = await axios.get<CourseAccessDetails>(`${API_URL}/courses/access-details/${courseId}`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch course access details:", error);
+      return null;
+    }
+  },
+
+
+
+
+
+
+  
 
   purchaseCourse: async (payload: PurchaseCoursePayload): Promise<PurchaseCourseResponse> => {
     try {

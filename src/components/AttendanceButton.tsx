@@ -11,7 +11,6 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { CheckCircle, EditCalendar } from '@mui/icons-material';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
 ))(({ theme }) => ({

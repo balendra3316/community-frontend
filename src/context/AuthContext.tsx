@@ -111,46 +111,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const updateProfile = async (
-  //   data: ProfileUpdateData
-  // ): Promise<User | null> => {
-  //   try {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     const formData = new FormData();
-
-  //     if (data.name) {
-  //       formData.append("name", data.name);
-  //     }
-
-  //     if (data.avatar) {
-  //       formData.append("avatar", data.avatar);
-  //     }
-
-  //     const response = await axios.put(`${API_URL}/auth/profile`, formData, {
-  //       withCredentials: true,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     if (response.data) {
-  //       setUser(response.data);
-  //       return response.data;
-  //     }
-
-  //     return null;
-  //   } catch (err: any) {
-  //     const errorMessage =
-  //       err.response?.data?.message || "Failed to update profile";
-  //     setError(errorMessage);
-  //     return null;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
 
 
  const updateProfile = async (data: ProfileUpdateData): Promise<User | null> => {
