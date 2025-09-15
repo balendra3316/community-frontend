@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import './globals.css';
 import { PostStateProvider } from '../types/PostStateContext';
 import type { Metadata } from 'next';
+import { Providers } from '../lib/ReduxProvider'
 
 
 export const metadata: Metadata = {
@@ -88,7 +89,8 @@ export default function RootLayout({
       <body className="font-Arial">
         <PostStateProvider>
           <AuthProvider>
-            {children}
+            <Providers> {children}</Providers>
+           
           </AuthProvider>
         </PostStateProvider>
       </body>
