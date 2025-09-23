@@ -357,8 +357,11 @@ import Logo from "./subcomNavbar/Logo";
 import TabSwitcher from "./subcomNavbar/TabSwitcher";
 import NotificationButton from "./subcomNavbar/NotificationButton";
 import ProfileMenu from "./subcomNavbar/ProfileMenu";
-import CommunityInfoSidebar from "./CommunityInfoSidebar";
+//import CommunityInfoSidebar from "./CommunityInfoSidebar";
 import AttendanceButton from "./AttendanceButton";
+import MobileSidebar from "./shared/MobileSidebar";
+import MobileBottomNav from "./subcomNavbar/MobileBottomNav";
+
 
 const NotificationDropdown = lazy(() => import("./NotificationDropdown"));
 
@@ -374,61 +377,6 @@ const NotificationLoading = () => (
 );
 
 
-const MobileSidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const theme = useTheme();
-  
-  return (
-    <Drawer
-      anchor="left"
-      open={open}
-      onClose={onClose}
-      sx={{
-        '& .MuiDrawer-paper': {
-          width: '70%',
-          maxWidth: '400px',
-          backgroundColor: '#f8f9fa',
-          transition: theme.transitions.create(['transform'], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
-        },
-         '& .MuiBackdrop-root': {
-          backgroundColor: 'rgba(144,144,144,0.6)', // Light backdrop
-         
-        }
-      }}
-      transitionDuration={{
-        enter: theme.transitions.duration.enteringScreen,
-        exit: theme.transitions.duration.leavingScreen,
-      }}
-    >
-      <div className="h-full flex flex-col">
-        {/* Header with close button */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-          <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
-          <IconButton 
-            onClick={onClose}
-            sx={{ 
-              color: '#666',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                transform: 'rotate(180deg)',
-                transition: 'all 0.3s ease'
-              }
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </div>
-        
-        {/* Sidebar content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <CommunityInfoSidebar />
-        </div>
-      </div>
-    </Drawer>
-  );
-};
 
 const NavBar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -451,6 +399,7 @@ const NavBar = () => {
       { name: "Community", path: "/community" },
       { name: "Classroom", path: "/classroom" },
       { name: "Leaderboards", path: "/leaderboards" },
+      {name: "Journal", path: "/journal"}
     ],
     []
   );
@@ -458,7 +407,7 @@ const NavBar = () => {
   const tabItems = useMemo(
     () =>
       navItems.filter((item) =>
-        ["Community", "Classroom", "Leaderboards"].includes(item.name)
+        ["Community", "Classroom", "Leaderboards","Journal"].includes(item.name)
       ),
     [navItems]
   );
@@ -638,8 +587,10 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <TabSwitcher items={tabItems} />
+        <div className="hidden md:block">
+  <TabSwitcher items={tabItems} />
+</div>
+
       </div>
 
       {/* Mobile Sidebar */}
@@ -647,6 +598,8 @@ const NavBar = () => {
         open={sidebarOpen} 
         onClose={handleSidebarClose} 
       />
+
+      <MobileBottomNav />
     </div>
   );
 };

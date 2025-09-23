@@ -14,7 +14,7 @@ import { PostStateProvider } from "../../types/PostStateContext";
 import { fetchPosts, Post as PostType } from "../../services/postService";
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { initializeSocket, getSocket } from "../../services/socket.service";
-
+import SubscriptionAlert from "@/components/shared/SubscriptionAlert";
 import NavBar from "../../components/Navbar";
 import CreatePostSection from "./_components/CreatePostSection";
 import CategoryFilter from "./_components/CategoryFilter";
@@ -111,6 +111,7 @@ export default function Community() {
   const [showPostDetail, setShowPostDetail] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("default");
   const [postToEdit, setPostToEdit] = useState<PostType | null>(null);
+  const [showSubAlert, setShowSubAlert] = useState(false);
 
   const { lockScroll, unlockScroll } = useBodyScroll();
   const { posts, setPosts, loading, error, page, totalPages, loadingMore, loadPosts } = usePosts(currentFilter);
@@ -181,7 +182,16 @@ export default function Community() {
 
 
 
-
+ const handleCreateClick = () => {
+    // Check if the user is active
+    if (user?.subscription?.status === 'active') {
+      // If yes, show the normal create post modal
+      setShowModal(true);
+    } else {
+      // If no, show the subscription alert modal instead
+      setShowSubAlert(true);
+    }
+  };
 
 
 
@@ -192,7 +202,7 @@ export default function Community() {
       : posts.filter(post => post.tags && post.tags.includes(selectedCategory));
   }, [posts, selectedCategory]);
 
-  // MODIFIED: This function no longer needs to do anything but close the modal.
+  
   // Sockets will handle the UI update.
   const handlePostSuccess = useCallback(() => {
     setShowModal(false);
@@ -238,14 +248,14 @@ export default function Community() {
   return (
     <ProtectedRoute>
       <PostStateProvider>
-        <main className="min-h-screen bg-[rgb(248,247,245)] pt-[104px]">
+        <main className="min-h-screen bg-[rgb(248,247,245)] pt-16 md:pt-[104px] pb-16 md:pb-0">
           <NavBar />
           <LoadingIndicator isCreatingPost={isCreatingPost} />
           <NotificationSnackbar open={snackbarOpen} message={snackbarMessage} severity={snackbarSeverity} onClose={() => setSnackbarOpen(false)} />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="flex-1">
-                <CreatePostSection user={user} onCreateClick={() => setShowModal(true)} />
+                <CreatePostSection user={user} onCreateClick={handleCreateClick} />
                 <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
                 <PostsList
                   posts={filteredPosts}
@@ -285,6 +295,13 @@ export default function Community() {
             <Suspense fallback={<div>Loading...</div>}>
               <PostDetailView post={selectedPost} isOpen={showPostDetail} onClose={handleClosePostDetail} />
             </Suspense>
+          )}
+
+            {showSubAlert && (
+            <SubscriptionAlert 
+              isOpen={showSubAlert} 
+              onClose={() => setShowSubAlert(false)} 
+            />
           )}
         </main>
       </PostStateProvider>

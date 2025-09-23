@@ -4,11 +4,18 @@ import { memo, useCallback, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut } from 'lucide-react';
 import { Avatar, Menu, MenuItem, ListItemIcon, Divider } from '@mui/material';
+import ProAvatar from '../shared/ProAvatar';
+
+interface SubInfo {
+  status: 'none' | 'active' | 'expired';
+  endDate?: string;
+}
 
 interface User {
   _id: string;
   name?: string;
   avatar?: string;
+  subscription?: SubInfo;
 }
 
 interface ProfileMenuProps {
@@ -48,15 +55,48 @@ const ProfileMenu = memo(({
     onMenuClose();
   }, [onMenuClose])
 
+
+  const isPro = user?.subscription?.status === 'active';
+
+
   return (
-    <div>
-      <Avatar
-        src={user.avatar}
-        alt={user.name?.charAt(0).toUpperCase()}
-        className="cursor-pointer transition-transform duration-200 hover:scale-105"
-        sx={{ width: 34, height: 34 }}
-        onClick={onMenuOpen}
-      />
+    <>
+
+<div
+  className="relative inline-block"
+  style={{ width: 34, height: 34 }}  // keep in sync with sx width/height
+>
+  <Avatar
+    src={user.avatar}
+    alt={user.name?.charAt(0).toUpperCase()}
+    className="cursor-pointer transition-transform duration-200 hover:scale-105"
+    sx={{ width: 34, height: 34 }}
+    onClick={onMenuOpen}
+  />
+
+  {isPro && (
+    <span
+      className="
+        absolute
+        bottom-0 right-0
+        translate-x-1/4 translate-y-1/4
+        pointer-events-none
+        flex items-center justify-center
+        h-4 min-w-[1.1rem]
+        rounded-full
+        bg-yellow-300 text-yellow-900
+        text-[9px] leading-4 font-extrabold
+        px-1
+        ring-2 ring-white
+        shadow
+      "
+      title="Pro subscription active"
+    >
+      pro
+    </span>
+  )}
+</div>
+
       
       <Menu
         anchorEl={anchorEl}
@@ -96,7 +136,7 @@ const ProfileMenu = memo(({
           Logout
         </MenuItem>
       </Menu>
-    </div>
+    </>
   );
 });
 

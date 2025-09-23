@@ -32,6 +32,12 @@ export interface User {
   acdStarClubRegisterDate?: string;
   height?: number;
   weight?: number;
+
+    // --- NEW: Add subscription to the User interface ---
+  subscription: {
+    status: 'none' | 'active' | 'expired';
+    endDate?: string;
+  };
 }
 
 interface ProfileUpdateData {
@@ -57,6 +63,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
   updateProfile: (data: ProfileUpdateData) => Promise<User | null>;
+  updateUserSubscription: (updatedUser: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -151,7 +158,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
-
+  const updateUserSubscription = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
 
 
 
@@ -169,6 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         checkAuth,
         updateProfile,
+        updateUserSubscription,
       }}
     >
       {children}

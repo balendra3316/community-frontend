@@ -136,7 +136,7 @@ export default function Leaderboards() {
 
   return (
     <ProtectedRoute>
-      <main className="min-h-screen bg-[rgb(248,247,245)] pt-[104px]">
+      <main className="min-h-screen bg-[rgb(248,247,245)] pt-16 md:pt-[104px] pb-16 md:pb-0">
         <NavBar />
         <Container maxWidth="lg" sx={{ py: 4, backgroundColor: 'rgb(248, 247, 245)' }}>
           <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

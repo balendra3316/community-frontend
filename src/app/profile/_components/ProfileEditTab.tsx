@@ -160,8 +160,7 @@ export default function ProfileEditTab({
             Save Changes
         </Button>
       </form>
-      
-      {/* --- SEPARATOR AND NEW COMPONENT --- */}
+    
       <hr className="my-8" />
       <AdditionalProfileInfo 
         user={user} 

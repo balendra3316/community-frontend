@@ -191,7 +191,17 @@ const handleDeletePost = async (postId: string) => {
 
   return (
     <PostStateProvider>
-      <Box component="main" sx={{ minHeight: "100vh", bgcolor: "#F5F5F5", pt: "104px" }}>
+<Box
+  component="main"
+  sx={{
+    minHeight: "100vh",
+    bgcolor: "#F5F5F5",
+    // 64px on mobile to clear the fixed navbar, 104px on md+ when TabSwitcher is visible
+    pt: { xs: "64px", md: "104px" },
+    // if you have a fixed bottom nav on mobile, add bottom padding to prevent overlap
+    pb: { xs: "64px", md: 0 },
+  }}
+>
         <NavBar />
         
         <ProfileLoadingIndicator isUpdatingProfile={isUpdatingProfile} isUpdatingPost={isUpdatingPost} />
