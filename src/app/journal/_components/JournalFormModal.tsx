@@ -369,7 +369,7 @@ const formSchema = z.object({
   minutes: z.coerce.number().min(1, "Must be at least 1 minute").max(1500, "Too high"),
   mood: z.coerce.number().min(1).max(5),
   energy: z.coerce.number().min(1).max(5),
-  notes: z.string().max(500).default(""),
+   notes: z.string().min(1, "Notes are required.").max(500, "Notes cannot exceed 500 characters."),
 });
 
 type JournalFormInput = z.input<typeof formSchema>;
@@ -624,7 +624,7 @@ export default function JournalFormModal({
 
               {/* Notes */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-slate-700">Notes (Optional)</label>
+                <label className="text-sm font-medium text-slate-700">Notes</label>
                 <Controller
                   name="notes"
                   control={control}

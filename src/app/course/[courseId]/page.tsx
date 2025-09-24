@@ -167,7 +167,7 @@ export default function CourseSharePage() {
           <Alert severity="error" className="w-full max-w-2xl">{error}</Alert>
         ) : course ? (
           <div 
-            className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full md:flex"
+            className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full md:flex pb-4"
             // Add the same styling as the Course Card
             style={{
               boxShadow: "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px",
@@ -185,7 +185,7 @@ export default function CourseSharePage() {
                 <h1 className="block mt-1 text-3xl leading-tight font-extrabold text-black">{course.title}</h1>
                 <p className="mt-4 text-gray-600">{course.description}</p>
               </div>
-              <div className="mt-8">
+              <div className="mt-8 mb-8 pb-4">
                 {renderActionButton()}
               </div>
             </div>

@@ -22,6 +22,7 @@ import PostsList from "./_components/PostsList";
 import LoadingIndicator from "./_components/LoadingIndicator";
 import NotificationSnackbar from "./_components/NotificationSnackbar";
 import ChatBot from "@/components/ChatBot";
+import SubscriptionStatus from "@/components/shared/SubscriptionStatus";
 
 const CreatePostModal = dynamic(() => import("../../components/CreatePostModal"), {
   loading: () => <div className="animate-pulse">Loading...</div>,
@@ -275,6 +276,7 @@ export default function Community() {
               <div className="hidden lg:block w-80">
                 <Suspense fallback={<div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>}>
                   <CommunityInfoSidebar />
+                    <SubscriptionStatus />
                 </Suspense>
               </div>
               <ChatBot/>
