@@ -3,6 +3,7 @@ import React from "react";
 import { Drawer, IconButton, useTheme } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import CommunityInfoSidebar from "../CommunityInfoSidebar";
+import SubscriptionStatus from "./SubscriptionStatus";
 
 interface MobileSidebarProps {
   open: boolean;
@@ -56,6 +57,7 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
         <div className="flex-1 overflow-y-auto p-4">
           <CommunityInfoSidebar />
+            <SubscriptionStatus />
         </div>
       </div>
     </Drawer>

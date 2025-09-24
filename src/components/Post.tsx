@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -25,6 +21,7 @@ import { useAuth } from "../context/AuthContext";
 import { usePostState, usePostStateDispatch } from "../types/PostStateContext";
 import { Avatar } from "@mui/material";
 import ShareModal from "./SharePostModal";
+import { LEVEL_TEXT_CLASSES } from "@/components/constants/leaderboardColors";
 
 interface PostProps {
   post: PostType;
@@ -40,7 +37,7 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   // State for the new modals
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -49,7 +46,10 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
   const { setLikedPosts, setLikeCounts, toggleLike } = usePostStateDispatch();
 
   const isOwnPost = user && post.author._id === user._id;
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/post/${post._id}` : '';
+  const shareUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/post/${post._id}`
+      : "";
 
   useEffect(() => {
     if (user && post) {
@@ -71,20 +71,31 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
     };
   }, [showMenu]);
 
-  const isLiked = likedPosts[post._id] ?? (user ? post.likes.includes(user._id) : false);
+  const isLiked =
+    likedPosts[post._id] ?? (user ? post.likes.includes(user._id) : false);
   const currentLikeCount = likeCounts[post._id] ?? post.likes.length;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const isToday = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
     if (isToday) return "Today";
     const yesterday = new Date();
     yesterday.setDate(now.getDate() - 1);
-    const isYesterday = date.getFullYear() === yesterday.getFullYear() && date.getMonth() === yesterday.getMonth() && date.getDate() === yesterday.getDate();
+    const isYesterday =
+      date.getFullYear() === yesterday.getFullYear() &&
+      date.getMonth() === yesterday.getMonth() &&
+      date.getDate() === yesterday.getDate();
     if (isYesterday) return "Yesterday";
-    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    return diffDays < 30 ? `${diffDays}d` : date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const diffDays = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return diffDays < 30
+      ? `${diffDays}d`
+      : date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
   const handleLike = async (e: React.MouseEvent) => {
@@ -102,7 +113,9 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
     }
   };
 
-  const formatLastCommentTime = (lastCommentDate: string | null | undefined): string => {
+  const formatLastCommentTime = (
+    lastCommentDate: string | null | undefined
+  ): string => {
     if (!lastCommentDate) return "";
     const commentDate = new Date(lastCommentDate);
     const now = new Date();
@@ -114,7 +127,11 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
     if (diffDays < 3) return `New comment ${diffDays}d ago`;
     const month = commentDate.toLocaleString("en-US", { month: "short" });
     const day = commentDate.getDate();
-    return `Last comment ${day} ${month}${commentDate.getFullYear() !== now.getFullYear() ? ` ${commentDate.getFullYear()}` : ''}`;
+    return `Last comment ${day} ${month}${
+      commentDate.getFullYear() !== now.getFullYear()
+        ? ` ${commentDate.getFullYear()}`
+        : ""
+    }`;
   };
 
   const handleDeletePost = async () => {
@@ -143,7 +160,9 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
 
   const getYoutubeId = (url: string): string => {
     if (!url) return "";
-    const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\/shorts\/)([^#&?]*).*/);
+    const match = url.match(
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\/shorts\/)([^#&?]*).*/
+    );
     return match && match[2].length === 11 ? match[2] : "";
   };
 
@@ -161,7 +180,7 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
     e.stopPropagation();
     setShowYoutubeModal(false);
   };
-  
+
   const openVideoModal = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowVideoModal(true);
@@ -175,10 +194,23 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
   const hasYoutubeLink = post.youtubeLink && getYoutubeId(post.youtubeLink);
   const hasMedia = post.image || hasYoutubeLink || post.videoUrl;
   const lastCommentTimeFormatted = formatLastCommentTime(post.lastComment);
+  const latestBadge = post.author.leaderboardBadges?.length
+    ? post.author.leaderboardBadges[post.author.leaderboardBadges.length - 1]
+    : undefined;
 
   const cardStyle = post.isPinned
-    ? { border: "1px solid rgb(248, 212, 129)", boxShadow: "rgba(248, 212, 129, 0.32) 0px 2px 2px 0px, rgba(248, 212, 129, 0.32) 0px 2px 6px 0px, rgba(248, 212, 129, 0.2) 0px 1px 8px 0px", borderRadius: "10px" }
-    : { border: "1px solid rgb(228, 228, 228)", borderRadius: "10px", boxShadow: "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px" };
+    ? {
+        border: "1px solid rgb(248, 212, 129)",
+        boxShadow:
+          "rgba(248, 212, 129, 0.32) 0px 2px 2px 0px, rgba(248, 212, 129, 0.32) 0px 2px 6px 0px, rgba(248, 212, 129, 0.2) 0px 1px 8px 0px",
+        borderRadius: "10px",
+      }
+    : {
+        border: "1px solid rgb(228, 228, 228)",
+        borderRadius: "10px",
+        boxShadow:
+          "rgba(60, 64, 67, 0.32) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px, rgba(0, 0, 0, 0.1) 0px 1px 8px",
+      };
 
   return (
     <div
@@ -187,17 +219,51 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
     >
       <div className="p-4">
         <div className="flex items-center mb-3">
-          <Avatar src={post.author.avatar} alt={post.author.name?.charAt(0).toUpperCase()} className="h-10 w-10 bg-gray-300" />
+          <div className="relative">
+            <Avatar
+              src={post.author.avatar}
+              alt={post.author.name?.charAt(0).toUpperCase()}
+              className="h-10 w-10 bg-gray-300"
+            />
+            {post.author.subscription?.status === "active" && (
+              <span
+                className="
+        absolute -bottom-1 -left-0
+        translate-x-1/4 translate-y-1/4
+        pointer-events-none
+        flex items-center justify-center
+        h-4 min-w-[1.1rem]
+        rounded-full
+        bg-yellow-300 text-yellow-900
+        text-[9px] leading-4 font-extrabold
+        px-1
+        ring-2 ring-white
+        shadow
+      "
+                title="Pro subscription active"
+              >
+                pro
+              </span>
+            )}
+          </div>
           <div className="ml-3 flex-1">
             <div className="flex items-center justify-between">
               <div>
-                <div className="flex items-center">
+                <div className="flex items-center gap-1">
                   <span className="font-medium">{post.author.name}</span>
-                  {post.author.badges && post.author.badges.length > 0 && (
+                  {latestBadge && (
+    <span
+      className={`text-xs font-semibold ${LEVEL_TEXT_CLASSES[latestBadge.level] || "text-orange-700"}`}
+    >
+      {latestBadge.name}
+    </span>
+  )}
+                  {/* {post.author.badges && post.author.badges.length > 0 && (
                     <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
                       {post.author.badges.length}
                     </span>
-                  )}
+                  )} */}
+
                 </div>
                 <div className="flex items-center text-sm text-gray-500">
                   <span>{formatDate(post.createdAt)}</span>
@@ -213,7 +279,7 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
                   )}
                 </div>
               </div>
-              
+
               {user && (
                 <div className="relative">
                   <button
@@ -229,17 +295,35 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
                     >
                       {isOwnPost && (
                         <>
-                          <div className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700" onClick={() => { if (onEdit) onEdit(post); setShowMenu(false); }}>
+                          <div
+                            className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700"
+                            onClick={() => {
+                              if (onEdit) onEdit(post);
+                              setShowMenu(false);
+                            }}
+                          >
                             <Edit size={16} className="mr-2 text-gray-700" />
                             <span>Edit Post</span>
                           </div>
-                          <div className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700" onClick={() => { setShowMenu(false); setShowDeleteModal(true); }}>
+                          <div
+                            className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700"
+                            onClick={() => {
+                              setShowMenu(false);
+                              setShowDeleteModal(true);
+                            }}
+                          >
                             <Trash size={16} className="mr-2 text-red-500" />
                             <span>Delete Post</span>
                           </div>
                         </>
                       )}
-                      <div className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700" onClick={() => { setShowMenu(false); setShowShareModal(true); }}>
+                      <div
+                        className="p-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-700"
+                        onClick={() => {
+                          setShowMenu(false);
+                          setShowShareModal(true);
+                        }}
+                      >
                         <Share2 size={16} className="mr-2 text-blue-500" />
                         <span>Share Post</span>
                       </div>
@@ -250,19 +334,42 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="flex flex-col gap-4">
           <div className="sm:hidden w-full">
-            <h3 className="text-gray-700 overflow-hidden mb-3" style={{ display: "-webkit-box", WebkitLineClamp: "3", WebkitBoxOrient: "vertical", textOverflow: "ellipsis" }}>
+            <h3
+              className="text-gray-700 overflow-hidden mb-3"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: "3",
+                WebkitBoxOrient: "vertical",
+                textOverflow: "ellipsis",
+              }}
+            >
               {post.title}
             </h3>
-            <p className="text-gray-700 overflow-hidden mb-3" style={{ display: "-webkit-box", WebkitLineClamp: "3", WebkitBoxOrient: "vertical", textOverflow: "ellipsis" }}>
+            <p
+              className="text-gray-700 overflow-hidden mb-3"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: "3",
+                WebkitBoxOrient: "vertical",
+                textOverflow: "ellipsis",
+              }}
+            >
               {post.content}
             </p>
             {post.links && post.links.length > 0 && (
               <div className="mt-2 space-y-1">
                 {post.links.map((link, index) => (
-                  <a key={index} href={link} target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:underline truncate" onClick={handleLinkClick}>
+                  <a
+                    key={index}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-blue-600 hover:underline truncate"
+                    onClick={handleLinkClick}
+                  >
                     {link}
                   </a>
                 ))}
@@ -272,21 +379,37 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
           {hasMedia && (
             <div className="sm:hidden w-full flex justify-center">
               {post.videoUrl ? (
-                  <div className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full " style={{ height: "180px" }} onClick={openVideoModal}>
-  {/* Add a key prop using the videoThumbnailUrl itself */}
-  <img 
-    key={post.videoThumbnailUrl} 
-    src={post.videoThumbnailUrl} 
-    alt="Video thumbnail" 
-    className="w-full h-full object-cover" 
-  />
-  <div className="absolute inset-0  bg-opacity-30 flex items-center justify-center">
-    <PlayCircle size={32} className="text-black opacity-80" fill="white" />
-  </div>
-</div>
+                <div
+                  className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full "
+                  style={{ height: "180px" }}
+                  onClick={openVideoModal}
+                >
+                  {/* Add a key prop using the videoThumbnailUrl itself */}
+                  <img
+                    key={post.videoThumbnailUrl}
+                    src={post.videoThumbnailUrl}
+                    alt="Video thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0  bg-opacity-30 flex items-center justify-center">
+                    <PlayCircle
+                      size={32}
+                      className="text-black opacity-80"
+                      fill="white"
+                    />
+                  </div>
+                </div>
               ) : hasYoutubeLink ? (
-                <div className="relative rounded-lg overflow-hidden cursor-pointer w-full" onClick={openYoutubeModal} style={{ height: "180px" }}>
-                  <img src={getYoutubeThumbnail(post.youtubeLink || "")} alt="YouTube thumbnail" className="w-full h-full object-cover" />
+                <div
+                  className="relative rounded-lg overflow-hidden cursor-pointer w-full"
+                  onClick={openYoutubeModal}
+                  style={{ height: "180px" }}
+                >
+                  <img
+                    src={getYoutubeThumbnail(post.youtubeLink || "")}
+                    alt="YouTube thumbnail"
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute inset-0 bg-opacity-20 flex items-center justify-center">
                     <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
                       <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
@@ -295,23 +418,60 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
                 </div>
               ) : post.image ? (
                 <div className="w-full" style={{ maxHeight: "300px" }}>
-                  <img src={post.image} alt="Post" className="rounded-lg w-full h-full object-cover" />
+                  <img
+                    src={post.image}
+                    alt="Post"
+                    className="rounded-lg w-full h-full object-cover"
+                  />
                 </div>
               ) : null}
             </div>
           )}
-          <div className="hidden sm:flex sm:flex-row gap-4" style={{ minHeight: "80px", maxHeight: "120px" }}>
-            <div className={`flex-1 ${hasMedia ? "sm:max-w-[68%]" : "w-full"} overflow-hidden`}>
-              <h3 className="font-bold mb-2 text-ellipsis overflow-hidden" style={{ fontFamily: "Roboto, Helvetica, Arial, sans-serif", fontSize: "18px", lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: "1", WebkitBoxOrient: "vertical" }}>
+          <div
+            className="hidden sm:flex sm:flex-row gap-4"
+            style={{ minHeight: "80px", maxHeight: "120px" }}
+          >
+            <div
+              className={`flex-1 ${
+                hasMedia ? "sm:max-w-[68%]" : "w-full"
+              } overflow-hidden`}
+            >
+              <h3
+                className="font-bold mb-2 text-ellipsis overflow-hidden"
+                style={{
+                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                  fontSize: "18px",
+                  lineHeight: "1.4",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "1",
+                  WebkitBoxOrient: "vertical",
+                }}
+              >
                 {post.title}
               </h3>
-              <p className="text-gray-700 overflow-hidden" style={{ display: "-webkit-box", WebkitLineClamp: "2", WebkitBoxOrient: "vertical", textOverflow: "ellipsis", maxHeight: "48px" }}>
+              <p
+                className="text-gray-700 overflow-hidden"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                  textOverflow: "ellipsis",
+                  maxHeight: "48px",
+                }}
+              >
                 {post.content}
               </p>
               {post.links && post.links.length > 0 && (
                 <div className="mt-2 space-y-1">
                   {post.links.map((link, index) => (
-                    <a key={index} href={link} target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:underline truncate" onClick={handleLinkClick}>
+                    <a
+                      key={index}
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-blue-600 hover:underline truncate"
+                      onClick={handleLinkClick}
+                    >
                       {link}
                     </a>
                   ))}
@@ -321,15 +481,33 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
             {hasMedia && (
               <div className="flex-shrink-0 w-32 h-28 overflow-hidden">
                 {post.videoUrl ? (
-                    <div className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full" onClick={openVideoModal}>
-                        <img src={post.videoThumbnailUrl} alt="Video thumbnail" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0  bg-opacity-30 flex items-center justify-center">
-                            <PlayCircle size={32} className="text-black opacity-80" fill="white" />
-                        </div>
+                  <div
+                    className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full"
+                    onClick={openVideoModal}
+                  >
+                    <img
+                      src={post.videoThumbnailUrl}
+                      alt="Video thumbnail"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0  bg-opacity-30 flex items-center justify-center">
+                      <PlayCircle
+                        size={32}
+                        className="text-black opacity-80"
+                        fill="white"
+                      />
                     </div>
+                  </div>
                 ) : hasYoutubeLink ? (
-                  <div className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full" onClick={openYoutubeModal}>
-                    <img src={getYoutubeThumbnail(post.youtubeLink || "")} alt="YouTube thumbnail" className="w-full h-full object-cover" />
+                  <div
+                    className="relative rounded-lg overflow-hidden cursor-pointer w-full h-full"
+                    onClick={openYoutubeModal}
+                  >
+                    <img
+                      src={getYoutubeThumbnail(post.youtubeLink || "")}
+                      alt="YouTube thumbnail"
+                      className="w-full h-full object-cover"
+                    />
                     <div className="absolute inset-0 bg-opacity-20 flex items-center justify-center">
                       <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
                         <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[11px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
@@ -337,7 +515,11 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
                     </div>
                   </div>
                 ) : post.image ? (
-                  <img src={post.image} alt="Post" className="rounded-lg w-full h-full object-cover" />
+                  <img
+                    src={post.image}
+                    alt="Post"
+                    className="rounded-lg w-full h-full object-cover"
+                  />
                 ) : null}
               </div>
             )}
@@ -346,8 +528,18 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
 
         <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100">
           <div className="flex items-center space-x-4">
-            <button className={`flex items-center ${isLiked ? "text-blue-600" : "text-gray-500"} hover:text-blue-600 transition-colors duration-200`} onClick={handleLike} disabled={!user || isLiking}>
-              <ThumbsUp size={16} className={`mr-1 ${isLiking ? "animate-pulse" : ""}`} fill={isLiked ? "currentColor" : "none"} />
+            <button
+              className={`flex items-center ${
+                isLiked ? "text-blue-600" : "text-gray-500"
+              } hover:text-blue-600 transition-colors duration-200`}
+              onClick={handleLike}
+              disabled={!user || isLiking}
+            >
+              <ThumbsUp
+                size={16}
+                className={`mr-1 ${isLiking ? "animate-pulse" : ""}`}
+                fill={isLiked ? "currentColor" : "none"}
+              />
               <span>{currentLikeCount}</span>
             </button>
             <div className="flex items-center text-gray-500">
@@ -365,53 +557,102 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
           </div>
         </div>
       </div>
-      
+
       {showYoutubeModal && hasYoutubeLink && (
-        <div className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50" onClick={closeYoutubeModal} style={{ zIndex: 9999 }}>
-          <div className="relative w-full max-w-3xl mx-4" onClick={(e) => e.stopPropagation()}>
-            <button className="absolute -top-10 right-0 text-black hover:text-gray-300" onClick={closeYoutubeModal}>
+        <div
+          className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50"
+          onClick={closeYoutubeModal}
+          style={{ zIndex: 9999 }}
+        >
+          <div
+            className="relative w-full max-w-3xl mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute -top-10 right-0 text-black hover:text-gray-300"
+              onClick={closeYoutubeModal}
+            >
               <X size={24} />
             </button>
-            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-              <iframe src={`https://www.youtube.com/embed/${getYoutubeId(post.youtubeLink || "")}?autoplay=1`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute top-0 left-0 w-full h-full"></iframe>
+            <div
+              className="relative w-full"
+              style={{ paddingBottom: "56.25%" }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${getYoutubeId(
+                  post.youtubeLink || ""
+                )}?autoplay=1`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full"
+              ></iframe>
             </div>
           </div>
         </div>
       )}
-      
-     {showVideoModal && post.videoUrl && (
-        <div className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={closeVideoModal} style={{ zIndex: 9999 }}>
+
+      {showVideoModal && post.videoUrl && (
+        <div
+          className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={closeVideoModal}
+          style={{ zIndex: 9999 }}
+        >
           {/* This inner div is the modal content box. It stops clicks from closing the modal. */}
-          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative w-full max-w-4xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* The close button is now positioned relative to the video box */}
-            <button className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 text-white bg-gray-800 bg-opacity-50 rounded-full p-1 hover:bg-opacity-75 z-10" onClick={closeVideoModal}>
+            <button
+              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 text-white bg-gray-800 bg-opacity-50 rounded-full p-1 hover:bg-opacity-75 z-10"
+              onClick={closeVideoModal}
+            >
               <X size={24} />
             </button>
-            <div className="relative w-full bg-black rounded-lg overflow-hidden shadow-2xl" style={{ paddingBottom: "56.25%" }}>
-              <iframe 
-                src={`${post.videoUrl}?autoplay=1`} 
-                title="Post Video Player" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                className="absolute top-0 left-0 w-full h-full border-0">
-              </iframe>
+            <div
+              className="relative w-full bg-black rounded-lg overflow-hidden shadow-2xl"
+              style={{ paddingBottom: "56.25%" }}
+            >
+              <iframe
+                src={`${post.videoUrl}?autoplay=1`}
+                title="Post Video Player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full border-0"
+              ></iframe>
             </div>
           </div>
         </div>
       )}
 
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowDeleteModal(false)}>
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-[rgba(144,144,144,0.6)] bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-bold mb-4">Delete Post</h3>
             <p className="text-gray-700 mb-6">
-              Are you sure you want to delete this post? This action cannot be undone.
+              Are you sure you want to delete this post? This action cannot be
+              undone.
             </p>
             <div className="flex justify-end space-x-4">
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" onClick={() => setShowDeleteModal(false)} disabled={isDeleting}>
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+              >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center" onClick={handleDeletePost} disabled={isDeleting}>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
+                onClick={handleDeletePost}
+                disabled={isDeleting}
+              >
                 {isDeleting ? (
                   <>
                     <span className="mr-2 text-white">Deleting</span>
@@ -432,7 +673,9 @@ export default function Post({ post, onRefresh, onDelete, onEdit }: PostProps) {
             isOpen={showShareModal}
             onClose={() => setShowShareModal(false)}
             shareUrl={shareUrl}
-            shareTitle={`Share ${post.author.name ? post.author.name.split(' ')[0] : 'User'}'s Post`}
+            shareTitle={`Share ${
+              post.author.name ? post.author.name.split(" ")[0] : "User"
+            }'s Post`}
           />
         </div>
       )}

@@ -13,6 +13,7 @@ import LeaderboardTabs, { TabPanel } from './_components/LeaderboardTabs';
 import LeaderboardService, { LeaderboardResponse } from '../../services/leaderboard.service';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ChatBot from '@/components/ChatBot';
+import LevelStatus from './_components/LevelStatus';
 
 type LeaderboardType = 'weekly' | 'monthly' | 'allTime';
 
@@ -138,13 +139,19 @@ export default function Leaderboards() {
     <ProtectedRoute>
       <main className="min-h-screen bg-[rgb(248,247,245)] pt-16 md:pt-[104px] pb-16 md:pb-0">
         <NavBar />
-        <Container maxWidth="lg" sx={{ py: 4, backgroundColor: 'rgb(248, 247, 245)' }}>
+       
+        <Container maxWidth="lg"  sx={{
+    py: { xs: 2, sm: 4 }, // Equivalent to pt-16 (or py-4 in Tailwind)
+    pb: { xs: 4, sm: 0 }, // Equivalent to pb-16 and md:pb-0
+    backgroundColor: 'rgb(248, 247, 245)',
+  }}>
+           
           <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="body2" color="text.secondary">
               {lastUpdated && `Last updated: ${lastUpdated}`}
             </Typography>
           </Box>
-
+          <LevelStatus />
           <LeaderboardTabs value={activeTab} onChange={handleTabChange} />
 
           <Grid container spacing={3}>

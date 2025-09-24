@@ -1,6 +1,7 @@
 
 
 import axios from 'axios';
+import { LeaderboardBadgeLite } from './leaderboard.service';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL 
 
@@ -22,6 +23,8 @@ export interface Post {
     name: string;
     avatar: string;
     badges?: string[];
+    subscription?: { status: "none" | "active" | "expired"; endDate?: string }; // NEW
+    leaderboardBadges?: LeaderboardBadgeLite[];
   };
   title: string;
   content: string;

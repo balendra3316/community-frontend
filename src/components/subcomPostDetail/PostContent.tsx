@@ -8,6 +8,7 @@ import { Post } from "../../services/postService";
 import { useAuth } from "../../context/AuthContext";
 import { usePostState } from "../../types/PostStateContext";
 import { Avatar } from "@mui/material";
+import { LEVEL_TEXT_CLASSES } from "../constants/leaderboardColors";
 
 interface PostContentProps {
   post: Post;
@@ -76,6 +77,11 @@ export default function PostContent({
     const totalVotes = calculateTotalVotes();
     return totalVotes > 0 ? Math.round((optionVotes / totalVotes) * 100) : 0;
   };
+
+const latestBadge = post.author.leaderboardBadges?.length
+    ? post.author.leaderboardBadges[post.author.leaderboardBadges.length - 1]
+    : undefined;
+
 
 
 const renderVideoPlayer = () => {
@@ -183,21 +189,51 @@ const renderVideoPlayer = () => {
   return (
     <div className="p-4 border-b">
       <div className="flex items-center mb-3">
-        <div className="h-10 w-10 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
-          <Avatar
-            src={post.author.avatar}
-            alt={post.author.name?.charAt(0).toUpperCase()}
-            className="h-full w-full bg-gray-300"
-          />
-        </div>
+    <div className="relative h-10 w-10 flex-shrink-0">
+  <Avatar
+    src={post.author.avatar}
+    alt={post.author.name?.charAt(0).toUpperCase()}
+    className="h-10 w-10 bg-gray-300"
+  />
+  {post.author.subscription?.status === "active" && (
+    <span
+      className="
+        absolute
+        bottom-0 left-0
+        -translate-x-1/4 translate-y-1/4
+        pointer-events-none
+        flex items-center justify-center
+        h-4 min-w-[1.1rem]
+        rounded-full
+        bg-yellow-300 text-yellow-900
+        text-[9px] leading-4 font-extrabold
+        px-1
+        ring-2 ring-white
+        shadow
+      "
+      title="Pro subscription active"
+    >
+      pro
+    </span>
+  )}
+</div>
         <div className="ml-3 flex-1">
-          <div className="flex items-center">
-            <span className="font-medium">{post.author.name}</span>
-            {post.author.badges && post.author.badges.length > 0 && (
+              <div className="flex items-center gap-1">
+                           <span className="font-medium">{post.author.name}</span>
+                           {latestBadge && (
+             <span
+               className={`text-xs font-semibold ${LEVEL_TEXT_CLASSES[latestBadge.level] || "text-orange-700"}`}
+             >
+               {latestBadge.name}
+             </span>
+           )}
+
+            {/* {post.author.badges && post.author.badges.length > 0 && (
               <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
                 {post.author.badges.length}
               </span>
-            )}
+            )} */}
+
           </div>
           <div className="text-sm text-gray-500 flex items-center">
             <span>{formatRelativeTime(post.createdAt)}</span>

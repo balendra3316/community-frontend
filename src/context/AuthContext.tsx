@@ -11,6 +11,14 @@ import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
+
+export interface ILeaderboardBadge {
+  name: string;
+  level: number;
+  earnedAt: string; // dates arrive as ISO strings from JSON
+}
+
+
 export interface User {
   _id: string;
   googleId: string;
@@ -33,6 +41,9 @@ export interface User {
   height?: number;
   weight?: number;
 
+   points: number;                 // if not already present in your interface file
+  level: number;                  // NEW
+  leaderboardBadges: ILeaderboardBadge[]; 
     // --- NEW: Add subscription to the User interface ---
   subscription: {
     status: 'none' | 'active' | 'expired';

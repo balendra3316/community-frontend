@@ -266,8 +266,8 @@ export default function JournalPage() {
         <section className="border-y border-emerald-100 bg-white/60 backdrop-blur">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">My Dance Journal</h1>
-              <p className="text-slate-600 mt-1">Log sessions, track mood and energy, and keep a daily streak.</p>
+              <h1 className="text-3xl font-bold text-slate-800">Dance Journal</h1>
+              <p className="text-slate-600 mt-1">Log sessions<br/> track mood and energy 💃<br/>keep a daily streak 💖</p>
             </div>
             <Button
               variant="contained"

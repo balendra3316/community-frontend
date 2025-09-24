@@ -88,7 +88,7 @@ export default function JournalCalendar() {
   const handleNextMonth = () => setCurrentDate(currentDate.add(1, 'month'));
 
   return (
-    <Paper elevation={0} className="p-4 rounded-2xl bg-white/70 backdrop-blur border border-cyan-100 shadow-sm">
+    <Paper elevation={0} className="p-4 rounded-2xl bg-white/70 backdrop-blur border border-cyan-100 shadow-sm pb-[90px] mb-4">
       <div className="flex justify-between items-center mb-4">
         <IconButton onClick={handlePrevMonth} size="small">
           <ChevronLeft />

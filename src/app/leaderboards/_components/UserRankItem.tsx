@@ -2,6 +2,7 @@
 import React, { memo } from "react";
 import { Box, Avatar, Typography, Tooltip } from "@mui/material";
 import { LeaderboardUser } from "../../../services/leaderboard.service";
+import { LEVEL_TEXT_CLASSES } from "../../../components/constants/leaderboardColors";
 
 
 const RANK_COLORS = {
@@ -19,7 +20,9 @@ const UserRankItem: React.FC<UserRankItemProps> = memo(
   ({ user, isCurrentUser = false }) => {
     const { rank, name, avatar, points } = user;
 
-
+const badgeName = (user as any).latestBadge?.name as string | undefined;
+const badge = (user as any).latestBadge;
+const badgeTextClass = LEVEL_TEXT_CLASSES[badge?.level as number] || "text-gray-700";
     const isTopRank = rank && rank <= 3;
     const rankColor = isTopRank
       ? RANK_COLORS[rank as keyof typeof RANK_COLORS]
@@ -84,6 +87,16 @@ const UserRankItem: React.FC<UserRankItemProps> = memo(
               {name}
             </Typography>
           </Tooltip>
+          {badgeName ? (
+     <Typography
+    variant="caption"
+    component="div"
+    sx={{ mt: 0.25 }}
+    className={badgeTextClass} // add className via MUI by passing through
+  >
+    {badge.name}
+  </Typography>
+  ) : null}
         </Box>
 
         <Typography

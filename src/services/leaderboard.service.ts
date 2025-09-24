@@ -1,12 +1,20 @@
 
 import axios from 'axios';
 
+export interface LeaderboardBadgeLite {
+  name: string;
+  level: number;
+  earnedAt: string;
+}
+
 export interface LeaderboardUser {
   _id: string;
   name: string;
   avatar: string;
   points: number;
   rank: number;
+  latestBadge?: LeaderboardBadgeLite | null;
+
 }
 
 export interface LeaderboardResponse {
@@ -17,6 +25,7 @@ export interface LeaderboardResponse {
     avatar: string;
     points: number;
     rank: number | null;
+    latestBadge?: LeaderboardBadgeLite | null;
   };
 }
 
