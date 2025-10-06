@@ -1,3 +1,7 @@
+
+
+
+
 // 'use client';
 // import React, { useState, useEffect } from 'react';
 // import Link from 'next/link';
@@ -9,7 +13,10 @@
 //   IconButton,
 //   Tooltip,
 //   Snackbar,
-//   Alert
+//   Alert,
+//   Modal,         // <-- Import Modal
+//   Typography,    // <-- Import Typography for modal title
+//   Stack          // <-- Import Stack for button layout
 // } from '@mui/material';
 // import { styled } from '@mui/material/styles';
 // import { 
@@ -18,7 +25,9 @@
 //   PlayArrow, 
 //   Star,
 //   AccessTime,
-//   Share
+//   Share,
+//   ContentCopy,   // <-- Import Icon for Copy button
+//   WhatsApp       // <-- Import Icon for WhatsApp button
 // } from '@mui/icons-material';
 // import { Course, CourseService } from '../../../services/courseService';
 
@@ -126,6 +135,20 @@
 //   boxShadow: '0 2px 8px rgba(147, 197, 253, 0.3)',
 // }));
 
+// const modalStyle = {
+//   position: 'absolute' as 'absolute',
+//   top: '50%',
+//   left: '50%',
+//   transform: 'translate(-50%, -50%)',
+//   width: 400,
+//   bgcolor: 'background.paper',
+//   border: '2px solid #000',
+//   boxShadow: 24,
+//   p: 4,
+//   borderRadius: '12px',
+// };
+
+
 // const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) => {
 //   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 //   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
@@ -134,38 +157,37 @@
 //     message: '',
 //     severity: 'info'
 //   });
+//   const [isShareModalOpen, setIsShareModalOpen] = useState(false); // <-- State for Modal
 
 //   const progress = course.progress?.completionPercentage || 0;
 
+//   // --- Modal Handlers ---
+//   const handleOpenShareModal = (e: React.MouseEvent) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setIsShareModalOpen(true);
+//   };
+//   const handleCloseShareModal = () => setIsShareModalOpen(false);
 
+//   // --- Snackbar Handlers ---
 //   const showSnackbar = (message: string, severity: SnackbarState['severity'] = 'info') => {
-//     setSnackbar({
-//       open: true,
-//       message,
-//       severity
-//     });
+//     setSnackbar({ open: true, message, severity });
 //   };
 
-
 //   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
-//     if (reason === 'clickaway') {
-//       return;
-//     }
+//     if (reason === 'clickaway') return;
 //     setSnackbar(prev => ({ ...prev, open: false }));
 //   };
 
-
+//   // --- Razorpay and other existing hooks ---
 //   useEffect(() => {
 //     const loadRazorpayScript = () => {
 //       return new Promise((resolve) => {
-
 //         if (window.Razorpay) {
 //           setIsRazorpayLoaded(true);
 //           resolve(true);
 //           return;
 //         }
-
-
 //         const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
 //         if (existingScript) {
 //           existingScript.addEventListener('load', () => {
@@ -174,132 +196,68 @@
 //           });
 //           return;
 //         }
-
-
 //         const script = document.createElement('script');
 //         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
 //         script.async = true;
-//         script.onload = () => {
-//           setIsRazorpayLoaded(true);
-//           resolve(true);
-//         };
-//         script.onerror = () => {
-          
-//           resolve(false);
-//         };
+//         script.onload = () => { setIsRazorpayLoaded(true); resolve(true); };
+//         script.onerror = () => { resolve(false); };
 //         document.head.appendChild(script);
 //       });
 //     };
-
 //     loadRazorpayScript();
 //   }, []);
 
 //   const handlePayment = async (e: React.MouseEvent) => {
 //     e.preventDefault();
 //     e.stopPropagation();
-    
 //     if (isProcessingPayment) return;
-    
-
 //     if (!isRazorpayLoaded || !window.Razorpay) {
-//       showSnackbar('Payment system is still loading. Please try again in a moment.', 'warning');
+//       showSnackbar('Payment system is loading. Please try again.', 'warning');
 //       return;
 //     }
-    
 //     setIsProcessingPayment(true);
-
 //     try {
-
 //       const options = {
-//         key: "rzp_live_Dj70XqJ0PkPgJY", // Your Razorpay key
-//         amount: course.price * 100, // Amount in paisa
+//         key: "rzp_live_Dj70XqJ0PkPgJY",
+//         amount: course.price * 100,
 //         currency: 'INR',
 //         name: 'Course Purchase',
 //         description: `Purchase ${course.title}`,
 //         image: course.coverImage || '/logo.png',
 //         handler: async function (response: any) {
 //           try {
-
-            
-
 //             const paymentData = {
 //               courseId: course._id,
-//               paymentAmount: course.price, // Make sure this matches exactly
+//               paymentAmount: course.price,
 //               razorpayOrderId: response.razorpay_order_id || `temp_order_${Date.now()}`,
 //               razorpayPaymentId: response.razorpay_payment_id,
 //               razorpaySignature: response.razorpay_signature || 'temp_signature'
 //             };
-
-
-
-
-//             const purchaseResponse = await CourseService.purchaseCourse(paymentData);
-            
-
-
-
+//             await CourseService.purchaseCourse(paymentData);
 //             showSnackbar('Course purchased successfully! 🎉', 'success');
-            
-
-//             if (onPurchaseSuccess) {
-//               onPurchaseSuccess();
-//             }
+//             if (onPurchaseSuccess) onPurchaseSuccess();
 //           } catch (error: any) {
-            
-            
-
-//             if (error instanceof Error) {
-              
-//             }
-            
-
-//             try {
-//               const errorResponse = await error.response?.json?.();
-              
-//               showSnackbar(`Payment verification failed: ${errorResponse?.message || 'Please contact support.'}`, 'error');
-//             } catch {
-//               showSnackbar('Payment verification failed. Please contact support.', 'error');
-//             }
+//             showSnackbar('Payment verification failed. Please contact support.', 'error');
 //           } finally {
 //             setIsProcessingPayment(false);
 //           }
 //         },
-//         prefill: {
-//           name: '',
-//           email: '',
-//           contact: ''
-//         },
-//         notes: {
-//           course_id: course._id,
-//           course_title: course.title
-//         },
-//         theme: {
-//           color: '#F59E0B'
-//         },
-//         modal: {
-//           ondismiss: function() {
-//             setIsProcessingPayment(false);
-//           }
-//         }
+//         prefill: { name: '', email: '', contact: '' },
+//         notes: { course_id: course._id, course_title: course.title },
+//         theme: { color: '#F59E0B' },
+//         modal: { ondismiss: () => setIsProcessingPayment(false) }
 //       };
-
 //       const rzp = new window.Razorpay(options);
 //       rzp.open();
 //     } catch (error) {
-      
 //       showSnackbar('Failed to initiate payment. Please try again.', 'error');
 //       setIsProcessingPayment(false);
 //     }
 //   };
 
-
-
-// const handleShare = (e: React.MouseEvent) => {
-//     e.preventDefault();
-//     e.stopPropagation();
-    
+//   // --- Share action handlers for Modal ---
+//   const handleCopyLink = () => {
 //     const shareUrl = `${window.location.origin}/course/${course._id}`;
-    
 //     navigator.clipboard.writeText(shareUrl)
 //       .then(() => {
 //         showSnackbar('Course link copied to clipboard!', 'success');
@@ -307,11 +265,17 @@
 //       .catch(() => {
 //         showSnackbar('Failed to copy link.', 'error');
 //       });
+//     handleCloseShareModal();
 //   };
 
-
-
-
+//   const handleShareToWhatsApp = () => {
+//     const courseUrl = `${window.location.origin}/course/${course._id}`;
+//     // Corrected the message typos
+//     const message = `Hey! I'm enjoying this course which is great. I am sharing it so you can join now: ${courseUrl}`;
+//     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+//     window.open(whatsappUrl, '_blank');
+//     handleCloseShareModal();
+//   };
 
 
 //   const CardContent = () => (
@@ -335,11 +299,10 @@
 //             </div>
 //           )}
           
-
 //          <Box className="absolute top-3 left-3">
 //             <Tooltip title="Share Course">
 //               <IconButton
-//                 onClick={handleShare}
+//                 onClick={handleOpenShareModal} 
 //                 size="small"
 //                 sx={{
 //                   backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -351,10 +314,6 @@
 //             </Tooltip>
 //           </Box>
 
-
-
-
-//           {/* Price/Free Badge */}
 //           <Box className="absolute top-3 right-3">
 //             {course.isPaid ? (
 //               <PriceChip 
@@ -369,23 +328,6 @@
 //               />
 //             )}
 //           </Box>
-
-//           {/* Course Status Indicator */}
-//           {/* {course.isAccessible && (
-//             <Box className="absolute top-3 left-3">
-//               <Tooltip title={course.isPaid ? "Purchased Course" : "Free Course"}>
-//                 <IconButton 
-//                   size="small" 
-//                   sx={{ 
-//                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-//                     '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' }
-//                   }}
-//                 >
-//                   <PlayArrow sx={{ color: '#10B981', fontSize: '1.2rem' }} />
-//                 </IconButton>
-//               </Tooltip>
-//             </Box>
-//           )} */}
 //         </div>
         
 //         {/* Course Content */}
@@ -401,13 +343,7 @@
 //                 fullWidth
 //                 onClick={handlePayment}
 //                 disabled={isProcessingPayment || !isRazorpayLoaded}
-//                 startIcon={
-//                   isProcessingPayment ? (
-//                     <CircularProgress size={18} sx={{ color: '#92400E' }} />
-//                   ) : (
-//                     <ShoppingCart />
-//                   )
-//                 }
+//                 startIcon={isProcessingPayment ? <CircularProgress size={18} sx={{ color: '#92400E' }} /> : <ShoppingCart />}
 //                 sx={{ mb: 1 }}
 //               >
 //                 {isProcessingPayment 
@@ -418,7 +354,6 @@
 //                 }
 //               </YellowButton>
 //             )}
-
 //             {course.isAccessible && (
 //               <AccessButton
 //                 variant="contained"
@@ -460,15 +395,10 @@
 //           </div>
 //         )}
         
-//         {/* Locked indicator for non-accessible courses */}
+//         {/* Locked indicator */}
 //         {!course.isAccessible && course.needsPayment && (
 //           <div className="px-5 pb-4">
-//             <Box 
-//               display="flex" 
-//               alignItems="center" 
-//               justifyContent="center" 
-//               className="text-gray-500 text-sm bg-gray-50 rounded-lg py-3"
-//             >
+//             <Box display="flex" alignItems="center" justifyContent="center" className="text-gray-500 text-sm bg-gray-50 rounded-lg py-3">
 //               <Lock sx={{ fontSize: '1rem', marginRight: '0.5rem' }} />
 //               <span className="font-medium">Course Locked</span>
 //             </Box>
@@ -476,7 +406,50 @@
 //         )}
 //       </div>
 
-//       {/* Snackbar for notifications */}
+//       {/* --- ADD THE SHARE MODAL --- */}
+//       <Modal
+//         open={isShareModalOpen}
+//         onClose={handleCloseShareModal}
+//         aria-labelledby="share-modal-title"
+//         aria-describedby="share-modal-description"
+//         slotProps={{
+//     backdrop: {
+//       onClick: (e) => {
+//         // Stop the click from reaching the underlying Link
+//         e.stopPropagation();
+        
+//       },
+//     },
+//   }}
+//       >
+//         <Box sx={modalStyle} onClick={(e) => e.stopPropagation()}>
+//           <Typography id="share-modal-title" variant="h6" component="h2">
+//             Share this Course
+//           </Typography>
+//           <Typography id="share-modal-description" sx={{ mt: 2, mb: 3 }}>
+//             Share this course with your friends and colleagues!
+//           </Typography>
+//           <Stack spacing={2} direction="column">
+//             <Button
+//               variant="outlined"
+//               startIcon={<ContentCopy />}
+//               onClick={handleCopyLink}
+//             >
+//               Copy Link
+//             </Button>
+//             <Button
+//               variant="contained"
+//               startIcon={<WhatsApp />}
+//               onClick={handleShareToWhatsApp}
+//               sx={{ backgroundColor: '#25D366', '&:hover': { backgroundColor: '#1EBE56' } }}
+//             >
+//               Share on WhatsApp
+//             </Button>
+//           </Stack>
+//         </Box>
+//       </Modal>
+
+//       {/* Snackbar for notifications - Kept your custom styling */}
 //       <Snackbar
 //         open={snackbar.open}
 //         autoHideDuration={6000}
@@ -487,7 +460,7 @@
 //           onClose={handleCloseSnackbar} 
 //           severity={snackbar.severity}
 //           variant="filled"
-//               sx={{
+//           sx={{
 //             width: '100%',
 //             '& .MuiAlert-message': {
 //               color: 'white',
@@ -495,11 +468,9 @@
 //             '& .MuiAlert-icon': {
 //               color: 'white'
 //             },
-           
 //             '& .MuiAlert-action .MuiIconButton-root': {
 //               color: 'white'
 //             },
-//             // ---------------------------------------------
 //             '&.MuiAlert-filledSuccess': {
 //               backgroundColor: '#2e7d32', 
 //             },
@@ -514,7 +485,6 @@
 //     </>
 //   );
 
-
 //   if (course.isAccessible) {
 //     return (
 //       <Link href={`/classroom/${course._id}`} className="block h-full">
@@ -523,11 +493,13 @@
 //     );
 //   }
 
-
 //   return <CardContent />;
 // };
 
 // export default CourseCard;
+
+
+
 
 
 
@@ -645,6 +617,9 @@ const YellowButton = styled(Button)(({ theme, variant }) => ({
   }),
 }));
 
+
+
+
 const AccessButton = styled(Button)(({ theme }) => ({
   fontWeight: 600,
   textTransform: 'none',
@@ -754,50 +729,73 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onPurchaseSuccess }) =>
   const handlePayment = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
     if (isProcessingPayment) return;
-    if (!isRazorpayLoaded || !window.Razorpay) {
+    if (!isRazorpayLoaded) {
       showSnackbar('Payment system is loading. Please try again.', 'warning');
       return;
     }
     setIsProcessingPayment(true);
+
     try {
+      // Step 1: Securely create an order on the backend.
+      const order = await CourseService.createCourseOrder(course._id);
+
+      // Step 2: Configure Razorpay checkout with the secure order_id from our server.
       const options = {
-        key: "rzp_live_Dj70XqJ0PkPgJY",
-        amount: course.price * 100,
-        currency: 'INR',
-        name: 'Course Purchase',
-        description: `Purchase ${course.title}`,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Use the public key here
+        amount: order.amount,       // Amount is from the server-created order
+        currency: order.currency,   // Currency is from the server-created order
+        name: 'ACD STAR CLUB',
+        description: `Purchase: ${course.title}`,
+        order_id: order.id,         // This is the crucial part
         image: course.coverImage || '/logo.png',
+
+        // Step 3: This handler is called by Razorpay upon successful payment.
         handler: async function (response: any) {
           try {
-            const paymentData = {
+            // Step 4: Send the payment details to our backend for cryptographic verification.
+            const verificationPayload = {
               courseId: course._id,
-              paymentAmount: course.price,
-              razorpayOrderId: response.razorpay_order_id || `temp_order_${Date.now()}`,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature || 'temp_signature'
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
             };
-            await CourseService.purchaseCourse(paymentData);
+
+            await CourseService.verifyCoursePayment(verificationPayload);
+
+            // Step 5: If verification succeeds, show success and refresh the parent component.
             showSnackbar('Course purchased successfully! 🎉', 'success');
             if (onPurchaseSuccess) onPurchaseSuccess();
+
           } catch (error: any) {
-            showSnackbar('Payment verification failed. Please contact support.', 'error');
-          } finally {
-            setIsProcessingPayment(false);
+            showSnackbar(error.message || 'Payment verification failed. Contact support.', 'error');
+            setIsProcessingPayment(false); // Reset on verification failure
           }
         },
+        // Pre-fill user info if available
         prefill: { name: '', email: '', contact: '' },
-        notes: { course_id: course._id, course_title: course.title },
+        notes: { course_id: course._id },
         theme: { color: '#F59E0B' },
-        modal: { ondismiss: () => setIsProcessingPayment(false) }
+        modal: {
+          ondismiss: () => {
+            // Reset the button if the user closes the payment modal without paying
+            setIsProcessingPayment(false);
+          }
+        }
       };
+
       const rzp = new window.Razorpay(options);
       rzp.open();
-    } catch (error) {
-      showSnackbar('Failed to initiate payment. Please try again.', 'error');
+
+    } catch (error: any) {
+      showSnackbar(error.message || 'Failed to initiate payment. Please try again.', 'error');
       setIsProcessingPayment(false);
     }
+    // Note: setIsProcessingPayment(false) is handled inside the modal's ondismiss and handler
   };
+
+
 
   // --- Share action handlers for Modal ---
   const handleCopyLink = () => {

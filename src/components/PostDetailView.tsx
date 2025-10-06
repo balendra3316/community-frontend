@@ -46,6 +46,36 @@ const addReplyRecursively = (
   });
 };
 
+
+
+
+const removeCommentRecursively = (
+  comments: Comment[],
+  commentIdToRemove: string
+): Comment[] => {
+  return comments
+    .map(comment => {
+      // If the comment has replies, recursively process them first
+      if (comment.replies && comment.replies.length > 0) {
+        return {
+          ...comment,
+          replies: removeCommentRecursively(comment.replies, commentIdToRemove),
+        };
+      }
+      return comment;
+    })
+    // After processing replies, filter out the comment that needs to be removed
+    .filter(comment => comment._id !== commentIdToRemove);
+};
+
+
+
+
+
+
+
+
+
 const generateFlatRenderList = (comments: Comment[]): (Comment & { isReply: boolean })[] => {
   const flatList: (Comment & { isReply: boolean })[] = [];
 
@@ -111,7 +141,8 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
       
       socket.on('commentDeleted', (data: { postId: string; commentId: string; }) => {
         if (data.postId === post._id) {
-          loadComments();
+         // loadComments();
+          setComments(prevComments => removeCommentRecursively(prevComments, data.commentId));
         }
       });
       
@@ -202,7 +233,7 @@ function PostDetailContent({ post, isOpen, onClose, onRefresh }: PostDetailViewP
     try {
       await deleteComment(commentId);
       setShowActionMenu(null);
-      loadComments();
+     // loadComments();
     } catch (error) {}
   };
 

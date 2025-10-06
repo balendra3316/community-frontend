@@ -29,6 +29,8 @@ interface JournalPageState {
     datesWithEntries: string[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
+    
+
 }
 
 const initialState: JournalPageState = {
@@ -37,6 +39,7 @@ const initialState: JournalPageState = {
     datesWithEntries: [],
     status: 'idle',
     error: null,
+   
 };
 
 // A single thunk to fetch all initial page data
@@ -122,9 +125,14 @@ const journalPageSlice = createSlice({
                 const index = state.entries.findIndex(entry => entry._id === action.payload._id);
                 if (index !== -1) state.entries[index] = action.payload;
             })
+
+        
+
+                    
             // Delete
             .addCase(deleteJournalEntry.fulfilled, (state, action: PayloadAction<string>) => {
                 state.entries = state.entries.filter(entry => entry._id !== action.payload);
+                
             })
             // Calendar Dates
             .addCase(fetchJournalDatesForMonth.fulfilled, (state, action: PayloadAction<string[]>) => {

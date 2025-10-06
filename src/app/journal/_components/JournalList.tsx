@@ -110,13 +110,14 @@
 
 
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { Paper, Typography, Button, IconButton, Divider } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../lib/Store';
 import { JournalEntry, deleteJournalEntry } from '../../../lib/journalSlice';
 import dayjs from 'dayjs';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 
 interface JournalEntryCardProps {
   entry: JournalEntry;
@@ -127,18 +128,37 @@ interface JournalEntryCardProps {
 const JournalEntryCard = ({ entry, onEdit, showNotification }: JournalEntryCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
-      try {
-        await dispatch(deleteJournalEntry(entry._id)).unwrap();
-        showNotification('Journal entry deleted successfully.', 'success');
-      } catch (error: any) {
-        showNotification(error.message || 'Failed to delete entry.', 'error');
-      }
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+
+   const confirmDelete = async () => {
+    setIsDeleting(true); // 1. Start loading
+    try {
+      await dispatch(deleteJournalEntry(entry._id)).unwrap();
+      showNotification('Journal entry deleted successfully.', 'success');
+    } catch (error: any) {
+      showNotification(error.message || 'Failed to delete entry.', 'error');
+    } finally {
+      setIsDeleting(false); // 2. Stop loading
+      setIsConfirmOpen(false); // 3. Close the dialog
     }
   };
 
+  // const handleDelete = async () => {
+  //   if (window.confirm('Are you sure you want to delete this entry?')) {
+  //     try {
+  //       await dispatch(deleteJournalEntry(entry._id)).unwrap();
+  //       showNotification('Journal entry deleted successfully.', 'success');
+  //     } catch (error: any) {
+  //       showNotification(error.message || 'Failed to delete entry.', 'error');
+  //     }
+  //   }
+  // };
+
+
   return (
+    <>
     <Paper
       elevation={0}
       className="p-5 rounded-2xl bg-white/70 backdrop-blur border border-indigo-100 shadow-sm hover:shadow-md transition"
@@ -156,7 +176,7 @@ const JournalEntryCard = ({ entry, onEdit, showNotification }: JournalEntryCardP
           <IconButton onClick={() => onEdit(entry)} size="small" aria-label="edit" className="hover:bg-indigo-50">
             <Edit fontSize="small" />
           </IconButton>
-          <IconButton onClick={handleDelete} size="small" color="error" aria-label="delete" className="hover:bg-rose-50">
+          <IconButton onClick={() => setIsConfirmOpen(true)} size="small" color="error" aria-label="delete" className="hover:bg-rose-50">
             <Delete fontSize="small" />
           </IconButton>
         </div>
@@ -182,6 +202,17 @@ const JournalEntryCard = ({ entry, onEdit, showNotification }: JournalEntryCardP
         </>
       )}
     </Paper>
+
+
+ <ConfirmationDialog
+        open={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this entry? This action cannot be undone."
+        isLoading={isDeleting}
+      />
+      </>
   );
 };
 

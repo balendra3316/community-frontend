@@ -8,6 +8,35 @@ export interface Progress {
   lastAccessedLesson: string | null;
 }
 
+
+
+
+
+export interface PaginatedCoursesResponse {
+  courses: Course[];
+  totalPages: number;
+  currentPage: number;
+}
+
+// Payload for the new payment verification endpoint
+export interface VerifyPaymentPayload {
+  courseId: string;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export interface RazorpayOrderResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  // ... other properties from Razorpay if needed
+}
+
+
+
+
+
 export interface Course {
   _id: string;
   title: string;
@@ -66,16 +95,69 @@ export interface CourseAccessDetails extends PublicCourse {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const CourseService = {
-  getAllCourses: async (): Promise<Course[]> => {
+
+  // getAllCourses: async (): Promise<Course[]> => {
+  //   try {
+  //     const response = await axios.get<Course[]>(`${API_URL}/courses`, {
+  //       withCredentials: true,
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // },
+
+  getAllCourses: async (page: number = 1): Promise<PaginatedCoursesResponse> => {
     try {
-      const response = await axios.get<Course[]>(`${API_URL}/courses`, {
+      const response = await axios.get<PaginatedCoursesResponse>(`${API_URL}/courses`, {
+        params: { page },
         withCredentials: true,
       });
       return response.data;
     } catch (error) {
-      return [];
+      // Return a default structure on error to prevent crashes
+      return { courses: [], totalPages: 1, currentPage: 1 };
     }
   },
+
+  // NEW: Calls the backend to securely create a payment order
+  createCourseOrder: async (courseId: string): Promise<RazorpayOrderResponse> => {
+    try {
+      const response = await axios.post<RazorpayOrderResponse>(
+        `${API_URL}/courses/create-order`,
+        { courseId },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to create payment order.');
+      }
+      throw new Error('An unexpected error occurred.');
+    }
+  },
+
+  // MODIFIED: Renamed and updated to send verification data
+  verifyCoursePayment: async (payload: VerifyPaymentPayload): Promise<PurchaseCourseResponse> => {
+    try {
+      // This now calls the new verification endpoint
+      const response = await axios.post<PurchaseCourseResponse>(
+        `${API_URL}/courses/verify-payment`,
+        payload,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to verify payment.');
+      }
+      throw new Error('An unexpected error occurred.');
+    }
+  },
+
+
+
+
   
   getCourseById: async (courseId: string): Promise<CourseDetail | null> => {
     try {
@@ -90,7 +172,7 @@ export const CourseService = {
 
 
 
-// Addded
+// 
  getPublicCourse: async (courseId: string): Promise<PublicCourse | null> => {
     try {
       const response = await axios.get<PublicCourse>(`${API_URL}/courses/public/${courseId}`);
@@ -101,7 +183,7 @@ export const CourseService = {
     }
   },
 
-  // ADDED: New function for protected data
+  //  New function for protected data
   getCourseAccessDetails: async (courseId: string): Promise<CourseAccessDetails | null> => {
     try {
       const response = await axios.get<CourseAccessDetails>(`${API_URL}/courses/access-details/${courseId}`, {
@@ -139,6 +221,7 @@ export const CourseService = {
     }
   },
 
+  // unuse
   getUserPurchasedCourses: async (): Promise<Course[]> => {
     try {
       const response = await axios.get(`${API_URL}/courses/purchased`, {
@@ -150,6 +233,7 @@ export const CourseService = {
     }
   },
 
+  // unuse
   updateLessonProgress: async (courseId: string, lessonId: string): Promise<boolean> => {
     try {
       await axios.post(`${API_URL}/progress`, {
