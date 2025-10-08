@@ -248,7 +248,7 @@ export default function Community() {
 
   return (
     <ProtectedRoute>
-      <PostStateProvider>
+      {/* <PostStateProvider> */}
         <main className="min-h-screen bg-[rgb(248,247,245)] pt-16 md:pt-[104px] pb-16 md:pb-0">
           <NavBar />
           <LoadingIndicator isCreatingPost={isCreatingPost} />
@@ -306,7 +306,7 @@ export default function Community() {
             />
           )}
         </main>
-      </PostStateProvider>
+      {/* </PostStateProvider> */}
     </ProtectedRoute>
   );
 }

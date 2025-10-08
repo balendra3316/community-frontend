@@ -57,7 +57,7 @@ export default function AuthCallback() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <CircularProgress sx={{ mb: 4, color: '#d94d9b' }} />
+      <CircularProgress sx={{ mb: 4, color: '#c0490d' }} />
       <Typography variant="h6">Logging you in...</Typography>
     </Box>
   );

@@ -106,18 +106,20 @@ const ProfileMenu = memo(({
         onClick={handleMenuClose}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        PaperProps={{
-          elevation: 3,
-          sx: {
-            width: '200px',
-            mt: 1.5,
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
+        slotProps={{ 
+          paper: { 
+            elevation: 3,
+            sx: {
+              width: '200px',
+              mt: 1.5,
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
             },
           },
         }}

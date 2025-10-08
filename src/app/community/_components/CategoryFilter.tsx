@@ -14,7 +14,7 @@ interface CategoryFilterProps {
 }
 
 
- const CATEGORIES =["Practice Videos", "IndiaMoves20x30", "Challenge Submissions", "Q&A", "Key Information"]
+ const CATEGORIES =["Practice Videos", "Announcement", "Challenge Submissions", "Q&A", "Key Information"]
 
 export default function CategoryFilter({
   selectedCategory,
