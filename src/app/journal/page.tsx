@@ -193,10 +193,11 @@ export default function JournalPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState(null);
 
-  const { user, loading } = useAuth();
+  const { user, loading, checkActiveSubscription } = useAuth();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const isSubscribed = user?.subscription?.status === 'active';
+  //const isSubscribed = user?.subscription?.status === 'active';
+  const isSubscribed = checkActiveSubscription();
 
   useEffect(() => {
     if (!loading && user && !isSubscribed) setIsAlertOpen(true);

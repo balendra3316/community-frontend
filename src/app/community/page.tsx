@@ -105,7 +105,7 @@ function useNotifications() {
 }
 
 export default function Community() {
-  const { user } = useAuth();
+  const { user, checkActiveSubscription } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
@@ -119,7 +119,7 @@ export default function Community() {
   const { isCreatingPost, setIsCreatingPost, snackbarOpen, snackbarMessage, snackbarSeverity, setSnackbarOpen, showNotification } = useNotifications();
 
  useEffect(() => {
-  if (showPostDetail) lockScroll(); // NOW, it ONLY locks scroll for the detail view
+  if (showPostDetail) lockScroll(); 
   else unlockScroll();
   return () => unlockScroll();
 }, [showModal, showPostDetail, lockScroll, unlockScroll]);
@@ -127,22 +127,22 @@ export default function Community() {
 
 
 
-// --- THE FIX: Simplified Socket Listeners ---
+
   useEffect(() => {
     if (user?._id) {
       const socket = initializeSocket(user._id);
 
       // Handles post creation event for THIS user
       const handlePostCreated = (data: { post: PostType; message: string }) => {
-        // Add the new post to the list
+       
         if (currentFilter === 'default') {
           setPosts(prevPosts => [data.post, ...prevPosts]);
         }
-        // Show the success notification
+       
         showNotification(data.message, "success");
       };
 
-      // Handles post update event for THIS user
+      
       const handlePostUpdated = (data: { post: PostType; message: string }) => {
         // Update the post in the list
         setPosts(prevPosts =>
@@ -152,7 +152,7 @@ export default function Community() {
         if (selectedPost?._id === data.post._id) {
           setSelectedPost(data.post);
         }
-        // Show the success notification
+        
         showNotification(data.message, "success");
       };
 
@@ -184,14 +184,12 @@ export default function Community() {
 
 
  const handleCreateClick = () => {
-    // Check if the user is active
-    if (user?.subscription?.status === 'active') {
-      // If yes, show the normal create post modal
-      setShowModal(true);
-    } else {
-      // If no, show the subscription alert modal instead
-      setShowSubAlert(true);
-    }
+    
+    if (checkActiveSubscription()) { 
+      setShowModal(true);
+    } else {
+      setShowSubAlert(true);
+    }
   };
 
 

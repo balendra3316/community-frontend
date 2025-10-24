@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import axios from "axios";
+import dayjs from 'dayjs';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -31,7 +32,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 
-   dob?: string; // Dates will be strings from JSON
+   dob?: string; 
   city?: string;
   bloodGroup?: string;
   whatsappNumber?: string;
@@ -42,9 +43,9 @@ export interface User {
   weight?: number;
 
    points: number;                 // if not already present in your interface file
-  level: number;                  // NEW
+  level: number;                  
   leaderboardBadges: ILeaderboardBadge[]; 
-    // --- NEW: Add subscription to the User interface ---
+    
   subscription: {
     status: 'none' | 'active' | 'expired';
     endDate?: string;
@@ -55,7 +56,7 @@ interface ProfileUpdateData {
   name?: string;
   avatar?: File | null;
 
-  // --- NEW OPTIONAL FIELDS ---
+  
   dob?: Date | null;
   city?: string;
   bloodGroup?: string;
@@ -75,7 +76,9 @@ interface AuthContextType {
   checkAuth: () => Promise<boolean>;
   updateProfile: (data: ProfileUpdateData) => Promise<User | null>;
   updateUserSubscription: (updatedUser: User) => void;
+  checkActiveSubscription: () => boolean;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -83,6 +86,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+
+
+  const checkActiveSubscription = () => {
+    if (!user) return false;
+
+    const status = user.subscription?.status;
+    const endDateString = user.subscription?.endDate;
+
+    if (status !== 'active') return false;
+
+    if (!endDateString) return false;
+
+   
+    // We use dayjs().isSame(endDate, 'day') for today's date check.
+    const endDate = dayjs(endDateString);
+    const now = dayjs();
+
+    return endDate.isAfter(now) || endDate.isSame(now, 'day');
+  };
+
+
+
+
 
   const checkAuth = async () => {
     try {
@@ -190,6 +217,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         checkAuth,
         updateProfile,
         updateUserSubscription,
+        checkActiveSubscription,
       }}
     >
       {children}

@@ -4,7 +4,7 @@ import { memo, useCallback, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut } from 'lucide-react';
 import { Avatar, Menu, MenuItem, ListItemIcon, Divider } from '@mui/material';
-import ProAvatar from '../shared/ProAvatar';
+import { useAuth, User as AuthUser } from '@/context/AuthContext';
 
 interface SubInfo {
   status: 'none' | 'active' | 'expired';
@@ -36,7 +36,7 @@ const ProfileMenu = memo(({
   onLogout 
 }: ProfileMenuProps) => {
   const router = useRouter();
-
+ const {  checkActiveSubscription } = useAuth();
   const handleProfileClick = useCallback(() => {
     router.push('/profile');
     onMenuClose();
@@ -57,6 +57,7 @@ const ProfileMenu = memo(({
 
 
   const isPro = user?.subscription?.status === 'active';
+//const isPro=checkActiveSubscription();
 
 
   return (
