@@ -1,146 +1,3 @@
-// "use client";
-
-// import React, { useEffect } from 'react';
-// import { useAuth } from '@/context/AuthContext'; // Adjust path
-// import { useRouter } from 'next/navigation';
-// import Script from 'next/script';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { AppDispatch, RootState } from '@/lib/Store'; // Adjust path
-// import { createRazorpayOrder, verifyRazorpayPayment, resetPaymentStatus } from '@/lib/PaymenSlice'; // Adjust path
-// import { unwrapResult } from '@reduxjs/toolkit';
-// import { Paper, Typography, Button, CircularProgress } from '@mui/material';
-// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-// import NotificationSnackbar, { SnackbarState } from '@/components/shared/NotificationSnackbar'; // Adjust path
-
-// declare global {
-//     interface Window { Razorpay: any; }
-// }
-
-// const benefits = [
-//     "Log unlimited practice sessions",
-//     "Track your progress with detailed stats",
-//     "Maintain your practice streak",
-//     "Earn exclusive badges",
-//     "Access to all future premium features"
-// ];
-
-// export default function SubscribePage() {
-//     const { user, updateUserSubscription } = useAuth();
-//     const router = useRouter();
-//     const dispatch = useDispatch<AppDispatch>();
-//     const { status: paymentStatus, error: paymentError } = useSelector((state: RootState) => state.payment); // Get status from Redux
-    
-//     const [snackbar, setSnackbar] = React.useState<SnackbarState>({ open: false, message: '', severity: 'success' });
-    
-//     // Reset status when the component unmounts
-//     useEffect(() => {
-//         return () => {
-//             dispatch(resetPaymentStatus());
-//         }
-//     }, [dispatch]);
-    
-//     const handlePayment = async () => {
-//         if (!user) {
-//             setSnackbar({ open: true, message: 'You must be logged in to subscribe.', severity: 'error' });
-//             return;
-//         }
-
-//         try {
-//             // Step 1: Dispatch action to create an order
-//             const order = await dispatch(createRazorpayOrder()).unwrap();
-
-//             // Step 2: Configure and open Razorpay checkout
-//             const options = {
-//                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-//                 amount: order.amount,
-//                 currency: "INR",
-//                 name: "ACD LMS Subscription",
-//                 description: "Journal & Progress Tracking - Monthly",
-//                 order_id: order.id,
-//                 handler: async function (response: any) {
-//                     // Step 3: Dispatch action to verify the payment
-//                     try {
-//                         const resultAction = await dispatch(verifyRazorpayPayment({
-//                             razorpay_payment_id: response.razorpay_payment_id,
-//                             razorpay_order_id: response.razorpay_order_id,
-//                             razorpay_signature: response.razorpay_signature,
-//                         }));
-//                         const result = unwrapResult(resultAction);
-
-//                         // Step 4: Update the AuthContext and redirect
-//                         updateUserSubscription(result.user);
-//                         setSnackbar({ open: true, message: result.message, severity: 'success' });
-//                         router.push('/journal');
-//                     } catch (error: any) {
-//                          setSnackbar({ open: true, message: error || 'Payment verification failed.', severity: 'error' });
-//                     }
-//                 },
-//                 prefill: {
-//                     name: user.name,
-//                     email: user.email,
-//                 },
-//                 theme: {
-//                     color: "#3b82f6",
-//                 },
-//             };
-
-//             const rzp = new window.Razorpay(options);
-//             rzp.open();
-
-//         } catch (error: any) {
-//             setSnackbar({ open: true, message: error || 'Could not initiate payment.', severity: 'error' });
-//         }
-//     };
-
-//     return (
-//         <>
-//             <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" />
-            
-//             <NotificationSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
-
-//             <main className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-//                 <Paper elevation={3} className="max-w-md w-full p-6 sm:p-8 rounded-lg">
-//                     <div className="text-center">
-//                         <Typography variant="h4" component="h1" className="font-bold text-gray-800">
-//                             Go Pro
-//                         </Typography>
-//                         <Typography className="text-gray-500 mt-2">
-//                             Unlock all features and accelerate your dance journey.
-//                         </Typography>
-//                     </div>
-
-//                     <div className="my-8 text-center">
-//                         <span className="text-5xl font-extrabold text-gray-900">₹99</span>
-//                         <span className="text-xl font-medium text-gray-500">/month</span>
-//                     </div>
-
-//                     <div className="space-y-3 mb-8">
-//                         {benefits.map((benefit, index) => (
-//                             <div key={index} className="flex items-center">
-//                                 <CheckCircleOutlineIcon color="primary" className="mr-3" />
-//                                 <Typography variant="body1">{benefit}</Typography>
-//                             </div>
-//                         ))}
-//                     </div>
-
-//                     <Button
-//                         variant="contained"
-//                         color="primary"
-//                         fullWidth
-//                         onClick={handlePayment}
-//                         disabled={paymentStatus === 'loading'}
-//                         className="py-3 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
-//                     >
-//                         {paymentStatus === 'loading' ? <CircularProgress size={24} color="inherit" /> : 'Subscribe Now'}
-//                     </Button>
-//                 </Paper>
-//             </main>
-//         </>
-//     );
-// }
-
-
-
 
 
 
@@ -256,18 +113,18 @@ export default function SubscribePage() {
 
               <div className="flex items-center justify-center gap-2 mb-2">
     <img
-      src="/logo acd.png"
+      src="/mylogo.png"
       alt="Anyone Can Dance"
       className="h-9 w-auto object-contain"
       loading="lazy"
     />
     <span className="text-base sm:text-lg font-semibold text-slate-700 hidden sm:inline">
-      Anyone Can Dance
+      Community classes
     </span>
   </div>
               <h1 className="text-3xl font-bold text-slate-900">Go Pro</h1>
               <p className="text-slate-600 mt-2">
-                Unlock all features and accelerate a dance journey.
+                Unlock all features and accelerate a tech journey.
               </p>
             </div>
 

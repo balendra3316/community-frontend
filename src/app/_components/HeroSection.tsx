@@ -32,7 +32,7 @@ export default function HeroSection({ onJoinClick }: HeroSectionProps) {
           color: '#333'
         }}
       >
-        Connect with the Dance Community
+        Welcome to the Tech Community Hub
       </Typography>
       
       <Typography 
@@ -44,7 +44,7 @@ export default function HeroSection({ onJoinClick }: HeroSectionProps) {
           color: '#666'
         }}
       >
-        Join thousands of Dance enthusiasts, share your journey, and grow together in our vibrant and inspiring community.
+        Connect with developers, share your ideas, learn together, and grow in our thriving coding community.
 
       </Typography>
       

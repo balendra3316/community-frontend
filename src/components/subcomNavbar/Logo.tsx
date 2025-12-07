@@ -8,14 +8,14 @@ const Logo = memo(() => {
       <Link href="/" className="flex items-center">
         <div className="rounded-md p-1">
           <img 
-            src="/logo acd.png" 
+            src="/mylogo.png" 
             alt="Logo" 
             className="h-12 w-13 object-contain"
             loading="lazy"
           />
         </div>
         <span className="ml-2 text-xl font-bold text-gray-800 hidden md:block">
-          Anyone Can Dance
+          Community classes
         </span>
       </Link>
     </div>

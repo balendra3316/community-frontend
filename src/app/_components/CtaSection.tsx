@@ -62,7 +62,7 @@ export default function CtaSection({ onJoinClick }: CtaSectionProps) {
               color: '#333'
             }}
           >
-            Ready to Start Your Dance Journey?
+            Ready to Join Our Tech Community?
           </Typography>
           
           <Typography 
@@ -75,7 +75,7 @@ export default function CtaSection({ onJoinClick }: CtaSectionProps) {
               color: '#555'
             }}
           >
-            Join our community today and experience the joy of dance with thousands of enthusiasts just like you
+            Start connecting with developers, sharing your knowledge, and growing together in our vibrant tech community
           </Typography>
           
           <Button 

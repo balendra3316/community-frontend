@@ -35,7 +35,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
               }}
             >
               <Image 
-                src="/logo acd.png"
+                src="/mylogo.png"
                 alt="Logo"
                 width={66}
                 height={66}
@@ -57,7 +57,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
                 alignSelf: 'center' // Align text vertically with logo
               }}
             >
-              Anyone Can Dance
+               Community classes
             </Typography>
           </Box>
 

@@ -9,12 +9,12 @@ import { Providers } from '../lib/ReduxProvider'
 
 
 export const metadata: Metadata = {
-  title: 'Anyone Can Dance Community',
-  description: 'Connect, share, and learn dance in your own private community. Join fellow dancers, share your moves, and grow together.',
-  keywords: ['dance', 'community', 'learning', 'choreography', 'dancers'],
-  authors: [{ name: 'DanceHub Team' }],
-  creator: 'Anyone Can Dance Community',
-  publisher: 'Anyone Can Dance Community',
+  title: 'Tech Community Hub - Learn & Collaborate',
+  description: 'Connect with developers, share your knowledge, and grow together. Join our thriving tech community for coding resources, mentorship, and collaboration.',
+  keywords: ['tech community', 'coding', 'developers', 'learning', 'collaboration', 'programming'],
+  authors: [{ name: 'Tech Community Hub Team' }],
+  creator: 'Tech Community Hub',
+  publisher: 'Tech Community Hub',
   formatDetection: {
     email: false,
     address: false,
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
     apple: '/logo acd.png',
   },
   openGraph: {
-    title: 'Anyone Can Dance Community',
-    description: 'Connect, share, and learn dance in your own private community.',
-    url: 'https://community.acdwithsameer.com', // Replace with your actual domain
-    siteName: 'Anyone Can Dance Community',
+    title: 'Tech Community Hub - Learn & Collaborate',
+    description: 'Connect with developers, share knowledge, and grow together in our tech community.',
+    url: 'https://techcommunityhub.com', // Replace with your actual domain
+    siteName: 'Tech Community Hub',
     images: [
       {
         url: '/logo acd.png', // Replace with your og image
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Anyone Can Dance Community',
-    description: 'Connect, share, and learn dance in your own private community.',
+    title: 'Tech Community Hub - Learn & Collaborate',
+    description: 'Connect with developers, share knowledge, and grow together in our tech community.',
     images: ['/logo acd.png'], // Replace with your twitter image
   },
   robots: {
@@ -76,8 +76,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
         {/* and apple touch icons */}
-        <link rel="icon" type="image/png" href="/logo acd.png" />
-        <link rel="apple-touch-icon" href="/logo acd.png" />
+        <link rel="icon" type="image/png" href="/mylogo.png" />
+        <link rel="apple-touch-icon" href="/mylogo.png" />
         
         {/* Theme color for mobile browsers */}
         <meta name="theme-color" content="#1f2937" />

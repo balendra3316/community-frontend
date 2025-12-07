@@ -11,7 +11,7 @@ const CommunityInfoSidebar: FC = () => {
       {/* Community banner with overlay effect - Responsive height */}
       <div className="relative h-24 sm:h-32 md:h-40 bg-gray-200 overflow-hidden">
         <img
-          src="community-info.jpg"
+          src="mylogo.png"
           alt="Dance Academy"
           className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
         />
@@ -21,15 +21,15 @@ const CommunityInfoSidebar: FC = () => {
       {/* Community details */}
       <div className="p-3 sm:p-4">
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 animate-slideInLeft">
-          Anyone Can Dance
+          Community classes
         </h2>
-        <Link href="https://anyonecandance.in/" target="_blank" rel="noopener noreferrer">
+        <Link href="/" target="_blank" rel="noopener noreferrer">
           <p className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 mb-3 sm:mb-4 transition-colors duration-200 break-words">
-            www.anyonecandance.in
+            www.communityclasses.in
           </p>
         </Link>
         <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 animate-slideInRight">
-          Because everybody was born to dance
+          Because everybody was born to code
         </p>
         
         {/* Community links with icons and enhanced styling */}
@@ -44,9 +44,9 @@ const CommunityInfoSidebar: FC = () => {
                 '&:hover': { transform: 'scale(1.1)' }
               }} 
             />
-            <Link href="https://learn.anyonecandance.in/acd" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
               <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
-               ACD 5 days Workshop
+                Upcoming Events
               </span>
             </Link>
           </div>
@@ -61,7 +61,7 @@ const CommunityInfoSidebar: FC = () => {
                 '&:hover': { transform: 'scale(1.1)' }
               }} 
             />
-            <Link href="https://acdwithsameer.com/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
               <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
                 Refer & Earn
               </span>
@@ -78,7 +78,7 @@ const CommunityInfoSidebar: FC = () => {
                 '&:hover': { transform: 'scale(1.1)' }
               }} 
             />
-            <Link href="https://anyonecandance.in" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm relative link-with-underline">
               <span className="text-primary-color font-medium hover:text-primary-dark transition-colors duration-200">
                 Shop
               </span>
@@ -90,15 +90,15 @@ const CommunityInfoSidebar: FC = () => {
         <div className="flex justify-between text-center border-t border-gray-200 pt-3 sm:pt-4">
           <div className="animate-bounce-subtle flex-1">
             <div className="text-base sm:text-xl font-bold text-blue-600">2.5k+</div>
-            <div className="text-xs text-gray-500 leading-tight">Star Club Members</div>
+            <div className="text-xs text-gray-500 leading-tight"> Subscrib Club Members</div>
           </div>
           <div className="animate-bounce-subtle flex-1" style={{animationDelay: '0.1s'}}>
             <div className="text-base sm:text-xl font-bold text-green-600">100K+</div>
-            <div className="text-xs text-gray-500 leading-tight">Dancer Member</div>
+            <div className="text-xs text-gray-500 leading-tight">Coder Member</div>
           </div>
           <div className="animate-bounce-subtle flex-1" style={{animationDelay: '0.2s'}}>
             <div className="text-base sm:text-xl font-bold text-purple-600">1</div>
-            <div className="text-xs text-gray-500 leading-tight">Coach</div>
+            <div className="text-xs text-gray-500 leading-tight">Developer</div>
           </div>
         </div>
       </div>

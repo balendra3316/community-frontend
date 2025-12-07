@@ -13,24 +13,24 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: <AutoAwesomeIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
-      title: 'Personalized Learning',
-      description: 'Get dance routines tailored to your skill level and preferences'
+      title: 'Learn Together',
+      description: 'Access curated coding tutorials and resources for all skill levels'
     },
     {
       icon: <GroupsIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
       title: 'Community Support',
-      description: 'Connect with fellow dancers, share your journey, and grow together'
+      description: 'Connect with developers worldwide, share code, and help each other grow'
     },
     {
       icon: <SchoolIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
-      title: 'Expert Tutorials',
-      description: 'Learn from professional ACD coach Sameer through detailed live classes'
+      title: 'Expert Knowledge',
+      description: 'Learn from experienced developers through live sessions and mentorship'
 
     },
     {
       icon: <EmojiEventsIcon sx={{ fontSize: 40, color: '#FFD700' }} />,
-      title: 'Challenges & Events',
-      description: 'Participate in weekly challenges and virtual dance competitions'
+      title: 'Coding Challenges',
+      description: 'Participate in hackathons, coding contests, and collaborative projects'
     }
   ];
 

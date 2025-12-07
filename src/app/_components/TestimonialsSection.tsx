@@ -16,21 +16,21 @@ export default function TestimonialsSection() {
   
   const testimonials = [
     {
-      name: "Jessy Varghese",
-      role: "Beginner Dancer",
-      content: "Words cannot express my happiness and gratitude for Sameer and Sandhya. Sameer nurtured my dance and spirit with passion and wisdom. Sandhya’s compassion makes this journey special. Together, they’ve created a family, a blessing I cherish for a lifetime",
+      name: "Alex Kumar",
+      role: "Full Stack Developer",
+      content: "This community has been transformative for my coding journey. The resources and support from fellow developers helped me land my dream job. I've learned so much through collaboration and shared knowledge.",
       rating: 5
     },
     {
-      name: "Sheshaa Rathnam (51 year)",
-      role: "Intermediate Dancer",
-      content: "Thanks to Sameer for all the efforts he takes to do justice to every student by being patiently repeating and getting the best from every individual. Please join ACD with Sameer's workshop and get benefitted!",
+      name: "Sarah Johnson",
+      role: "Frontend Developer",
+      content: "The best part about this tech community is the supportive environment. Everyone is willing to help, and I've been able to share my learnings while growing my skills in new areas. Highly recommended!",
       rating: 5
     },
     {
-      name: "Emcee Thamizharasan",
-      role: "Acidans",
-      content: "I started exploring dance when I was 17 with countless attempts and many wonderful people trying to teach me. But I never truly learned-1 always ended up quitting. Then came Mr Tiru Sameer coach who changed everything for me His 5-day online workshop was a game-changer, not just for my dance skills but for my confidence",
+      name: "Raj Patel",
+      role: "DevOps Engineer",
+      content: "From a beginner to contributing to open-source projects, this community made all the difference. The mentorship and collaborative spirit here are unmatched. I've met amazing developers and made lifelong connections.",
       rating: 5
     }
   ];
@@ -93,7 +93,7 @@ export default function TestimonialsSection() {
               fontSize: { xs: '1rem', md: '1.1rem' }
             }}
           >
-            Real stories from our amazing dance community
+            Real stories from developers in our tech community
           </Typography>
         </Box>
         

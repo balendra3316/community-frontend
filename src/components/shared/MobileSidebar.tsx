@@ -63,3 +63,4 @@ export default function MobileSidebar({ open, onClose }: MobileSidebarProps) {
     </Drawer>
   );
 }
+

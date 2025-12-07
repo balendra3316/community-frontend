@@ -21,16 +21,16 @@ export default function AboutSection() {
                 overflow: 'hidden',
                 
                 '&::before': {
-                  content: '""',
+                  content: '"💻"',
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
                   height: '100%',
-                  backgroundImage: 'url("/logo acd.png")',
-                  backgroundSize: 'contain',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
+                  fontSize: '120px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   opacity: 0.85,
                 }
               }}
@@ -46,19 +46,19 @@ export default function AboutSection() {
                 color: '#333'
               }}
             >
-              About Anyone Can Dance
+              About Our Tech Community
             </Typography>
             
             <Typography variant="body1" sx={{ mb: 3, color: '#555' }}>
-            Anyone Can Dance is India’s leading online dance training platform, helping over 1 lakh people transform from hesitant beginners into confident dancers.
+            Our Tech Community Hub is a vibrant platform connecting thousands of developers, programmers, and tech enthusiasts worldwide. We're building a space where knowledge is shared freely, ideas flourish, and innovation thrives.
             </Typography>
             
             <Typography variant="body1" sx={{ mb: 3, color: '#555' }}>
-          I’m Tiru Sameer – a Dance Coach, Choreo Specialist, Dance Therapist, and Nutrition Consultant. Above all, I’m a devoted husband to my amazing wife, Sandhya Venigalla, and a proud father to our wonderful daughter, Gamya.
+          Whether you're taking your first steps in coding or you're an experienced developer looking to stay ahead, our community provides the resources, mentorship, and collaborative opportunities you need to succeed. We believe in learning together, growing together, and building amazing things together.
             </Typography>
             
             <Typography variant="body1" sx={{ color: '#555' }}>
-             Through our community-driven approach, we’ve helped thousands rediscover the joy of dance and overcome their inhibitions. The stage is set. The music is calling. Are you ready to dance your way to joy?
+             Join our community today and be part of a global movement of developers passionate about technology, innovation, and continuous learning. Share your thoughts, collaborate on projects, and let's code the future together!
             </Typography>
           </Box>
         </Box>

@@ -281,7 +281,7 @@ export default function AdditionalProfileInfo({
               control={control}
               render={({ field }) => (
                 <DatePicker
-                  label="ACD Star Club Registration Date"
+                  label="Star Club Registration Date"
                   {...field}
                   disableFuture
                   slotProps={{

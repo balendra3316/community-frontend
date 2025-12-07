@@ -24,18 +24,18 @@ export default function Footer() {
               mb: 2, 
               fontWeight: 600 
             }}>
-              Anyone Can Dance
+               Community classes
             </Typography>
             <Typography variant="body2" sx={{ 
               color: '#6c757d',
               mb: 2,
               lineHeight: 1.6
             }}>
-              Empowering everyone to express themselves through dance since 2020.
+              Empowering everyone to express themselves through tech since 2024.
             </Typography>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <MuiLink 
-                href="https://www.facebook.com/fitnessashobby?mibextid=LQQJ4d&rdid=XOZC9eolIlf694Ix&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2FSi9QWCfQqF2c4jXY%2F%3Fmibextid%3DLQQJ4d#" 
+                href="https://www.facebook.com" 
                 target="_blank"
                 rel="noopener"
                 sx={{ 
@@ -46,7 +46,7 @@ export default function Footer() {
                 <FacebookIcon />
               </MuiLink>
               <MuiLink 
-                href="https://www.instagram.com/acdwithsameer?igsh=cXc1NGgxMHEyb2E%3D" 
+                href="https://www.instagram.com/its_demon" 
                 target="_blank"
                 rel="noopener"
                 sx={{ 
@@ -57,7 +57,7 @@ export default function Footer() {
                 <InstagramIcon />
               </MuiLink>
               <MuiLink 
-                href="https://www.youtube.com/@acdbysameer" 
+                href="https://www.youtube.com" 
                 target="_blank"
                 rel="noopener"
                 sx={{ 
@@ -76,13 +76,13 @@ export default function Footer() {
               Quick Links
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <MuiLink href="https://anyonecandance.in/" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
+              <MuiLink href="/" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
                 Shop
               </MuiLink>
-              <MuiLink href="https://acdwithsameer.com/" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
+              <MuiLink href="/" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
                 Refer & Earn
               </MuiLink>
-              <MuiLink href="https://learn.anyonecandance.in/acd" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
+              <MuiLink href="/" target="_blank" rel="noopener" sx={{ color: '#495057', textDecoration: 'none', '&:hover': { color: '#007bff', textDecoration: 'underline' }}}>
                 Our Main Website
               </MuiLink>
             </Box>
@@ -119,16 +119,16 @@ export default function Footer() {
                 <Typography variant="body2" sx={{ color: '#495057', fontWeight: 500, mb: 0.5 }}>
                   Email:
                 </Typography>
-                <MuiLink href="mailto:support@soulskool.in" sx={{ color: '#007bff', textDecoration: 'none', fontSize: '0.875rem', '&:hover': { textDecoration: 'underline' }}}>
-                  support@soulskool.in
+                <MuiLink href="mailto:vinay626397@gmail.com" sx={{ color: '#007bff', textDecoration: 'none', fontSize: '0.875rem', '&:hover': { textDecoration: 'underline' }}}>
+                  vinay626397@gmail.com
                 </MuiLink>
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ color: '#495057', fontWeight: 500, mb: 0.5 }}>
                   Phone:
                 </Typography>
-                <MuiLink href="tel:+919642087790" sx={{ color: '#007bff', textDecoration: 'none', fontSize: '0.875rem', '&:hover': { textDecoration: 'underline' }}}>
-                  +91 9642087790
+                <MuiLink href="tel:+916263972688" sx={{ color: '#007bff', textDecoration: 'none', fontSize: '0.875rem', '&:hover': { textDecoration: 'underline' }}}>
+                  +91 6263972688
                 </MuiLink>
               </Box>
               <Box>
@@ -136,7 +136,7 @@ export default function Footer() {
                   Address:
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#6c757d', fontSize: '0.875rem', lineHeight: 1.5 }}>
-                  Flat No 301, TVH Vista Heights, Tower 6 Trichy Rd, Kallimadai <br/> Coimbatore, Tamil Nadu 641048
+                  Flat No 301, Nowgong  <br/> Chhatarpur, Madhya Pradesh 471001
                 </Typography>
               </Box>
             </Box>
@@ -145,7 +145,7 @@ export default function Footer() {
         
         <Box sx={{ mt: 4, pt: 4, borderTop: '1px solid #dee2e6', textAlign: 'center' }}>
           <Typography variant="body2" sx={{ color: '#6c757d' }}>
-            © {new Date().getFullYear()} Soul Skool. All rights reserved.
+            © {new Date().getFullYear()} @Balendra Singh Parihar. All rights reserved.
           </Typography>
         </Box>
       </Container>

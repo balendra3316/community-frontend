@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 "use client"
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { Post } from '../services/postService';
@@ -27,13 +21,7 @@ export function PostStateProvider({ children }: { children: ReactNode }) {
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
 
-  /**
-   * ## CORRECTED LOGIC ##
-   * This function now correctly determines the current "liked" status.
-   * 1. It first checks if the post's like status is already in the component's state (meaning you've clicked it in this session).
-   * 2. If not, it falls back to checking the `currentLikes` array (the state from the server).
-   * This fixes the bug where it would always assume `false` for the initial state.
-   */
+  
   const toggleLike = (postId: string, currentLikes: string[], userId: string | undefined) => {
     if (!userId) return;
 

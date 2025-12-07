@@ -37,37 +37,37 @@ export default function CancellationRefundPage() {
           </p>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">1. Cancellations by Participants</h2>
+            <h2 className="text-xl font-semibold text-gray-800">1. Cancellations by Users</h2>
             <p>
-              If you need to cancel your registration for a workshop, you must notify us at least 48 hours before the workshop start date to be eligible for a full refund. Cancellations made less than 48 hours before the workshop will not be eligible for a refund.
+              If you need to cancel your enrollment in a course or subscription, you must submit a cancellation request at least 48 hours before the course or subscription renewal date to be eligible for a full refund. Cancellations made less than 48 hours before the date will not be eligible for a refund.
             </p>
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">2. Cancellations by Anyone Can Dance</h2>
+            <h2 className="text-xl font-semibold text-gray-800">2. Cancellations by Tech Community Hub</h2>
             <p>
-              In the event that we need to cancel or reschedule a workshop due to unforeseen circumstances, we will offer you the option to attend a rescheduled session or receive a full refund.
+              In the event that we need to cancel or suspend a course due to unforeseen circumstances or technical issues, we will offer you the option to enroll in an alternative course or receive a full refund.
             </p>
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">3. No-Shows</h2>
+            <h2 className="text-xl font-semibold text-gray-800">3. Inactive Accounts</h2>
             <p>
-              If you do not attend the workshop without prior cancellation, no refund will be issued.
+              If you enroll in a course but do not access it for more than 30 days without canceling your subscription, no refund will be issued. Please cancel your subscription to avoid further charges.
             </p>
           </div>
 
           <div>
             <h2 className="text-xl font-semibold text-gray-800">4. Refund Process</h2>
             <p>
-              Refunds will be processed within 7-10 business days after receiving your cancellation request. Refunds will be issued to the original payment method used during registration.
+              Refunds will be processed within 7-10 business days after receiving your cancellation request. Refunds will be issued to the original payment method used during enrollment. Once a refund is processed, you will lose access to the course content.
             </p>
           </div>
           
           <div>
             <h2 className="text-xl font-semibold text-gray-800">5. Non-Refundable Items</h2>
             <p>
-              Promotional or discounted workshops are non-refundable unless otherwise stated at the time of purchase.
+              Promotional or heavily discounted courses are non-refundable unless otherwise stated at the time of purchase. Special offers and bundle packages are also non-refundable.
             </p>
           </div>
         </div>
